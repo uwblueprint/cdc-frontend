@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>CoronaEscape</title>
+    <meta name="description" content="CoronaEscape">
+    <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.0/dist/aframe-extras.min.js"></script>
+    <script src="//cdn.rawgit.com/donmccurdy/aframe-physics-system/v4.0.1/dist/aframe-physics-system.min.js"></script>
+    <script src="../js/chair.js"></script>
+  </head>
+  <body>
+    <a-scene background="color: #ECECEC" physics="debug: true; gravity: 0">
+        <a-box dynamic-body position="0 0.5 -5" width="3" height="5" depth="1" mass="400"></a-box>
+        <a-box static-body position="10 0.5 -5" width="3" height="5" depth="1" mass="4"></a-box>
+        <a-entity id="camera" position="0 1.6 0">
+          <a-entity id="camera" camera look-controls wasd-controls kinematic-body></a-entity>
+        </a-entity>
+      </a-scene>
+
+      <script>
+        // get this data json below from backend
+        var jsonDataArr = ['jsonData: {"width": "1", "height": "2", "depth": "1", "color": "orange", "x": "2", "y": "0", "z": "0"}',
+                           'jsonData: {"width": "1", "height": "2", "depth": "1", "color": "blue", "x": "0", "y": "0", "z": "0"}',
+                           'jsonData: {"width": "1", "height": "2", "depth": "1", "color": "green", "x": "-2", "y": "0", "z": "0"}'];
+        
+        jsonDataArr.forEach(objCreate);
+
+        function objCreate(jsonData, index) {
+          var sceneEl = document.querySelector('a-scene');
+          var entityEl = document.createElement('a-entity');
+          entityEl.setAttribute('chair', jsonData);
+          sceneEl.appendChild(entityEl);
+        }
+      </script>
+  </body>
+</html>
