@@ -1,0 +1,19 @@
+{
+    "extends": "eslint:recommended",
+    "rules": {
+        "prettier/prettier": "error",
+        "react/prefer-stateless-function": "warn",
+        "react/prop-types": "off",
+        "react/display-name": "off",
+        "no-case-declarations": "off",
+        "eqeqeq": ["error", "smart"],
+        "no-unused-vars": ["warn"],
+        "array-callback-return": ["error"],
+        "react-hooks/rules-of-hooks": "error",
+        "react-hooks/exhaustive-deps": "warn",
+        "no-useless-rename": "warn",
+        "prefer-const": "warn",
+        "no-var": "warn",
+        "no-console": ["warn", { "allow": ["error", "info"] }]
+      }
+}
