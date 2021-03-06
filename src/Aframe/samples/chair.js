@@ -1,4 +1,3 @@
-// eslint-disable-next-line prettier/prettier
 AFRAME.registerComponent('chair', {
     schema: {
         jsonData: {
