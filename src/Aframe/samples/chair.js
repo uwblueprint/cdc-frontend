@@ -10,8 +10,8 @@ AFRAME.registerComponent('chair', {
      * Initial creation and setting of the mesh.
      */
     init: function () {
-        var data = this.data.jsonData;
-        var el = this.el;
+        const data = this.data.jsonData;
+        const el = this.el;
 
         // Create geometry.
         this.geometry = new THREE.BoxBufferGeometry(data.width, data.height, data.depth);
@@ -25,7 +25,6 @@ AFRAME.registerComponent('chair', {
         el.object3D.position.set(data.x, data.y, data.z)
         // Set mesh on entity.
         el.setObject3D('mesh', this.mesh);
-        console.log("here");
     }
 });
 
