@@ -1,6 +1,22 @@
 {
-    "extends": "eslint:recommended",
+    "plugins": ["react", "react-hooks", "prettier"],
+    "parser": "babel-eslint",
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "env": {
+        "es6": true,
+        "browser": true,
+        "node": true,
+        "jest": true
+    },
+    "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:prettier/recommended"],
     "rules": {
+        "react/react-in-jsx-scope": "off",
         "prettier/prettier": "error",
         "react/prefer-stateless-function": "warn",
         "react/prop-types": "off",
@@ -15,5 +31,10 @@
         "prefer-const": "warn",
         "no-var": "warn",
         "no-console": ["warn", { "allow": ["error", "info"] }]
-      }
+    },
+    "settings": {
+        "react": {
+            "version": "detect"
+        }
+    }
 }
