@@ -12,7 +12,10 @@
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
+<<<<<<< HEAD
     "typescript": "^4.2.3",
+=======
+>>>>>>> a307db23c7a5a68f8ebe590c6c48e9082c8609e3
     "validator": "^13.5.2",
     "web-vitals": "^1.1.0"
   },
