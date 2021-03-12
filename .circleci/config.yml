@@ -5,9 +5,33 @@ orbs:
     # Declare a dependency on the welcome-orb
     welcome: circleci/welcome-orb@0.4.1
 # Orchestrate or schedule a set of jobs
+jobs:
+    lint:
+        executor: node/default
+        steps:
+            - attach_workspace:
+                  at: .
+            - run:
+                  command: npm run lint
+    install:
+        executor: node/default
+        steps:
+            - attach_workspace:
+                  at: .
+            - run:
+                  command: npm run install
+    build:
+        executor: node/default
+        steps:
+            - attach_workspace:
+                  at: .
+            - run:
+                  command: npm run build
 workflows:
     # Name the workflow "welcome"
     welcome:
         # Run the welcome/run job in its own container
         jobs:
-            - welcome/run
+            - lint
+            - install
+            - build
