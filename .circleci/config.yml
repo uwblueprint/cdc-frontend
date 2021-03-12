@@ -7,24 +7,24 @@ orbs:
 # Orchestrate or schedule a set of jobs
 jobs:
     lint:
-        docker:
-            - image: alpine
+        machine:
+            image: ubuntu-1604:202007-01
         steps:
             - attach_workspace:
                   at: .
             - run:
                   command: npm run lint
     install:
-        docker:
-            - image: alpine
+        machine:
+            image: ubuntu-1604:202007-01
         steps:
             - attach_workspace:
                   at: .
             - run:
                   command: npm run install
     build:
-        docker:
-            - image: alpine
+        machine:
+            image: ubuntu-1604:202007-01
         steps:
             - attach_workspace:
                   at: .
