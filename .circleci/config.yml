@@ -7,21 +7,24 @@ orbs:
 # Orchestrate or schedule a set of jobs
 jobs:
     lint:
-        executor: node/default
+        docker:
+            - image: alpine
         steps:
             - attach_workspace:
                   at: .
             - run:
                   command: npm run lint
     install:
-        executor: node/default
+        docker:
+            - image: alpine
         steps:
             - attach_workspace:
                   at: .
             - run:
                   command: npm run install
     build:
-        executor: node/default
+        docker:
+            - image: alpine
         steps:
             - attach_workspace:
                   at: .
