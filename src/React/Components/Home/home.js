@@ -1,13 +1,18 @@
 import React from "react";
 import "./home.css";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Container from "@material-ui/core/Container";
+import Typography from "@material-ui/core/Typography";
 
 export default function Home() {
     return (
-        <div className="Home">
-            <div className="lander">
-                <h1>Calgary Distress Centre</h1>
-                <p className="text-muted">Escape Rooms</p>
+        <Container component="main" maxWidth="xs">
+            <CssBaseline />
+            <div className="Home">
+                <Typography component="h1" variant="h5">
+                    Calgary Distress Centre
+                </Typography>
             </div>
-        </div>
+        </Container>
     );
 }
