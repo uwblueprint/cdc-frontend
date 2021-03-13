@@ -5,9 +5,25 @@ orbs:
     # Declare a dependency on the welcome-orb
     welcome: circleci/welcome-orb@0.4.1
 # Orchestrate or schedule a set of jobs
+jobs:
+    install-lint:
+        machine:
+            image: ubuntu-1604:202007-01
+        working_directory: ~/cdc-frontend
+        steps:
+            - checkout
+            - run: npm install && npm run lint
+    install-build:
+        machine:
+            image: ubuntu-1604:202007-01
+        working_directory: ~/cdc-frontend
+        steps:
+            - checkout
+            - run: npm install && npm run build
 workflows:
     # Name the workflow "welcome"
     welcome:
         # Run the welcome/run job in its own container
         jobs:
-            - welcome/run
+            - install-lint
+            - install-build
