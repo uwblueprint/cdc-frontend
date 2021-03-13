@@ -12,7 +12,9 @@ jobs:
         working_directory: ~/cdc-frontend
         steps:
             - checkout
-            - run: npm install
+            - run: npm install && cp -r node_modules /tmp
+            - store_artifacts:
+                  path: /tmp/node_modules
     lint:
         machine:
             image: ubuntu-1604:202007-01
