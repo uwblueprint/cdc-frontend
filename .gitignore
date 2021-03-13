@@ -5,6 +5,8 @@
 /.pnp
 .pnp.js
 src/*.d.ts
+env
+env/
 
 # testing
 /coverage
