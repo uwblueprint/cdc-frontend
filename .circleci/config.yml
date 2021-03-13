@@ -6,6 +6,13 @@ orbs:
     welcome: circleci/welcome-orb@0.4.1
 # Orchestrate or schedule a set of jobs
 jobs:
+    install:
+        machine:
+            image: ubuntu-1604:202007-01
+        working_directory: ~/cdc-frontend
+        steps:
+            - checkout
+            - run: npm install
     lint:
         machine:
             image: ubuntu-1604:202007-01
@@ -13,13 +20,6 @@ jobs:
         steps:
             - checkout
             - run: npm run lint
-    install:
-        machine:
-            image: ubuntu-1604:202007-01
-        working_directory: ~/cdc-frontend
-        steps:
-            - checkout
-            - run: npm run install
     build:
         machine:
             image: ubuntu-1604:202007-01
@@ -32,6 +32,10 @@ workflows:
     welcome:
         # Run the welcome/run job in its own container
         jobs:
-            - lint
             - install
-            - build
+            - lint:
+                  requires:
+                      - install
+            - build:
+                  requires:
+                      - install
