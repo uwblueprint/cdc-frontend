@@ -9,27 +9,24 @@ jobs:
     lint:
         machine:
             image: ubuntu-1604:202007-01
+        working_directory: ~/cdc-frontend
         steps:
-            - attach_workspace:
-                  at: .
-            - run:
-                  command: npm run lint
+            - checkout
+            - run: npm run lint
     install:
         machine:
             image: ubuntu-1604:202007-01
+        working_directory: ~/cdc-frontend
         steps:
-            - attach_workspace:
-                  at: .
-            - run:
-                  command: npm run install
+            - checkout
+            - run: npm run install
     build:
         machine:
             image: ubuntu-1604:202007-01
+        working_directory: ~/cdc-frontend
         steps:
-            - attach_workspace:
-                  at: .
-            - run:
-                  command: npm run build
+            - checkout
+            - run: npm run build
 workflows:
     # Name the workflow "welcome"
     welcome:
