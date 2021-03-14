@@ -41,7 +41,7 @@ export default function Login() {
     const [password, setPassword] = useState("");
     const [allErrors, setAllErrors] = useState({});
 
-    function nonEmptyForm() {
+    function isNonEmptyForm() {
         return email.length > 0 && password.length > 0;
     }
 
