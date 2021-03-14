@@ -21,12 +21,16 @@ Developers: [Jay Dhulia](https://github.com/jaydhulia), [Dhruvin Balar](https://
 
 ## Local Development Setup
 
+### Secrets
+
+In the root directory, copy the .env.example file into .env and request the secrets from the Project Lead.
+
 ### Frontend
 
 In the project directory, you can run:
 
 ```
-npm run dev
+npm run start
 ```
 
 This runs the frontend in development mode.
