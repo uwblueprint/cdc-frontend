@@ -116,7 +116,7 @@ export default function Login() {
                         variant="contained"
                         color="primary"
                         className={classes.submit}
-                        disabled={!nonEmptyForm()}
+                        disabled={!isNonEmptyForm()}
                     >
                         Login
                     </Button>
