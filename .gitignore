@@ -2,7 +2,11 @@
 
 # dependencies
 /node_modules
+/.pnp
+.pnp.js
 src/*.d.ts
+env
+env/
 
 # testing
 /coverage
@@ -19,6 +23,7 @@ src/*.d.ts
 .env
 */.vs
 .vscode
+.idea
 
 npm-debug.log*
 yarn-debug.log*

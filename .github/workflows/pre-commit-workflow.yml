@@ -1,0 +1,27 @@
+name: pre-commit
+
+on: [push, pull_request]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - name: Set up Node
+              uses: actions/setup-node@v2
+              with:
+                  node-version: "14"
+            - name: Set up Python 3.9.1
+              uses: actions/setup-python@v2
+              with:
+                  python-version: 3.9.1
+            - name: Test Node install
+              run: npm install
+            - name: Install pre-commit
+              run: |
+                  python3 -m pip install --upgrade pip
+                  pip3 install pre-commit
+                  pre-commit install
+            - name: Run pre-commit
+              run: |
+                  pre-commit run -a

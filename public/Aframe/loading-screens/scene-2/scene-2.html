@@ -11,71 +11,77 @@
         <script src="components.js"></script>
     </head>
     <body>
-        <a-scene background="color: #ECECEC" physics="debug: true; gravity: 0" gravity-switcher>
+        <a-scene background="color: #ECECEC" physics="debug: true; gravity: -100" gravity-switcher sound="src: #radio">
           <a-entity id="container"></a-entity>  
           <a-assets>
                 <img
-                    id="space"
-                    src="assets/space.png"
+                    id="wall"
+                    src="assets/wall.png"
                 />
+                <img
+                    id="room"
+                    src="assets/room.png"
+                />
+                <audio id="radio" src="assets/portal.mp3"></audio>
             </a-assets>
 
             <a-entity id="container"></a-entity>
 
             <a-box
-                src="#space"
+                src="#room"
                 static-body
                 position="0 0 -20"
                 width="40"
                 height="30"
                 depth="1"
-                color="#a4f542"
+                color="#ffffff"
             ></a-box>
             <a-box
-                src="#space"
+                src="#wall"
                 static-body
                 position="0 0 20"
                 width="40"
                 height="30"
                 depth="1"
-                color="#42a4f5"
+                color="#ffffff"
             ></a-box>
             <a-box
-                src="#space"
+                src="#wall"
                 static-body
                 position="20 0 0"
                 width="1"
                 height="30"
                 depth="40"
-                color="#f56042"
+                color="#ffffff"
             ></a-box>
             <a-box
-                src="#space"
+                src="#wall"
                 static-body
                 position="-20 0 0"
                 width="1"
                 height="30"
                 depth="40"
-                color="#6642f5"
+                color="#ffffff"
             ></a-box>
             <a-box
-                src="#space"
+                src="#wall"
                 static-body
                 position="0 15 0"
                 width="40"
                 height="1"
                 depth="40"
-                color="#fcba03"
+                color="#ffffff"
             ></a-box>
             <a-box
-                src="#space"
+                src="#wall"
                 static-body
                 position="0 -15 0"
                 width="40"
                 height="1"
                 depth="40"
-                color="#fcba03"
+                color="#ffffff"
             ></a-box>
+
 
             <a-box
                 static-body
@@ -92,10 +98,10 @@
                 height="1"
                 color="#ff1500"
                 detect-button
-                add-ball
+                sound="src: #radio; on: click"
             ></a-cylinder>
 
-            <a-entity id="rig" position="0 5 0">
+            <a-entity id="rig" position="0 15 0">
                 <a-entity
                     id="camera"
                     camera
