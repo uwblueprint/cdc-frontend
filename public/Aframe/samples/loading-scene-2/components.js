@@ -1,10 +1,7 @@
 AFRAME.registerComponent("collision-detect", {
     init: function () {
         this.el.addEventListener("collide", function (e) {
-            console.log(
-                "Player has collided with ",
-                e.detail.body.el
-            );
+            console.log("Player has collided with ", e.detail.body.el);
             e.detail.target.el; // Original entity (playerEl).
             e.detail.body.el; // Other entity, which playerEl touched.
             e.detail.contact; // Stats about the collision (CANNON.ContactEquation).
@@ -38,7 +35,7 @@ AFRAME.registerComponent("detect-button", {
                 "property: object3D.position.y; to: -5.5; dir: alternate; dur: 50; startEvents: mousedown"
             );
 
-            el.emit("buttondown", false)
+            el.emit("buttondown", false);
         });
 
         el.addEventListener("mouseup", function () {
