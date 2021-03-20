@@ -1,104 +1,48 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <title>CoronaEscape</title>
-        <meta name="description" content="CoronaEscape" />
-        <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
-        <script src="chair.js"></script>
-        <script src="aframe-super-keyboard.min.js"></script>
-        <script>
-            AFRAME.registerComponent("foo", {
-                init: function () {
-                    this.el.addEventListener("collide", function (e) {
-                        console.log(
-                            "Player has collided with ",
-                            e.detail.body.el
-                        );
-                        e.detail.target.el; // Original entity (playerEl).
-                        e.detail.body.el; // Other entity, which playerEl touched.
-                        e.detail.contact; // Stats about the collision (CANNON.ContactEquation).
-                        e.detail.contact.ni; // Normal (direction) of the collision (CANNON.Vec3).
-                    });
-                },
-            });
-        </script>
-    </head>
-    <body>
-        <a-scene background="color: #ECECEC" physics="debug: true; gravity: 0">
-            <a-entity
-                id="keyboard-display"
-                position="-3.5 1.2 0"
-                rotation="0 90 0"
-                scale="3 3 3"
-                super-keyboard="hand: #mouseCursor; imagePath:./; multipleInputs:true; filters: numbers; model: numpad; align: center; maxLength: 5"
-                my_keyboard_controller
-                passfilter
-            >
-            </a-entity>
-
-            <a-box
-                static-body
-                position="0 0.5 -5"
-                width="3"
-                height="5"
-                depth="1"
-                animation__rotation="property: rotation; to: 0 90 0; dur:500; startEvents: click"
-                animation__position="property: object3D.position.x; to: 10; dir: alternate; dur: 500; startEvents: animationcomplete__rotation"
-                animation__rotationcomplete="property: rotation; to: 0 270 0; dur:500; dir:reverse; startEvents: animationcomplete__position"
-                animation__positioncomplete="property: object3D.position.x; to: 0; dir: normal; dur: 500; startEvents: animationcomplete__rotationcomplete"
-                animation__rotationcompletecomplete="property: rotation; to: 0 360 0; dur:500; startEvents: animationcomplete__positioncomplete"
-            ></a-box>
-            <a-entity id="camera" position="0 1.6 0">
-                <a-entity
-                    id="camera"
-                    camera
-                    look-controls
-                    wasd-controls
-                    kinematic-body
-                    foo
-                >
-                    <a-cursor
-                        geometry="primitive: ring; radiusInner: 0.01; radiusOuter: 0.015"
-                        material="color: white; shader: flat"
-                    >
-                    </a-cursor>
-                </a-entity>
-            </a-entity>
-        </a-scene>
-
-        <script>
-            // get this data json below from backend
-            var jsonDataArr = [
-                'jsonData: {"width": "1", "height": "2", "depth": "1", "color": "orange", "x": "2", "y": "0", "z": "0"}',
-                'jsonData: {"width": "1", "height": "2", "depth": "1", "color": "blue", "x": "0", "y": "0", "z": "0"}',
-                'jsonData: {"width": "1", "height": "2", "depth": "1", "color": "green", "x": "-2", "y": "0", "z": "0"}',
-            ];
-
-            jsonDataArr.forEach(objCreate);
-
-            function objCreate(jsonData, index) {
-                var sceneEl = document.querySelector("a-scene");
-                var entityEl = document.createElement("a-entity");
-                entityEl.setAttribute("chair", jsonData);
-                entityEl.setAttribute(
-                    "animation__mouseenter",
-                    "property: scale; to: 1.1 1.1 1.1; dur: 500; dir:alternate; loop:true; startEvents: mouseenter"
-                );
-                entityEl.setAttribute(
-                    "animation__mouseleave",
-                    "property: scale; to: 1 1 1; dur: 200; startEvents: mouseleave"
-                );
-                entityEl.setAttribute(
-                    "animation__rotation",
-                    "property: rotation; to: 0 360 0; dur:10; startEvents: click"
-                );
-                entityEl.setAttribute(
-                    "animation__rotationcomplete",
-                    "property: rotation; to: 0 0 0; dur:500; dir:reverse; startEvents: animationcomplete__rotation"
-                );
-                sceneEl.appendChild(entityEl);
-            }
-        </script>
-    </body>
+  <head>
+    <meta charset="utf-8">
+    <title>CoronaEscape</title>
+    <meta name="description" content="CoronaEscape">
+    <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.0/dist/aframe-extras.min.js"></script>
+    <!-- <script src="https://rawgit.com/aframevr/aframe/c4aa63e/dist/aframe-master.min.js"></script> -->
+    <script src="https://unpkg.com/aframe-environment-component@1.0.0/dist/aframe-environment-component.min.js"></script>
+    <script src="aframe-super-keyboard.min.js"></script>
+    <script src="keypad.js"></script>
+    <script src="floor.js"></script>
+    <script src="//cdn.rawgit.com/donmccurdy/aframe-physics-system/v4.0.1/dist/aframe-physics-system.min.js"></script>
+  </head>
+  <body>
+      <a-scene cursor="rayOrigin:mouse" background="color: #ECECEC" physics="debug: false; gravity: -9.81" raycaster="objects: .link">
+        <a-box static-body="shape: auto" position="0 -0.52 0" rotation="90 0 0" width="20" height="10" depth="1" floor></a-box>
+        <a-box static-body="shape: auto" position="0 0.5 -4.5" width="10" height="5" depth="1" floor></a-box>
+        <a-box static-body="shape: auto" position="0 0.5 4.5" width="10" height="5" depth="1" floor></a-box>
+        <a-box static-body="shape: auto" position="-5.1 0.5 0" rotation="0 90 0" width="10" height="5" depth="1" floor></a-box>
+        <a-box static-body="shape: auto" position="4.5 0.5 0" rotation="0 90 0" width="10" height="5" depth="1" floor></a-box>
+        <a-box static-body="shape: auto" position="0 4 0" rotation="90 0 0" width="20" height="10" depth="1" color="white" floor></a-box>
+      <!-- <a-entity id="keypad-popup-container" visible="true"> -->
+          <a-entity
+          id="keyboard-display"
+          position="0 1.2 -3.9" 
+          rotation="0 0 0"
+          scale="3 3 3"
+          super-keyboard="hand: #mouseCursor; imagePath:./; multipleInputs:true; filters: numbers; model: numpad; align: center; maxLength: 4; label: Enter Password; labelColor: black"
+          my_keyboard_controller 
+          passfilter>
+        </a-entity>
+        <!-- Hand entity not needed for now -->
+        <!-- <a-entity id="hand" laser-controls="hand: right">
+          <a-sphere radius="0.01"></a-sphere>
+        </a-entity> -->
+      <!-- </a-entity> -->
+      <a-entity id="camera" position="0 1.8 -0.75">
+        <a-entity id="camera" camera camera-floor></a-entity>
+      </a-entity>
+      </a-scene>
+  </body>
 </html>
+
+
+
+
