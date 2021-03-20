@@ -1,23 +1,29 @@
-
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Hello, WebVR! • A-Frame</title>
-    <meta name="description" content="Hello, WebVR! • A-Frame">
-    <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
-    <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.13.1/dist/aframe-extras.min.js"></script>
-    <script src="https://unpkg.com/aframe-click-drag-component"></script>
-  </head>
-  <body>
-    <a-scene>
-      <a-sky color="#1A1A1A"></a-sky>
-      <a-plane static-body position="0 0 0" rotation="-90 0 0" width="50" height="50" color="white"></a-plane>
-      <a-entity id="container"></a-entity>
-      <a-camera look-controls-enables="false" position="0 2 5">
-        <a-cursor color="#FF0000"></a-cursor> 
-      </a-camera>
-    </a-scene>
-    <script src="script.js"></script>
-  </body>
+    <head>
+        <meta charset="utf-8" />
+        <title>Hello, WebVR! • A-Frame</title>
+        <meta name="description" content="Hello, WebVR! • A-Frame" />
+        <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
+        <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.13.1/dist/aframe-extras.min.js"></script>
+        <script src="https://unpkg.com/aframe-click-drag-component"></script>
+    </head>
+    <body>
+        <a-scene>
+            <a-sky color="#1A1A1A"></a-sky>
+            <a-plane
+                static-body
+                position="0 0 0"
+                rotation="-90 0 0"
+                width="50"
+                height="50"
+                color="white"
+            ></a-plane>
+            <a-entity id="container"></a-entity>
+            <a-camera look-controls-enables="false" position="0 2 5">
+                <a-cursor color="#FF0000"></a-cursor>
+            </a-camera>
+        </a-scene>
+        <script src="script.js"></script>
+    </body>
 </html>
