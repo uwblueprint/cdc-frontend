@@ -14,3 +14,6 @@ There are a few locations where assets can be found. See below a list of website
 
 -   [SketchFab](https://sketchfab.com/features/gltf)
 -   [Free3D](https://free3d.com/3d-models/)
+-   [TurboSquid](https://www.turbosquid.com/)
+-   [Archive3D](https://archive3d.net/)
+-   [Clara.io](https://clara.io/)
