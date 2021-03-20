@@ -27,14 +27,40 @@ In the root directory, copy the .env.example file into .env and request the secr
 
 ### Frontend
 
-In the project directory, you can run:
+#### Dependencies
+
+On a fresh clone of the repository, you need to run `npm install` to install the necessary dependencies for the frontend code.
+
+When you pull in changes from master to your local repository and you see changes to `package.json`, that is also an indication that you need to run `npm install` before running the code.
+
+#### Adding dependencies
+
+Once you find a helper library that you wish to use, you can install it via `npm install <name-of-package>`. This will modify the package.json and package-lock.json files.
+
+For example, to install the eslint-plugin-prettier package, run:
+
+```
+npm install eslint-plugin-prettier
+```
+
+Please ensure to include changes to this file in your pull request.
+
+#### Node version
+
+To minimize unexpected behaviours, please ensure you are using node v14.16.0. Can find a link to the installation [here](https://nodejs.org/en/download/).
+
+#### Running code
+
+To run the frontend code, you can run the following in the root directory:
 
 ```
 npm run start
 ```
 
 This runs the frontend in development mode.
+
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+
 The page will reload if you make edits.
 
 ### Backend
