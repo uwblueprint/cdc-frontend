@@ -1,48 +1,97 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>CoronaEscape</title>
-    <meta name="description" content="CoronaEscape">
-    <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.0/dist/aframe-extras.min.js"></script>
-    <!-- <script src="https://rawgit.com/aframevr/aframe/c4aa63e/dist/aframe-master.min.js"></script> -->
-    <script src="https://unpkg.com/aframe-environment-component@1.0.0/dist/aframe-environment-component.min.js"></script>
-    <script src="aframe-super-keyboard.min.js"></script>
-    <script src="keypad.js"></script>
-    <script src="floor.js"></script>
-    <script src="//cdn.rawgit.com/donmccurdy/aframe-physics-system/v4.0.1/dist/aframe-physics-system.min.js"></script>
-  </head>
-  <body>
-      <a-scene cursor="rayOrigin:mouse" background="color: #ECECEC" physics="debug: false; gravity: -9.81" raycaster="objects: .link">
-        <a-box static-body="shape: auto" position="0 -0.52 0" rotation="90 0 0" width="20" height="10" depth="1" floor></a-box>
-        <a-box static-body="shape: auto" position="0 0.5 -4.5" width="10" height="5" depth="1" floor></a-box>
-        <a-box static-body="shape: auto" position="0 0.5 4.5" width="10" height="5" depth="1" floor></a-box>
-        <a-box static-body="shape: auto" position="-5.1 0.5 0" rotation="0 90 0" width="10" height="5" depth="1" floor></a-box>
-        <a-box static-body="shape: auto" position="4.5 0.5 0" rotation="0 90 0" width="10" height="5" depth="1" floor></a-box>
-        <a-box static-body="shape: auto" position="0 4 0" rotation="90 0 0" width="20" height="10" depth="1" color="white" floor></a-box>
-      <!-- <a-entity id="keypad-popup-container" visible="true"> -->
-          <a-entity
-          id="keyboard-display"
-          position="0 1.2 -3.9" 
-          rotation="0 0 0"
-          scale="3 3 3"
-          super-keyboard="hand: #mouseCursor; imagePath:./; multipleInputs:true; filters: numbers; model: numpad; align: center; maxLength: 4; label: Enter Password; labelColor: black"
-          my_keyboard_controller 
-          passfilter>
-        </a-entity>
-        <!-- Hand entity not needed for now -->
-        <!-- <a-entity id="hand" laser-controls="hand: right">
+    <head>
+        <meta charset="utf-8" />
+        <title>CoronaEscape</title>
+        <meta name="description" content="CoronaEscape" />
+        <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.0/dist/aframe-extras.min.js"></script>
+        <!-- <script src="https://rawgit.com/aframevr/aframe/c4aa63e/dist/aframe-master.min.js"></script> -->
+        <script src="https://unpkg.com/aframe-environment-component@1.0.0/dist/aframe-environment-component.min.js"></script>
+        <script src="aframe-super-keyboard.min.js"></script>
+        <script src="keypad.js"></script>
+        <script src="floor.js"></script>
+        <script src="//cdn.rawgit.com/donmccurdy/aframe-physics-system/v4.0.1/dist/aframe-physics-system.min.js"></script>
+    </head>
+    <body>
+        <a-scene
+            cursor="rayOrigin:mouse"
+            background="color: #ECECEC"
+            physics="debug: false; gravity: -9.81"
+            raycaster="objects: .link"
+        >
+            <a-box
+                static-body="shape: auto"
+                position="0 -0.52 0"
+                rotation="90 0 0"
+                width="20"
+                height="10"
+                depth="1"
+                floor
+            ></a-box>
+            <a-box
+                static-body="shape: auto"
+                position="0 0.5 -4.5"
+                width="10"
+                height="5"
+                depth="1"
+                floor
+            ></a-box>
+            <a-box
+                static-body="shape: auto"
+                position="0 0.5 4.5"
+                width="10"
+                height="5"
+                depth="1"
+                floor
+            ></a-box>
+            <a-box
+                static-body="shape: auto"
+                position="-5.1 0.5 0"
+                rotation="0 90 0"
+                width="10"
+                height="5"
+                depth="1"
+                floor
+            ></a-box>
+            <a-box
+                static-body="shape: auto"
+                position="4.5 0.5 0"
+                rotation="0 90 0"
+                width="10"
+                height="5"
+                depth="1"
+                floor
+            ></a-box>
+            <a-box
+                static-body="shape: auto"
+                position="0 4 0"
+                rotation="90 0 0"
+                width="20"
+                height="10"
+                depth="1"
+                color="white"
+                floor
+            ></a-box>
+            <!-- <a-entity id="keypad-popup-container" visible="true"> -->
+            <a-entity
+                id="keyboard-display"
+                position="0 1.2 -3.9"
+                rotation="0 0 0"
+                scale="3 3 3"
+                super-keyboard="hand: #mouseCursor; imagePath:./; multipleInputs:true; filters: numbers; model: numpad; align: center; maxLength: 4; label: Enter Password; labelColor: black"
+                my_keyboard_controller
+                passfilter
+            >
+            </a-entity>
+            <!-- Hand entity not needed for now -->
+            <!-- <a-entity id="hand" laser-controls="hand: right">
           <a-sphere radius="0.01"></a-sphere>
         </a-entity> -->
-      <!-- </a-entity> -->
-      <a-entity id="camera" position="0 1.8 -0.75">
-        <a-entity id="camera" camera camera-floor></a-entity>
-      </a-entity>
-      </a-scene>
-  </body>
+            <!-- </a-entity> -->
+            <a-entity id="camera" position="0 1.8 -0.75">
+                <a-entity id="camera" camera camera-floor></a-entity>
+            </a-entity>
+        </a-scene>
+    </body>
 </html>
-
-
-
-
