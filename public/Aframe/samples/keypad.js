@@ -13,12 +13,12 @@ AFRAME.registerComponent("my_keyboard_controller", {
             } else {
                 var numpad = document.querySelector("#keyboard-display");
                 var statusLabel = numpad.getAttribute("super-keyboard").label;
-                if (statusLabel != "SUCCESS"){
-                  numpad.setAttribute(
-                      "super-keyboard",
-                      "label:ERROR; labelColor: red"
-                  );
-                  removeError();
+                if (statusLabel != "SUCCESS") {
+                    numpad.setAttribute(
+                        "super-keyboard",
+                        "label:ERROR; labelColor: red"
+                    );
+                    removeError();
                 }
             }
             // console.log(event.detail.value)
