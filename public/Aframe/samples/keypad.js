@@ -8,17 +8,18 @@ AFRAME.registerComponent("my_keyboard_controller", {
                 var numpad = document.querySelector("#keyboard-display");
                 numpad.setAttribute(
                     "super-keyboard",
-                    "label:SUCCESS; labelColor: green"
+                    "label:SUCCESS; labelColor: green; multipleInputs:true"
                 );
-                console.log(numpad);
             } else {
                 var numpad = document.querySelector("#keyboard-display");
-                numpad.setAttribute(
-                    "super-keyboard",
-                    "label:ERROR; labelColor: red"
-                );
-                console.log(numpad);
-                removeError();
+                var statusLabel = numpad.getAttribute("super-keyboard").label;
+                if (statusLabel != "SUCCESS"){
+                  numpad.setAttribute(
+                      "super-keyboard",
+                      "label:ERROR; labelColor: red"
+                  );
+                  removeError();
+                }
             }
             // console.log(event.detail.value)
         });
