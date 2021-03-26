@@ -1,9 +1,6 @@
 AFRAME.registerComponent("my_keyboard_controller", {
     init: function () {
-        // console.log("init here!!")
-        // console.log(this.el)
         this.el.addEventListener("superkeyboardinput", function (event) {
-            // alert(detail.value); // the text
             if (event.detail.value === "1234") {
                 var numpad = document.querySelector("#keyboard-display");
                 numpad.setAttribute(
@@ -21,7 +18,6 @@ AFRAME.registerComponent("my_keyboard_controller", {
                     removeError();
                 }
             }
-            // console.log(event.detail.value)
         });
     },
 });
@@ -35,4 +31,3 @@ async function removeError() {
         );
     }, 1.5 * 1000);
 }
-// I guess sandbox for users at the end lol
