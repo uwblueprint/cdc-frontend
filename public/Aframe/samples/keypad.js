@@ -1,14 +1,14 @@
 AFRAME.registerComponent("my_keyboard_controller", {
     init: function () {
         this.el.addEventListener("superkeyboardinput", function (event) {
-            if (event.detail.value === "1234") {
-                var numpad = document.querySelector("#keyboard-display");
+            var numpad = document.querySelector("#keyboard-display");
+            var pass = numpad.getAttribute("super-keyboard").pass;
+            if (event.detail.value === pass) {
                 numpad.setAttribute(
                     "super-keyboard",
                     "label:SUCCESS; labelColor: green; multipleInputs:true"
                 );
             } else {
-                var numpad = document.querySelector("#keyboard-display");
                 var statusLabel = numpad.getAttribute("super-keyboard").label;
                 if (statusLabel != "SUCCESS") {
                     numpad.setAttribute(
