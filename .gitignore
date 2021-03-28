@@ -25,6 +25,15 @@ env/
 .vscode
 .idea
 
+# Aframe assets
+/public/Aframe/assets/textures
+/public/Aframe/assets/*.gltf
+/public/Aframe/assets/*.bin
+/public/Aframe/assets/*.png
+/public/Aframe/assets/*.jpg
+/public/Aframe/assets/*.mlt
+/public/Aframe/assets/*.obj
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
