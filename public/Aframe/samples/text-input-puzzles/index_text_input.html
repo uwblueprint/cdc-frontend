@@ -17,27 +17,42 @@
             keyboard-shortcuts="enterVR: false"
             physics="debug: false; gravity: 0"
         >
-        <a-assets>
-            <img id="riddle" src="assets/riddle.jpg" />
-        </a-assets>
+            <a-assets>
+                <img id="riddle" src="assets/riddle.jpg" />
+            </a-assets>
 
-         <!--prompt-->
-         <a-box
-            id="clue";
-            src="#riddle"
-            static-body
-            position="-10 0 -20"
-            width="10"
-            height="10"
-            depth="1"
-            freeze
-        >
-            <a-text id="input" color="#000000" value="" scale="5 5 5" position="-5 7 0" visible="false"></a-text>
-            <a-text id="charlim" color="#000000" value=""  scale="2 2 2" position="-5 6 0" visible="false"></a-text>
-        </a-box>
+            <!--prompt-->
+            <a-box
+                id="clue"
+                ;
+                src="#riddle"
+                static-body
+                position="-10 0 -20"
+                width="10"
+                height="10"
+                depth="1"
+                freeze
+            >
+                <a-text
+                    id="input"
+                    color="#000000"
+                    value=""
+                    scale="5 5 5"
+                    position="-5 7 0"
+                    visible="false"
+                ></a-text>
+                <a-text
+                    id="charlim"
+                    color="#000000"
+                    value=""
+                    scale="2 2 2"
+                    position="-5 6 0"
+                    visible="false"
+                ></a-text>
+            </a-box>
 
-        <!--keyboard-->
-        <!--a-box
+            <!--keyboard-->
+            <!--a-box
             static-body
             position="0 0 -20"
             width="5"
@@ -46,15 +61,15 @@
             color="#a4f542">
         </a-box-->
 
-        <!--a-text id="freezer" font="dejavu" color="#000000" value="Click Here To Type" scale="5 5 5" position="-5.5 7 -20" visible="true" freeze></a-text-->
+            <!--a-text id="freezer" font="dejavu" color="#000000" value="Click Here To Type" scale="5 5 5" position="-5.5 7 -20" visible="true" freeze></a-text-->
 
-        <a-entity
-          id="keyboard"
-          position="0 10 -10"
-          a-keyboard
-        ></a-entity>
+            <a-entity id="keyboard" position="0 10 -10" a-keyboard></a-entity>
 
-        <a-entity id="mouseCursor" raycaster="objects: .collidable" cursor="rayOrigin: mouse"></a-entity>
+            <a-entity
+                id="mouseCursor"
+                raycaster="objects: .collidable"
+                cursor="rayOrigin: mouse"
+            ></a-entity>
 
             <a-entity id="rig" position="0 5 0">
                 <a-entity
