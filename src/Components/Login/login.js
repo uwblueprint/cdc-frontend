@@ -12,11 +12,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import empty from "is-empty";
-import { FirebaseAuthProvider } from "@react-firebase/auth";
-// import firebase from "firebase/app";
-import firebase from "firebase";
-require("firebase/auth");
-import { firebaseConfig } from "./firebaseCredentials.js";
+import { auth } from "../../firebaseCredentials.js";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -53,34 +49,26 @@ export default function Login() {
         event.preventDefault();
         const errors = {};
 
-        firebase.default
-            .auth()
-            .signInWithEmailAndPassword(email, password)
-            .then((userCredential) => {
-                // Signed in
-                const user = userCredential.user;
-                window.location.replace("/admin");
-            })
-            .catch((error) => {
-                errors.login = "Email or password is incorrect.";
-                const errorCode = error.code;
+        auth.signInWithEmailAndPassword(email, password).catch((error) => {
+            errors.login = "Email or password is incorrect.";
+            const errorCode = error.code;
 
-                switch (errorCode) {
-                    case "auth/invalid-email":
-                        errors.email = "Please enter a valid email.";
-                        break;
-                    case "auth/user-disabled":
-                        errors.email = "Email has been disabled.";
-                        break;
-                    case "auth/wrong-password":
-                        errors.login = "Email or password is incorrect.";
-                        break;
-                    default:
-                        errors.login = "Email or password is incorrect.";
-                        break;
-                }
-                setAllErrors(errors);
-            });
+            switch (errorCode) {
+                case "auth/invalid-email":
+                    errors.email = "Please enter a valid email.";
+                    break;
+                case "auth/user-disabled":
+                    errors.email = "Email has been disabled.";
+                    break;
+                case "auth/wrong-password":
+                    errors.login = "Email or password is incorrect.";
+                    break;
+                default:
+                    errors.login = "Email or password is incorrect.";
+                    break;
+            }
+            setAllErrors(errors);
+        });
     }
 
     return (
@@ -93,70 +81,66 @@ export default function Login() {
                 <Typography component="h1" variant="h5">
                     Login
                 </Typography>
-                <FirebaseAuthProvider {...firebaseConfig} firebase={firebase}>
-                    <form
-                        className={classes.form}
-                        noValidate
-                        onSubmit={handleSubmit}
+                <form
+                    className={classes.form}
+                    noValidate
+                    onSubmit={handleSubmit}
+                >
+                    <TextField
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="email"
+                        label="Email Address"
+                        name="email"
+                        autoComplete="email"
+                        autoFocus
+                        onChange={(e) => setEmail(e.target.value)}
+                        error={!empty(allErrors.email)}
+                        helperText={allErrors.email}
+                    />
+                    <TextField
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="password"
+                        label="Password"
+                        type="password"
+                        id="password"
+                        autoComplete="current-password"
+                        onChange={(e) => setPassword(e.target.value)}
+                        error={!empty(allErrors.login)}
+                        helperText={allErrors.login}
+                    />
+                    <FormControlLabel
+                        control={<Checkbox value="remember" color="primary" />}
+                        label="Remember me"
+                    />
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        className={classes.submit}
+                        disabled={!isNonEmptyForm()}
                     >
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="email"
-                            label="Email Address"
-                            name="email"
-                            autoComplete="email"
-                            autoFocus
-                            onChange={(e) => setEmail(e.target.value)}
-                            error={!empty(allErrors.email)}
-                            helperText={allErrors.email}
-                        />
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label="Password"
-                            type="password"
-                            id="password"
-                            autoComplete="current-password"
-                            onChange={(e) => setPassword(e.target.value)}
-                            error={!empty(allErrors.login)}
-                            helperText={allErrors.login}
-                        />
-                        <FormControlLabel
-                            control={
-                                <Checkbox value="remember" color="primary" />
-                            }
-                            label="Remember me"
-                        />
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            className={classes.submit}
-                            disabled={!isNonEmptyForm()}
-                        >
-                            Login
-                        </Button>
-                        <Grid container>
-                            <Grid item xs>
-                                <Link href="/passwordReset" variant="body2">
-                                    Forgot password?
-                                </Link>
-                            </Grid>
-                            <Grid item>
-                                <Link href="/signup" variant="body2">
-                                    {"Don't have an account? Sign Up"}
-                                </Link>
-                            </Grid>
+                        Login
+                    </Button>
+                    <Grid container>
+                        <Grid item xs>
+                            <Link href="/passwordReset" variant="body2">
+                                Forgot password?
+                            </Link>
                         </Grid>
-                    </form>
-                </FirebaseAuthProvider>
+                        <Grid item>
+                            <Link href="/signup" variant="body2">
+                                {"Don't have an account? Sign Up"}
+                            </Link>
+                        </Grid>
+                    </Grid>
+                </form>
             </div>
         </Container>
     );

@@ -9,11 +9,8 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import empty from "is-empty";
-import { FirebaseAuthProvider } from "@react-firebase/auth";
-import firebase from "firebase";
-require("firebase/auth");
-import { firebaseConfig } from "./firebaseCredentials.js";
 import { AccountCircle } from "@material-ui/icons";
+import { auth, generateUserDocument } from "../../firebaseCredentials.js";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -47,43 +44,42 @@ export default function Signup() {
         return email.length > 0 && password.length > 0;
     }
 
-    function createAccount(event) {
+    async function createAccount(event) {
         event.preventDefault();
         const errors = {};
 
-        firebase
-            .auth()
-            .createUserWithEmailAndPassword(email, password)
-            .then((userCredential) => {
-                // Signed in
-                const user = userCredential.user;
-                errors.login = "";
-                window.location.replace("/admin");
-            })
-            .catch((error) => {
-                errors.login = "Email or password is incorrect.";
-                const errorCode = error.code;
+        try {
+            const { user } = await auth.createUserWithEmailAndPassword(
+                email,
+                password
+            );
+            console.log("displayName: " + displayName);
+            generateUserDocument(user, { displayName });
+            errors.login = "";
+        } catch (error) {
+            errors.login = "Email or password is incorrect.";
+            const errorCode = error.code;
 
-                switch (errorCode) {
-                    case "auth/email-already-in-use":
-                        errors.email = "Email is already in use.";
-                        break;
-                    case "auth/invalid-email":
-                        errors.email = "Email is invalid.";
-                        break;
-                    case "auth/operation-not-allowed":
-                        errors.password =
-                            "Email/password accounts are not enabled.";
-                        break;
-                    case "auth/weak-password":
-                        errors.password = "Please enter a stronger password.";
-                        break;
-                    default:
-                        errors.password = "An unexpected error has occurred.";
-                        break;
-                }
-                setAllErrors(errors);
-            });
+            switch (errorCode) {
+                case "auth/email-already-in-use":
+                    errors.email = "Email is already in use.";
+                    break;
+                case "auth/invalid-email":
+                    errors.email = "Email is invalid.";
+                    break;
+                case "auth/operation-not-allowed":
+                    errors.password =
+                        "Email/password accounts are not enabled.";
+                    break;
+                case "auth/weak-password":
+                    errors.password = "Please enter a stronger password.";
+                    break;
+                default:
+                    errors.password = "An unexpected error has occurred.";
+                    break;
+            }
+            setAllErrors(errors);
+        }
     }
 
     return (
@@ -96,73 +92,71 @@ export default function Signup() {
                 <Typography component="h1" variant="h5">
                     Signup
                 </Typography>
-                <FirebaseAuthProvider {...firebaseConfig} firebase={firebase}>
-                    <form
-                        className={classes.form}
-                        noValidate
-                        onSubmit={createAccount}
+                <form
+                    className={classes.form}
+                    noValidate
+                    onSubmit={createAccount}
+                >
+                    <TextField
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="displayName"
+                        label="Display Name"
+                        name="display"
+                        autoComplete="display-name"
+                        autoFocus
+                        onChange={(e) => setDisplayName(e.target.value)}
+                        error={!empty(allErrors.displayName)}
+                        helperText={allErrors.displayName}
+                    />
+                    <TextField
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="email"
+                        label="Email Address"
+                        name="email"
+                        autoComplete="email"
+                        autoFocus
+                        onChange={(e) => setEmail(e.target.value)}
+                        error={!empty(allErrors.email)}
+                        helperText={allErrors.email}
+                    />
+                    <TextField
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="password"
+                        label="Password"
+                        type="password"
+                        id="password"
+                        autoComplete="current-password"
+                        onChange={(e) => setPassword(e.target.value)}
+                        error={!empty(allErrors.login)}
+                        helperText={allErrors.login}
+                    />
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        className={classes.submit}
+                        disabled={!isNonEmptyForm()}
                     >
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="displayName"
-                            label="Display Name"
-                            name="display"
-                            autoComplete="display-name"
-                            autoFocus
-                            onChange={(e) => setDisplayName(e.target.value)}
-                            error={!empty(allErrors.displayName)}
-                            helperText={allErrors.displayName}
-                        />
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="email"
-                            label="Email Address"
-                            name="email"
-                            autoComplete="email"
-                            autoFocus
-                            onChange={(e) => setEmail(e.target.value)}
-                            error={!empty(allErrors.email)}
-                            helperText={allErrors.email}
-                        />
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label="Password"
-                            type="password"
-                            id="password"
-                            autoComplete="current-password"
-                            onChange={(e) => setPassword(e.target.value)}
-                            error={!empty(allErrors.login)}
-                            helperText={allErrors.login}
-                        />
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            className={classes.submit}
-                            disabled={!isNonEmptyForm()}
-                        >
-                            Create Account
-                        </Button>
-                        <Grid container>
-                            <Grid item xs>
-                                <Link href="/login" variant="body2">
-                                    Already have an account? Sign in
-                                </Link>
-                            </Grid>
+                        Create Account
+                    </Button>
+                    <Grid container>
+                        <Grid item xs>
+                            <Link href="/login" variant="body2">
+                                Already have an account? Sign in
+                            </Link>
                         </Grid>
-                    </form>
-                </FirebaseAuthProvider>
+                    </Grid>
+                </form>
             </div>
         </Container>
     );

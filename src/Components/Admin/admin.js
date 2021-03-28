@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import firebase from "firebase";
-require("firebase/auth");
+import { auth } from "../../firebaseCredentials.js";
+import { UserContext } from "../../Providers/UserProviders";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -21,16 +21,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Admin() {
     const classes = useStyles();
-
-    function signOut() {
-        // TODO: Add routing so that admin page is only accessible by logged in user
-        // firebase.auth().signOut().then(() => {
-        //     window.alert("Signed out!");
-        //     window.location.replace("/");
-        //   }).catch((error) => {
-        //     window.alert("Error occured: " + error);
-        //   });
-    }
+    const user = useContext(UserContext);
 
     return (
         <Container component="main" maxWidth="xs">
@@ -40,7 +31,7 @@ export default function Admin() {
                     Admin Dashboard 😎
                 </Typography>
                 <Typography component="h1" variant="h6">
-                    Welcome [displayName]!
+                    Welcome {user.displayName}
                 </Typography>
                 <Button
                     type="submit"
@@ -48,7 +39,9 @@ export default function Admin() {
                     variant="contained"
                     color="primary"
                     className={classes.submit}
-                    onClick={signOut()}
+                    onClick={(e) => {
+                        auth.signOut();
+                    }}
                 >
                     Sign Out
                 </Button>
