@@ -30,7 +30,6 @@ export const generateUserDocument = async (user, additionalData) => {
                 ...additionalData,
             });
         } catch (error) {
-            console.error("Error creating user document", error);
         }
     }
     return getUserDocument(user.uid);
@@ -45,6 +44,5 @@ const getUserDocument = async (uid) => {
             ...userDocument.data(),
         };
     } catch (error) {
-        console.error("Error fetching user", error);
     }
 };
