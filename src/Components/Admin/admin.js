@@ -39,7 +39,7 @@ export default function Admin() {
                     variant="contained"
                     color="primary"
                     className={classes.submit}
-                    onClick={(e) => {
+                    onClick={() => {
                         auth.signOut();
                     }}
                 >

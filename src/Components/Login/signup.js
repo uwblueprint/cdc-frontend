@@ -53,7 +53,6 @@ export default function Signup() {
                 email,
                 password
             );
-            console.log("displayName: " + displayName);
             generateUserDocument(user, { displayName });
             errors.login = "";
         } catch (error) {
