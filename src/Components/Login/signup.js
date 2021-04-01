@@ -56,7 +56,6 @@ export default function Signup() {
             generateUserDocument(user, { displayName });
             errors.login = "";
         } catch (error) {
-            errors.login = "Email or password is incorrect.";
             const errorCode = error.code;
 
             switch (errorCode) {
@@ -135,8 +134,8 @@ export default function Signup() {
                         id="password"
                         autoComplete="current-password"
                         onChange={(e) => setPassword(e.target.value)}
-                        error={!empty(allErrors.login)}
-                        helperText={allErrors.login}
+                        error={!empty(allErrors.password)}
+                        helperText={allErrors.password}
                     />
                     <Button
                         type="submit"
