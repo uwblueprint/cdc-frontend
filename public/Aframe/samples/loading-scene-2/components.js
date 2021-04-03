@@ -10,7 +10,7 @@ AFRAME.registerComponent("collision-detect", {
     },
 });
 
-AFRAME.registerComponent("detect-button", {
+AFRAME.registerComponent("detect-key", {
     init: function () {
         var data = this.data;
         var el = this.el;
@@ -32,10 +32,11 @@ AFRAME.registerComponent("detect-button", {
         el.addEventListener("mousedown", function () {
             el.setAttribute(
                 "animation__button-pressed",
-                "property: object3D.position.y; to: -5.5; dir: alternate; dur: 50; startEvents: mousedown"
+                "property: object3D.position.y; to: -10.5; dir: alternate; dur: 50; startEvents: mousedown"
             );
 
-            el.emit("buttondown", false);
+            el.emit("keydown", false);
+            console.log("keydown");
         });
 
         el.addEventListener("mouseup", function () {

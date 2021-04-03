@@ -63,7 +63,7 @@ function addBall() {
     let y = Math.random() * 5 + 2;
     let z = Math.random() * -10;
 
-    container.innerHTML += `<a-sphere collision-detect id="ball" click-drag dynamic-body position="${x} ${y} ${z}" radius="0.5" color="${
+    container.innerHTML += `<a-sphere collision-detect id="ball" click-drag kinematic-body position="${x} ${y} ${z}" radius="0.5" color="${
         colors[Math.floor(Math.random() * colors.length)]
     }" mass="0.5"></a-sphere>`;
 }
@@ -74,6 +74,8 @@ AFRAME.registerComponent("add-ball", {
         var el = this.el;
 
         var curBalls = document.querySelectorAll("#ball");
+
+        console.log(curBalls);
 
         for (let i = 0; i < curBalls.length; i++) {
             let container = document.querySelector("#container");
@@ -86,6 +88,10 @@ AFRAME.registerComponent("add-ball", {
             }
         });
     },
+
+    remove: function () {
+
+    }
 });
 
 AFRAME.registerComponent("gravity-switcher", {
