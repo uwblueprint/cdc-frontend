@@ -89,9 +89,7 @@ AFRAME.registerComponent("add-ball", {
         });
     },
 
-    remove: function () {
-
-    }
+    remove: function () {},
 });
 
 AFRAME.registerComponent("gravity-switcher", {

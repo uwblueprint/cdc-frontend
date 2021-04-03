@@ -30,13 +30,13 @@ AFRAME.registerComponent("detect-key", {
         });
 
         el.addEventListener("mousedown", function () {
-            let y=el.object3D.position.y;
-            if(-9==y || -9.5==y) {
+            let y = el.object3D.position.y;
+            if (-9 == y || -9.5 == y) {
                 y = -9.5;
             } else {
                 y = -10.5;
             }
-            
+
             el.setAttribute(
                 "animation__button-pressed",
                 `property: object3D.position.y; to: ${y}; dir: alternate; dur: 20; startEvents: mousedown`
@@ -46,8 +46,8 @@ AFRAME.registerComponent("detect-key", {
         });
 
         el.addEventListener("mouseup", function () {
-            let y=el.object3D.position.y;
-            if(-9.5==y || -9==y) {
+            let y = el.object3D.position.y;
+            if (-9.5 == y || -9 == y) {
                 y = -9;
             } else {
                 y = -10;
