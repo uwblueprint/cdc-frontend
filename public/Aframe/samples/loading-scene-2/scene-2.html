@@ -2,8 +2,8 @@
 <html>
     <head>
         <meta charset="utf-8" />
-        <title>Loading Room 1</title>
-        <meta name="description" content="Loading Room 1" />
+        <title>Loading Room 2</title>
+        <meta name="description" content="Loading Room 2" />
         <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.0/dist/aframe-extras.min.js"></script>
         <script src="//cdn.rawgit.com/donmccurdy/aframe-physics-system/v4.0.1/dist/aframe-physics-system.min.js"></script>
@@ -29,6 +29,8 @@
                 <audio id="A" src="assets/a4.mp3"></audio>
                 <audio id="As" src="assets/a-4.mp3"></audio>
                 <audio id="B" src="assets/b3.mp3"></audio>
+                <audio id="E+" src="assets/e4.mp3"></audio>
+                <img id = "megalovania" src="assets/megalovania.png">
             </a-assets>
 
             <a-entity id="container"></a-entity>
@@ -36,7 +38,7 @@
             <a-box
                 src=""
                 static-body
-                position="0 0 -20"
+                position="0 -5 -20"
                 width="40"
                 height="30"
                 depth="4"
@@ -45,7 +47,7 @@
             <a-box
                 src=""
                 static-body
-                position="0 0 20"
+                position="0 -5 20"
                 width="40"
                 height="30"
                 depth="4"
@@ -54,7 +56,7 @@
             <a-box
                 src=""
                 static-body
-                position="20 0 0"
+                position="20 -5 0"
                 width="4"
                 height="30"
                 depth="40"
@@ -63,7 +65,7 @@
             <a-box
                 src=""
                 static-body
-                position="-20 0 0"
+                position="-20 -5 0"
                 width="4"
                 height="30"
                 depth="40"
@@ -72,7 +74,7 @@
             <a-box
                 src=""
                 static-body
-                position="0 15 0"
+                position="0 10 0"
                 width="40"
                 height="4"
                 depth="40"
@@ -81,7 +83,7 @@
             <a-box
                 src=""
                 static-body
-                position="0 -15 0"
+                position="0 -20 0"
                 width="40"
                 height="4"
                 depth="40"
@@ -89,33 +91,50 @@
             ></a-box>
 
             <a-box
+                id="main body"
                 static-body
-                position="-1 -14 -16"
+                position="-1 -20 -16"
                 width="24"
-                height="30"
+                height="40"
                 depth="10"
-                color="#000000"
+                color="#492E03"
             ></a-box>
+
+            <a-entity>
+                <a-image src=#megalovania
+                    position="-1 -5 -10.9"
+                    width="16"
+                    height="4"
+                ></a-image>
+            </a-entity>
+
             <a-box
                 static-body
-                position="-12 -10 -8"
-                width="2"
-                height="1"
+                position="-11 -14 -7"
+                width="4"
+                height="10"
                 depth="10"
-                color="#ffffff"
-                detect-key
-                sound="src: #E; on: click; volume: 40"
+                color="#492E03"
             ></a-box>
+
             <a-box
                 static-body
-                position="-10 -10 -8"
-                width="2"
-                height="1"
+                position="9 -14 -7"
+                width="4"
+                height="10"
                 depth="10"
-                color="#ffffff"
-                detect-key
-                sound="src: #F; on: click; volume: 40"
+                color="#492E03"
             ></a-box>
+
+            <a-box
+                static-body
+                position="-1 -15 -8"
+                width="16"
+                height="8"
+                depth="3"
+                color="#492E03"
+            ></a-box>
+
             <a-box
                 static-body
                 position="-8 -10 -8"
@@ -124,7 +143,7 @@
                 depth="10"
                 color="#ffffff"
                 detect-key
-                sound="src: #Fs; on: click; volume: 40"
+                sound="src: #E; on: keydown; volume: 40 poolsize: 12"
             ></a-box>
             <a-box
                 static-body
@@ -134,7 +153,17 @@
                 depth="10"
                 color="#ffffff"
                 detect-key
-                sound="src: #G; on: click; volume: 40"
+                sound="src: #F; on: keydown; volume: 40 poolsize: 12"
+            ></a-box>
+            <a-box
+                static-body
+                position="-5 -9 -8"
+                width="1.5"
+                height="1"
+                depth="8"
+                color="#000000"
+                detect-key
+                sound="src: #Fs; on: keydown; volume: 40 poolsize: 12"
             ></a-box>
             <a-box
                 static-body
@@ -144,7 +173,17 @@
                 depth="10"
                 color="#ffffff"
                 detect-key
-                sound="src: #Gs; on: click; volume: 40"
+                sound="src: #G; on: keydown; volume: 40 poolsize: 12"
+            ></a-box>
+            <a-box
+                static-body
+                position="-3 -9 -8"
+                width="1.5"
+                height="1"
+                depth="8"
+                color="#000000"
+                detect-key
+                sound="src: #Gs; on: keydown; volume: 40 poolsize: 12"
             ></a-box>
             <a-box
                 static-body
@@ -154,7 +193,17 @@
                 depth="10"
                 color="#ffffff"
                 detect-key
-                sound="src: #A; on: click; volume: 40"
+                sound="src: #A; on: keydown; volume: 40 poolsize: 12"
+            ></a-box>
+            <a-box
+                static-body
+                position="-1 -9 -8"
+                width="1.5"
+                height="1"
+                depth="8"
+                color="#000000"
+                detect-key
+                sound="src: #As; on: keydown; volume: 40 poolsize: 12"
             ></a-box>
             <a-box
                 static-body
@@ -164,7 +213,7 @@
                 depth="10"
                 color="#ffffff"
                 detect-key
-                sound="src: #As; on: click; volume: 40"
+                sound="src: #B; on: keydown; volume: 40 poolsize: 12"
             ></a-box>
             <a-box
                 static-body
@@ -174,7 +223,17 @@
                 depth="10"
                 color="#ffffff"
                 detect-key
-                sound="src: #B; on: click; volume: 40"
+                sound="src: #C; on: keydown; volume: 40 poolsize: 12"
+            ></a-box>
+            <a-box
+                static-body
+                position="3 -9 -8"
+                width="1.5"
+                height="1"
+                depth="8"
+                color="#000000"
+                detect-key
+                sound="src: #Cs; on: keydown; volume: 40 poolsize: 12"
             ></a-box>
             <a-box
                 static-body
@@ -184,7 +243,17 @@
                 depth="10"
                 color="#ffffff"
                 detect-key
-                sound="src: #C; on: click; volume: 40"
+                sound="src: #D; on: keydown; volume: 40 poolsize: 12"
+            ></a-box>
+            <a-box
+                static-body
+                position="5 -9 -8"
+                width="1.5"
+                height="1"
+                depth="8"
+                color="#000000"
+                detect-key
+                sound="src: #Ds; on: keydown; volume: 40 poolsize: 12"
             ></a-box>
             <a-box
                 static-body
@@ -194,27 +263,7 @@
                 depth="10"
                 color="#ffffff"
                 detect-key
-                sound="src: #Cs; on: click; volume: 40"
-            ></a-box>
-            <a-box
-                static-body
-                position="8 -10 -8"
-                width="2"
-                height="1"
-                depth="10"
-                color="#ffffff"
-                detect-key
-                sound="src: #D; on: click; volume: 40"
-            ></a-box>
-            <a-box
-                static-body
-                position="10 -10 -8"
-                width="2"
-                height="1"
-                depth="10"
-                color="#ffffff"
-                detect-key
-                sound="src: #Ds; on: click; volume: 40"
+                sound="src: #E+; on: keydown; volume: 40 poolsize: 12"
             ></a-box>
 
             <a-entity id="rig" position="0 15 0">
