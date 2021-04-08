@@ -15,7 +15,6 @@
             id="scene"
             background="color: #ECECEC"
             physics="debug: false; gravity: 0"
-            gravity-switcher
         >
             <a-assets>
                 <img id="space" src="assets/stars.jpeg" />
@@ -100,11 +99,9 @@
                 <a-entity
                     id="camera"
                     camera
-                    camera-floor
                     look-controls="pointerLockEnabled: true"
                     wasd-controls="acceleration: 200"
                     kinematic-body
-                    collision-detect
                 >
                     <a-cursor
                         geometry="primitive: ring; radiusInner: 0.01; radiusOuter: 0.015"

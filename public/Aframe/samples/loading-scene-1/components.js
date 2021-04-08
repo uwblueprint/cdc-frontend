@@ -1,15 +1,3 @@
-AFRAME.registerComponent("collision-detect", {
-    init: function () {
-        this.el.addEventListener("collide", function (e) {
-            console.log("Player has collided with ", e.detail.body.el);
-            e.detail.target.el; // Original entity (playerEl).
-            e.detail.body.el; // Other entity, which playerEl touched.
-            e.detail.contact; // Stats about the collision (CANNON.ContactEquation).
-            e.detail.contact.ni; // Normal (direction) of the collision (CANNON.Vec3).
-        });
-    },
-});
-
 AFRAME.registerComponent("detect-button", {
     init: function () {
         var data = this.data;
@@ -59,9 +47,17 @@ function addBall(x, y, z) {
         "hotpink",
     ];
 
-    container.innerHTML += `<a-sphere collision-detect id="ball" click-drag dynamic-body position="${x} ${y} ${z}" radius="0.5" color="${
-        colors[Math.floor(Math.random() * colors.length)]
-    }" mass="0.5"></a-sphere>`;
+    var scene = document.querySelector("a-scene");
+    var ball = document.createElement("a-sphere");
+
+    ball.setAttribute('id', 'ball');
+    ball.setAttribute('dynamic-body', '');
+    ball.setAttribute('position', { x: x, y: y, z: z });
+    ball.setAttribute('radius', '0.5');
+    ball.setAttribute('color', `${colors[Math.floor(Math.random() * colors.length)]}`);
+    ball.setAttribute('mass', '0.5');
+
+    scene.appendChild(ball);
 }
 
 AFRAME.registerComponent("add-ball", {
@@ -73,7 +69,6 @@ AFRAME.registerComponent("add-ball", {
             var curBalls = document.querySelectorAll("#ball");
 
             for (let i = 0; i < curBalls.length; i++) {
-                let container = document.querySelector("#container");
                 curBalls[i].parentNode.removeChild(curBalls[i]);
             }
 
