@@ -50,12 +50,15 @@ function addBall(x, y, z) {
     var scene = document.querySelector("a-scene");
     var ball = document.createElement("a-sphere");
 
-    ball.setAttribute('id', 'ball');
-    ball.setAttribute('dynamic-body', '');
-    ball.setAttribute('position', { x: x, y: y, z: z });
-    ball.setAttribute('radius', '0.5');
-    ball.setAttribute('color', `${colors[Math.floor(Math.random() * colors.length)]}`);
-    ball.setAttribute('mass', '0.5');
+    ball.setAttribute("id", "ball");
+    ball.setAttribute("dynamic-body", "");
+    ball.setAttribute("position", { x: x, y: y, z: z });
+    ball.setAttribute("radius", "0.5");
+    ball.setAttribute(
+        "color",
+        `${colors[Math.floor(Math.random() * colors.length)]}`
+    );
+    ball.setAttribute("mass", "0.5");
 
     scene.appendChild(ball);
 }
