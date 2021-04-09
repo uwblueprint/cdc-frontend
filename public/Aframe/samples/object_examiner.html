@@ -69,46 +69,35 @@
         <script type="module">
             import { TransformControls } from "./TransformControls.js";
 
-            var changeEvent = { type: "change" };
-            var mouseDownEvent = { type: "mouseDown" };
-            var objectChangeEvent = { type: "objectChange" };
+            // var changeEvent = { type: "change" };
+            // var mouseDownEvent = { type: "mouseDown" };
+            // var objectChangeEvent = { type: "objectChange" };
 
             let boxObj = document.querySelector("a-box");
-            let camera = document.querySelector("a-entity[camera]");
+            let boxObj3 = boxObj.object3D;
+            let currRotation = boxObj3.rotation;
+            // let camera = document.querySelector("a-entity[camera]");
 
-            // boxObj.addEventListener("mousedown", onPointerDown);
-            // boxObj.addEventListener("mouseup", onPointerUp);
-            let tControls = new TransformControls(
-                camera.object3D,
-                boxObj.parentElement
-            );
-            tControls.attach(boxObj.object3D);
-            // tControls.addEventListener('mouseDown', function() {
-            //    console.log("CHANGEEEEEEEEEEEEEE!!!!!!!!!!!!!!!!!!!");
-            // });
+            boxObj.addEventListener("mousedown", onPointerDown);
+            boxObj.addEventListener("mouseup", onPointerUp);
 
-            // boxObj.addEventListener("click", function() {
-            //     console.log("CLICKEDDDDDDDD!!!!!!!!!!!!!!!!!!!!!");
-            // });
-            // const hoverFunc = (event, data) => onPointerHover(data, event);
-            // function onPointerDown(e1) {
-            //     console.log("POINTER DOWN --------------------");
-            //     document.addEventListener("mousemove", hoverFunc);
-            // }
-            //
-            // function onPointerUp(e1) {
-            //     console.log("POINTER UP ___-------------------");
-            //     document.removeEventListener(`mousemove`, hoverFunc);
-            // }
-            //
-            // function onPointerHover(e1, e2) {
-            //     console.log(
-            //         "POINTER HOVER ------------------- ",
-            //         e1.detail,
-            //         e2
-            //     );
-            //     console.log("POINTER HOVER ------------------- ", e2.x, e2.y);
-            // }
+            function onPointerDown(event) {
+                console.log("POINTER DOWN --------------------", event);
+                document.addEventListener("mousemove", onPointerHover);
+            }
+
+            function onPointerUp(event) {
+                console.log("POINTER UP ----------------------", event);
+                document.removeEventListener(`mousemove`, onPointerHover);
+            }
+
+            function onPointerHover(event) {
+                const xV = new THREE.Vector3(1, 0, 0);
+                const yV = new THREE.Vector3(0, 1, 0);
+                boxObj3.rotateOnWorldAxis(yV, event.movementX / 250);
+                boxObj3.rotateOnWorldAxis(xV, event.movementY / 250);
+                // console.log("POINTER HOVER --------------------", event);
+            }
         </script>
 
         <!--<script type="module">-->
