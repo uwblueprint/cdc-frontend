@@ -139,7 +139,7 @@ var TransformControls = function (camera, domElement) {
 
     {
         domElement.addEventListener("pointerdown", onPointerDown);
-        domElement.addEventListener("pointermove", onPointerHover);
+        // domElement.addEventListener("pointermove", onPointerHover);
         scope.domElement.ownerDocument.addEventListener(
             "pointerup",
             onPointerUp
@@ -148,7 +148,7 @@ var TransformControls = function (camera, domElement) {
 
     this.dispose = function () {
         domElement.removeEventListener("pointerdown", onPointerDown);
-        domElement.removeEventListener("pointermove", onPointerHover);
+        // domElement.removeEventListener("pointermove", onPointerHover);
         scope.domElement.ownerDocument.removeEventListener(
             "pointermove",
             onPointerMove
@@ -615,17 +615,21 @@ var TransformControls = function (camera, domElement) {
     // mouse / touch event handlers
 
     function onPointerHover(event) {
-        if (!scope.enabled) return;
+        console.log("HOVERRRRRRRRRRRRRRRRR");
 
-        switch (event.pointerType) {
-            case "mouse":
-            case "pen":
-                scope.pointerHover(getPointer(event));
-                break;
-        }
+        if (!scope.enabled) return;
+        //
+        // switch (event.pointerType) {
+        //     case "mouse":
+        //     case "pen":
+        //         scope.pointerHover(getPointer(event));
+        //         break;
+        // }
     }
 
     function onPointerDown(event) {
+        console.log("DOWNNNNNNNNNNNNNNNNN");
+
         if (!scope.enabled) return;
 
         scope.domElement.style.touchAction = "none"; // disable touch scroll
@@ -633,18 +637,22 @@ var TransformControls = function (camera, domElement) {
             "pointermove",
             onPointerMove
         );
-
-        scope.pointerHover(getPointer(event));
-        scope.pointerDown(getPointer(event));
+        //
+        // scope.pointerHover(getPointer(event));
+        // scope.pointerDown(getPointer(event));
     }
 
     function onPointerMove(event) {
+        console.log("MOVEEEEEEEEEEEEEEEEEEE");
+
         if (!scope.enabled) return;
 
         scope.pointerMove(getPointer(event));
     }
 
     function onPointerUp(event) {
+        console.log("UPPPPPPPPPPPPPPPPPPPPP");
+
         if (!scope.enabled) return;
 
         scope.domElement.style.touchAction = "";
@@ -652,8 +660,8 @@ var TransformControls = function (camera, domElement) {
             "pointermove",
             onPointerMove
         );
-
-        scope.pointerUp(getPointer(event));
+        //
+        // scope.pointerUp(getPointer(event));
     }
 
     // TODO: deprecate

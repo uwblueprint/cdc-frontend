@@ -66,38 +66,49 @@
             >
             </a-entity>
         </a-scene>
-        <script>
+        <script type="module">
+            import { TransformControls } from "./TransformControls.js";
+
             var changeEvent = { type: "change" };
             var mouseDownEvent = { type: "mouseDown" };
             var objectChangeEvent = { type: "objectChange" };
 
             let boxObj = document.querySelector("a-box");
+            let camera = document.querySelector("a-entity[camera]");
 
-            boxObj.addEventListener("mousedown", onPointerDown);
-            boxObj.addEventListener("mouseup", onPointerUp);
+            // boxObj.addEventListener("mousedown", onPointerDown);
+            // boxObj.addEventListener("mouseup", onPointerUp);
+            let tControls = new TransformControls(
+                camera.object3D,
+                boxObj.parentElement
+            );
+            tControls.attach(boxObj.object3D);
+            // tControls.addEventListener('mouseDown', function() {
+            //    console.log("CHANGEEEEEEEEEEEEEE!!!!!!!!!!!!!!!!!!!");
+            // });
 
             // boxObj.addEventListener("click", function() {
             //     console.log("CLICKEDDDDDDDD!!!!!!!!!!!!!!!!!!!!!");
             // });
-            const hoverFunc = (event, data) => onPointerHover(data, event);
-            function onPointerDown(e1) {
-                console.log("POINTER DOWN --------------------");
-                document.addEventListener("mousemove", hoverFunc);
-            }
-
-            function onPointerUp(e1) {
-                console.log("POINTER UP ___-------------------");
-                document.removeEventListener(`mousemove`, hoverFunc);
-            }
-
-            function onPointerHover(e1, e2) {
-                console.log(
-                    "POINTER HOVER ------------------- ",
-                    e1.detail,
-                    e2
-                );
-                console.log("POINTER HOVER ------------------- ", e2.x, e2.y);
-            }
+            // const hoverFunc = (event, data) => onPointerHover(data, event);
+            // function onPointerDown(e1) {
+            //     console.log("POINTER DOWN --------------------");
+            //     document.addEventListener("mousemove", hoverFunc);
+            // }
+            //
+            // function onPointerUp(e1) {
+            //     console.log("POINTER UP ___-------------------");
+            //     document.removeEventListener(`mousemove`, hoverFunc);
+            // }
+            //
+            // function onPointerHover(e1, e2) {
+            //     console.log(
+            //         "POINTER HOVER ------------------- ",
+            //         e1.detail,
+            //         e2
+            //     );
+            //     console.log("POINTER HOVER ------------------- ", e2.x, e2.y);
+            // }
         </script>
 
         <!--<script type="module">-->
