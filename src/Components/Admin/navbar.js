@@ -18,6 +18,10 @@ const useStyles = makeStyles(() => ({
         display: "flex",
         justifyContent: "flex-end",
     },
+    menu: {
+        marginTop: "5px",
+        marginRight: "5px",
+    },
 }));
 
 export default function Admin() {
@@ -36,7 +40,7 @@ export default function Admin() {
     return (
         <div className={classes.root}>
             <AppBar position="fixed">
-                <Toolbar>
+                <Toolbar className={classes.toolbar}>
                     <IconButton
                         aria-label="account of current user"
                         aria-controls="menu-appbar"
@@ -50,8 +54,8 @@ export default function Admin() {
                         id="menu-appbar"
                         anchorEl={anchorEl}
                         anchorOrigin={{
-                            vertical: "top",
-                            horizontal: "right",
+                            vertical: "bottom",
+                            horizontal: "center",
                         }}
                         keepMounted
                         transformOrigin={{
@@ -60,6 +64,7 @@ export default function Admin() {
                         }}
                         open={open}
                         onClose={handleClose}
+                        className={classes.menu}
                     >
                         <MenuItem onClick={handleClose}>Documentation</MenuItem>
                         <MenuItem onClick={handleClose}>Settings</MenuItem>
