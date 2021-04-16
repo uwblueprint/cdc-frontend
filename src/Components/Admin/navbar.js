@@ -14,6 +14,10 @@ const useStyles = makeStyles(() => ({
     title: {
         flexGrow: 1,
     },
+    toolbar: {
+        display: "flex",
+        justifyContent: "flex-end",
+    },
 }));
 
 export default function Admin() {
