@@ -10,11 +10,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function EnvironmentEditor({
-    match: {
-        params: { environmentId },
-    },
-}) {
+export default function EnvironmentEditor() {
     const classes = useStyles();
 
     return (
