@@ -12,10 +12,10 @@ export default function Routes() {
     const user = useContext(UserContext);
     return user ? (
         <Switch>
-            <Route exact path="/" component={Admin} />
+            <Route exact path="/admin" component={Admin} />
             <Route
                 exact
-                path="/environment/:environmentId"
+                path="/admin/environment/:environmentId"
                 component={EnvironmentEditor}
             />
         </Switch>
