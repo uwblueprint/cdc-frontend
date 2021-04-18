@@ -18,7 +18,6 @@ export default function EnvironmentEditor() {
             <Navbar home />
             <div className={classes.page}>
                 <EnvironmentBar />
-                Hello
             </div>
         </div>
     );

@@ -60,15 +60,13 @@ export default function EnvironmentBar() {
                             startIcon={<AddIcon />}
                             endIcon={<ExpandMoreIcon />}
                         >
-                            {" "}
-                            New Scene{" "}
+                            New Scene
                         </Button>
                     </div>
                     <div className={classes.buttonWrapperRight}>
                         <Button className={classes.button}> Preview </Button>
                         <Button className={classes.button}>
-                            {" "}
-                            Share and Publish{" "}
+                            Share and Publish
                         </Button>
                     </div>
                 </Toolbar>
