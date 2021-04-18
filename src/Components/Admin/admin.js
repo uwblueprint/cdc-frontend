@@ -15,6 +15,7 @@ import Assets from "./Assets/assets.js";
 import Statistics from "./Stats/stats.js";
 import AddIcon from "@material-ui/icons/Add";
 import IconButton from "@material-ui/core/IconButton";
+import { useHistory } from "react-router-dom";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -102,6 +103,7 @@ export default function Admin() {
     const classes = useStyles();
     const user = useContext(UserContext);
 
+    const history = useHistory();
     const [value, setValue] = React.useState("rooms");
 
     const handleChange = (event, newValue) => {
@@ -125,6 +127,7 @@ export default function Admin() {
                     color="primary"
                     className={classes.submit}
                     onClick={() => {
+                        history.push("/");
                         auth.signOut();
                     }}
                 >
