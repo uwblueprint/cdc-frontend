@@ -1,5 +1,6 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import defaultImage from "./defaultImage.svg";
 
 const useStyles = makeStyles(() => ({
     card: {
@@ -12,7 +13,11 @@ export default function RoomCard({ key, data }) {
 
     return (
         <div className={classes.card} key={key}>
-            {data.name}
+            <img
+                src={data.image ? data.image : defaultImage}
+                alt="Escape Room"
+            />
+            <p>{data.name}</p>
         </div>
     );
 }
