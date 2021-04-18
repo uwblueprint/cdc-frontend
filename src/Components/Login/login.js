@@ -13,6 +13,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import empty from "is-empty";
 import { auth } from "../../firebaseCredentials.js";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -37,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Login() {
     const classes = useStyles();
 
+    const history = useHistory();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [allErrors, setAllErrors] = useState({});
@@ -69,6 +71,10 @@ export default function Login() {
             }
             setAllErrors(errors);
         });
+
+        if (!errors.email && !errors.login) {
+            history.push("/admin");
+        }
     }
 
     return (
