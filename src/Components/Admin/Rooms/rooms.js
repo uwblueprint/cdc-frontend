@@ -4,6 +4,7 @@ import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import RoomCard from "./roomcard.js";
+import Grid from "@material-ui/core/Grid";
 
 const useStyles = makeStyles((theme) => ({
     page: {
@@ -56,15 +57,24 @@ export default function EscapeRooms() {
     ];
 
     return (
-        <Container component={"main"} maxWidth="xs">
+        <Container component={"main"} maxWidth="lg">
             <CssBaseline />
             <div className={classes.page}>
                 <Typography component="h1" variant="h5">
                     Escape Rooms Page
+                </Typography>
+                <Grid
+                    container
+                    item
+                    xs={12}
+                    spacing={1}
+                    alignItems="center"
+                    justify="flex-start"
+                >
                     {rooms.map(function (room) {
                         return <RoomCard key={room.id} data={room} />;
                     })}
-                </Typography>
+                </Grid>
             </div>
         </Container>
     );
