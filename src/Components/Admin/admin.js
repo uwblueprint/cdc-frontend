@@ -127,7 +127,7 @@ export default function Admin() {
                     color="primary"
                     className={classes.submit}
                     onClick={() => {
-                        history.push("/");
+                        history.push("/login");
                         auth.signOut();
                     }}
                 >
