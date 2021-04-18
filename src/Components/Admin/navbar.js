@@ -37,7 +37,7 @@ export default function Navbar({ home }) {
     };
 
     const handleHomeClick = () => {
-        history.push("/");
+        history.push("/admin");
     };
 
     return (
