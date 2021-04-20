@@ -4,10 +4,15 @@ import { Draggable } from "react-beautiful-dnd";
 
 const useStyles = makeStyles(() => ({
     sceneItem: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
         backgroundColor: "#E2E5ED",
         padding: 16,
         userSelect: "none",
-        margin: "0 8px 0 0",
+        margin: "0 16px 0 0",
+        width: "400px",
+        height: "300px",
     },
 }));
 
@@ -19,7 +24,7 @@ export default function SceneCard({ scene, index }) {
                 <div
                     ref={provided.innerRef}
                     className={classes.sceneItem}
-                    style={{ ...provided.draggableProps.style }}
+                    style={provided.draggableProps.style}
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                 >

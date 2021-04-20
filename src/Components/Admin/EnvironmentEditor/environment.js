@@ -18,6 +18,8 @@ const useStyles = makeStyles((theme) => ({
     },
     dragAndDropContainer: {
         display: "flex",
+        alignItems: "center",
+        marginLeft: "16px",
     },
     emptyButtonsContainer: {
         display: "flex",
