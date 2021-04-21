@@ -15,6 +15,8 @@ import Assets from "./Assets/assets.js";
 import Statistics from "./Stats/stats.js";
 import AddIcon from "@material-ui/icons/Add";
 import IconButton from "@material-ui/core/IconButton";
+import MenuItem from "@material-ui/core/MenuItem";
+import Menu from "@material-ui/core/Menu";
 import { useHistory } from "react-router-dom";
 
 function TabPanel(props) {
@@ -105,9 +107,19 @@ export default function Admin() {
 
     const history = useHistory();
     const [value, setValue] = React.useState("rooms");
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
+    };
+
+    const handleAddButtonClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleAddButtonClose = () => {
+        setAnchorEl(null);
     };
 
     return (
@@ -137,9 +149,27 @@ export default function Admin() {
                     <IconButton
                         className={classes.addButton}
                         aria-label="delete"
+                        onClick={handleAddButtonClick}
                     >
                         <AddIcon />
                     </IconButton>
+                    <Menu
+                        anchorEl={anchorEl}
+                        anchorOrigin={{
+                            vertical: "top",
+                            horizontal: "center",
+                        }}
+                        transformOrigin={{
+                            vertical: "top",
+                            horizontal: "center",
+                        }}
+                        keepMounted
+                        open={open}
+                        onClose={handleAddButtonClose}
+                    >
+                        <MenuItem>Object Upload</MenuItem>
+                        <MenuItem>New Escape Room</MenuItem>
+                    </Menu>
                     <Tabs
                         value={value}
                         indicatorColor="primary"
