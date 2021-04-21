@@ -5,19 +5,21 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import { auth } from "../../firebaseCredentials.js";
-import { UserContext } from "../../Providers/UserProviders";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
-import EscapeRooms from "./Rooms/rooms.js";
-import Assets from "./Assets/assets.js";
-import Statistics from "./Stats/stats.js";
 import AddIcon from "@material-ui/icons/Add";
 import IconButton from "@material-ui/core/IconButton";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import { useHistory } from "react-router-dom";
+
+import { auth } from "../../firebaseCredentials.js";
+import { UserContext } from "../../Providers/UserProviders";
+import EscapeRooms from "./Rooms/rooms.js";
+import Assets from "./Assets/assets.js";
+import Statistics from "./Stats/stats.js";
+import RoomModal from "./Rooms/roomModal";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -108,6 +110,7 @@ export default function Admin() {
     const history = useHistory();
     const [value, setValue] = React.useState("rooms");
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [createModalOpen, setCreateModalOpen] = React.useState(false);
     const open = Boolean(anchorEl);
 
     const handleChange = (event, newValue) => {
@@ -120,6 +123,11 @@ export default function Admin() {
 
     const handleAddButtonClose = () => {
         setAnchorEl(null);
+    };
+
+    const handleCreateRoomSubmit = () => {
+        console.log("Created room ");
+        setCreateModalOpen(false);
     };
 
     return (
@@ -145,6 +153,7 @@ export default function Admin() {
                 >
                     Sign Out
                 </Button>
+
                 <div className={classes.root}>
                     <IconButton
                         className={classes.addButton}
@@ -168,8 +177,21 @@ export default function Admin() {
                         onClose={handleAddButtonClose}
                     >
                         <MenuItem>Object Upload</MenuItem>
-                        <MenuItem>New Escape Room</MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setCreateModalOpen(true);
+                            }}
+                        >
+                            New Escape Room
+                        </MenuItem>
                     </Menu>
+                    <RoomModal
+                        modalOpen={createModalOpen}
+                        handleModalClose={() => {
+                            setCreateModalOpen(false);
+                        }}
+                        handleSubmit={handleCreateRoomSubmit}
+                    />
                     <Tabs
                         value={value}
                         indicatorColor="primary"
