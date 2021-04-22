@@ -44,11 +44,11 @@ export default function RoomModal({
     const handleModalSubmitClick = () => {
         setRoomName("");
         setRoomDescription("");
-        handleSubmit(); 
-    }
+        handleSubmit();
+    };
 
     return (
-        <Dialog open={modalOpen} onClose={handleModalClose}>
+        <Dialog open={modalOpen} onClose={handleModalCloseClick}>
             <DialogTitle> New Escape Room </DialogTitle>
             <DialogContent>
                 <div>
