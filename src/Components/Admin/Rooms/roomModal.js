@@ -1,5 +1,5 @@
 import React from "react";
-import FormControl from "@material-ui/core/FormControl";
+import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
@@ -8,11 +8,22 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
+const useStyles = makeStyles(() => ({
+    textField: {
+        width: "500px",
+    },
+    buttonContainer: {
+        display: "flex",
+        justifyContent: "space-around",
+    },
+}));
+
 export default function RoomModal({
     modalOpen,
     handleModalClose,
     handleSubmit,
 }) {
+    const classes = useStyles();
     const [roomName, setRoomName] = React.useState("");
     const [roomDescription, setRoomDescription] = React.useState("");
 
@@ -33,6 +44,7 @@ export default function RoomModal({
                     <TextField
                         value={roomName}
                         onChange={handleRoomNameChange}
+                        className={classes.textField}
                     />
                 </div>
                 <div>
@@ -40,10 +52,11 @@ export default function RoomModal({
                     <TextField
                         value={roomDescription}
                         onChange={handleRoomDescriptionChange}
+                        className={classes.textField}
                     />
                 </div>
             </DialogContent>
-            <DialogActions>
+            <DialogActions className={classes.buttonContainer}>
                 <Button onClick={handleModalClose}> Cancel </Button>
                 <Button onClick={handleSubmit}> Create </Button>
             </DialogActions>

@@ -125,8 +125,8 @@ export default function Admin() {
         setAnchorEl(null);
     };
 
+    // TODO: POST room details to backend
     const handleCreateRoomSubmit = () => {
-        console.log("Created room ");
         setCreateModalOpen(false);
     };
 
@@ -179,6 +179,7 @@ export default function Admin() {
                         <MenuItem>Object Upload</MenuItem>
                         <MenuItem
                             onClick={() => {
+                                setAnchorEl(null);
                                 setCreateModalOpen(true);
                             }}
                         >
