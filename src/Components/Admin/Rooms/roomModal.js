@@ -35,6 +35,18 @@ export default function RoomModal({
         setRoomDescription(event.target.value);
     };
 
+    const handleModalCloseClick = () => {
+        setRoomName("");
+        setRoomDescription("");
+        handleModalClose();
+    };
+
+    const handleModalSubmitClick = () => {
+        setRoomName("");
+        setRoomDescription("");
+        handleSubmit(); 
+    }
+
     return (
         <Dialog open={modalOpen} onClose={handleModalClose}>
             <DialogTitle> New Escape Room </DialogTitle>
@@ -57,8 +69,8 @@ export default function RoomModal({
                 </div>
             </DialogContent>
             <DialogActions className={classes.buttonContainer}>
-                <Button onClick={handleModalClose}> Cancel </Button>
-                <Button onClick={handleSubmit}> Create </Button>
+                <Button onClick={handleModalCloseClick}> Cancel </Button>
+                <Button onClick={handleModalSubmitClick}> Create </Button>
             </DialogActions>
         </Dialog>
     );
