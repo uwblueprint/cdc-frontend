@@ -36,15 +36,15 @@ export default function RoomModal({
     };
 
     const handleModalCloseClick = () => {
+        handleModalClose();
         setRoomName("");
         setRoomDescription("");
-        handleModalClose();
     };
 
     const handleModalSubmitClick = () => {
+        handleSubmit();
         setRoomName("");
         setRoomDescription("");
-        handleSubmit();
     };
 
     return (
