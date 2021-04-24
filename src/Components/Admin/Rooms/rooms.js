@@ -15,46 +15,8 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function EscapeRooms() {
+export default function EscapeRooms({ environments }) {
     const classes = useStyles();
-    const rooms = [
-        {
-            id: 1,
-            name: "Ahmed's Escape Room",
-        },
-        {
-            id: 2,
-            name: "Jay's Escape Room",
-        },
-        {
-            id: 3,
-            name: "Dhruvin's Escape Room",
-        },
-        {
-            id: 4,
-            name: "Amolik's Escape Room",
-        },
-        {
-            id: 5,
-            name: "Aaron's Escape Room",
-        },
-        {
-            id: 6,
-            name: "Vivian's Escape Room",
-        },
-        {
-            id: 7,
-            name: "Kevin's Escape Room",
-        },
-        {
-            id: 8,
-            name: "Kouthar's Escape Room",
-        },
-        {
-            id: 9,
-            name: "Jack's Escape Room",
-        },
-    ];
 
     return (
         <Container component={"main"} maxWidth="lg">
@@ -71,7 +33,7 @@ export default function EscapeRooms() {
                     alignItems="center"
                     justify="flex-start"
                 >
-                    {rooms.map(function (room) {
+                    {environments.map(function (room) {
                         return <RoomCard key={room.id} data={room} />;
                     })}
                 </Grid>

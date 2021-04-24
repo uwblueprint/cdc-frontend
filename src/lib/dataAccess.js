@@ -1,14 +1,12 @@
 import axios from "axios";
 
-const baseURL = process.env.REACT_APP_ADMIN_BACKEND_URL + "/";
+const baseURL = process.env.REACT_APP_ADMIN_BACKEND_URL;
 
-export const httpGet = (endPoint, accessToken) => {
+export const httpGet = (endPoint) => {
     const url = baseURL + endPoint;
-
     return axios
         .get(url, {
             headers: {
-                Authorization: "Bearer " + accessToken,
                 "Content-Type": "application/json",
             },
         })
