@@ -116,7 +116,7 @@ export default function Admin() {
 
     const getAllEnvironments = async () => {
         const data = await getAllScenes();
-        setEnvironments(data.scenarios);
+        setEnvironments(data);
     };
 
     useEffect(() => {
