@@ -51,26 +51,40 @@ export default function Login() {
         event.preventDefault();
         const errors = {};
 
-        auth.signInWithEmailAndPassword(email, password).catch((error) => {
-            errors.login = "Email or password is incorrect.";
-            const errorCode = error.code;
+        auth.signInWithEmailAndPassword(email, password)
+            .then((user) => {
+                // Get the user's ID token as it is needed to exchange for a session cookie.
+                return user.getIdToken().then((idToken) => {
+                    // Session login endpoint is queried and the session cookie is set.
+                    // CSRF protection should be taken into account.
+                    const csrfToken = getCookie("csrfToken");
+                    return postIdTokenToSessionLogin(
+                        "/sessionLogin",
+                        idToken,
+                        csrfToken
+                    );
+                });
+            })
+            .catch((error) => {
+                errors.login = "Email or password is incorrect.";
+                const errorCode = error.code;
 
-            switch (errorCode) {
-                case "auth/invalid-email":
-                    errors.email = "Please enter a valid email.";
-                    break;
-                case "auth/user-disabled":
-                    errors.email = "Email has been disabled.";
-                    break;
-                case "auth/wrong-password":
-                    errors.login = "Email or password is incorrect.";
-                    break;
-                default:
-                    errors.login = "Email or password is incorrect.";
-                    break;
-            }
-            setAllErrors(errors);
-        });
+                switch (errorCode) {
+                    case "auth/invalid-email":
+                        errors.email = "Please enter a valid email.";
+                        break;
+                    case "auth/user-disabled":
+                        errors.email = "Email has been disabled.";
+                        break;
+                    case "auth/wrong-password":
+                        errors.login = "Email or password is incorrect.";
+                        break;
+                    default:
+                        errors.login = "Email or password is incorrect.";
+                        break;
+                }
+                setAllErrors(errors);
+            });
 
         if (!errors.email && !errors.login) {
             history.push("/admin");
