@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import PropTypes from "prop-types";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -20,6 +20,7 @@ import EscapeRooms from "./Rooms/rooms.js";
 import Assets from "./Assets/assets.js";
 import Statistics from "./Stats/stats.js";
 import RoomModal from "./Rooms/roomModal";
+import { getAllScenarios } from "../../lib/endpoints";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -111,6 +112,19 @@ export default function Admin() {
     const [value, setValue] = React.useState("rooms");
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [createModalOpen, setCreateModalOpen] = React.useState(false);
+    const [environments, setEnvironments] = React.useState([]);
+
+    const getAllEnvironments = async () => {
+        const data = await getAllScenarios();
+        setEnvironments(data);
+    };
+
+    useEffect(() => {
+        if (value === "rooms") {
+            getAllEnvironments();
+        }
+    }, [value]);
+
     const open = Boolean(anchorEl);
 
     const handleChange = (event, newValue) => {
@@ -222,7 +236,7 @@ export default function Admin() {
                         value={value}
                         index="rooms"
                     >
-                        <EscapeRooms />
+                        <EscapeRooms environments={environments} />
                     </TabPanel>
                     <TabPanel
                         className={classes.tabBackground}
