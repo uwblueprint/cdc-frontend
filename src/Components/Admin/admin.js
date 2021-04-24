@@ -20,7 +20,7 @@ import EscapeRooms from "./Rooms/rooms.js";
 import Assets from "./Assets/assets.js";
 import Statistics from "./Stats/stats.js";
 import RoomModal from "./Rooms/roomModal";
-import { getAllScenes } from "../../lib/endpoints";
+import { getAllScenarios } from "../../lib/endpoints";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -115,13 +115,15 @@ export default function Admin() {
     const [environments, setEnvironments] = React.useState([]);
 
     const getAllEnvironments = async () => {
-        const data = await getAllScenes();
+        const data = await getAllScenarios();
         setEnvironments(data);
     };
 
     useEffect(() => {
-        getAllEnvironments();
-    }, []);
+        if (value === "rooms") {
+            getAllEnvironments();
+        }
+    }, [value]);
 
     const open = Boolean(anchorEl);
 
