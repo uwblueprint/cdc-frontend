@@ -20,9 +20,7 @@ export const httpPost = (endPoint, body) => {
 
     return new Promise((resolve, reject) => {
         axios
-            .post(url, body, {
-                headers: {},
-            })
+            .post(url, body)
             .then((response) => {
                 resolve(response);
             })
