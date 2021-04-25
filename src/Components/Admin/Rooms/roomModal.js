@@ -25,6 +25,7 @@ export default function RoomModal({
 }) {
     const classes = useStyles();
     const [roomName, setRoomName] = React.useState("");
+    const [friendlyName, setFriendlyName] = React.useState("");
     const [roomDescription, setRoomDescription] = React.useState("");
 
     const handleRoomNameChange = (event) => {
@@ -35,16 +36,26 @@ export default function RoomModal({
         setRoomDescription(event.target.value);
     };
 
+    const handleFriendlyNameChange = (event) => {
+        setFriendlyName(event.target.value);
+    };
+
     const handleModalCloseClick = () => {
         handleModalClose();
         setRoomName("");
         setRoomDescription("");
+        setFriendlyName("");
     };
 
     const handleModalSubmitClick = () => {
-        handleSubmit();
+        handleSubmit({
+            name: roomName,
+            description: roomDescription,
+            friendly_name: friendlyName,
+        });
         setRoomName("");
         setRoomDescription("");
+        setFriendlyName("");
     };
 
     return (
@@ -56,6 +67,14 @@ export default function RoomModal({
                     <TextField
                         value={roomName}
                         onChange={handleRoomNameChange}
+                        className={classes.textField}
+                    />
+                </div>
+                <div>
+                    <Typography>Room Friendly Name: </Typography>
+                    <TextField
+                        value={friendlyName}
+                        onChange={handleFriendlyNameChange}
                         className={classes.textField}
                     />
                 </div>

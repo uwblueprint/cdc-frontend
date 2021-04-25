@@ -20,7 +20,7 @@ import EscapeRooms from "./Rooms/rooms.js";
 import Assets from "./Assets/assets.js";
 import Statistics from "./Stats/stats.js";
 import RoomModal from "./Rooms/roomModal";
-import { getAllScenarios } from "../../lib/endpoints";
+import { getAllScenarios, postScenario } from "../../lib/endpoints";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -139,9 +139,14 @@ export default function Admin() {
         setAnchorEl(null);
     };
 
-    // TODO: POST room details to backend
-    const handleCreateRoomSubmit = () => {
+    const handleCreateRoomSubmit = async ({
+        name,
+        description,
+        friendly_name,
+    }) => {
         setCreateModalOpen(false);
+        const resp = await postScenario({ name, description, friendly_name });
+        setEnvironments([...environments, resp.data]);
     };
 
     return (
