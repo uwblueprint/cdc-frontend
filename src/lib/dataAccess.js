@@ -15,16 +15,13 @@ export const httpGet = (endPoint) => {
         });
 };
 
-export const httpPost = (endPoint, accessToken, body) => {
+export const httpPost = (endPoint, body) => {
     const url = baseURL + endPoint;
 
     return new Promise((resolve, reject) => {
         axios
             .post(url, body, {
-                headers: {
-                    Authorization: "Bearer " + accessToken,
-                    "Content-Type": "application/json",
-                },
+                headers: {},
             })
             .then((response) => {
                 resolve(response);
