@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
@@ -22,11 +22,21 @@ export default function RoomModal({
     modalOpen,
     handleModalClose,
     handleSubmit,
+    room,
+    isEdit,
 }) {
     const classes = useStyles();
     const [roomName, setRoomName] = React.useState("");
     const [friendlyName, setFriendlyName] = React.useState("");
     const [roomDescription, setRoomDescription] = React.useState("");
+
+    useEffect(() => {
+        if (room) {
+            setRoomName(room.name);
+            setFriendlyName(room.friendly_name);
+            setRoomDescription(room.description);
+        }
+    }, [room]);
 
     const handleRoomNameChange = (event) => {
         setRoomName(event.target.value);
@@ -60,7 +70,9 @@ export default function RoomModal({
 
     return (
         <Dialog open={modalOpen} onClose={handleModalCloseClick}>
-            <DialogTitle> New Escape Room </DialogTitle>
+            <DialogTitle>
+                {isEdit ? "Edit Escape Room" : "New Escape Room"}
+            </DialogTitle>
             <DialogContent>
                 <div>
                     <Typography>Room Name: </Typography>
@@ -89,7 +101,9 @@ export default function RoomModal({
             </DialogContent>
             <DialogActions className={classes.buttonContainer}>
                 <Button onClick={handleModalCloseClick}> Cancel </Button>
-                <Button onClick={handleModalSubmitClick}> Create </Button>
+                <Button onClick={handleModalSubmitClick}>
+                    {isEdit ? "Edit" : "Create"}
+                </Button>
             </DialogActions>
         </Dialog>
     );

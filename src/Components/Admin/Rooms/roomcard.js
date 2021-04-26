@@ -18,7 +18,7 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-export default function RoomCard({ key, data }) {
+export default function RoomCard({ key, data, handleEditRoomClick }) {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -81,6 +81,7 @@ export default function RoomCard({ key, data }) {
                 <MenuItem
                     onClick={() => {
                         setAnchorEl(null);
+                        handleEditRoomClick(data.id);
                     }}
                 >
                     Edit room metadata
