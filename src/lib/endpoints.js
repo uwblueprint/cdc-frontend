@@ -1,4 +1,4 @@
-import { httpGet, httpPost } from "./dataAccess";
+import { httpGet, httpPost, httpPut } from "./dataAccess";
 
 const baseEndpoint = process.env.REACT_APP_ADMIN_BASE_ENDPOINT;
 
@@ -12,6 +12,26 @@ export const postScenario = async ({ name, description, friendly_name }) => {
         name,
         description,
         friendly_name,
+    });
+    return response;
+};
+
+export const editScenario = async ({
+    id,
+    name,
+    description,
+    friendly_name,
+    scene_ids,
+    is_published,
+    is_previewable,
+}) => {
+    const response = await httpPut(baseEndpoint + `scenario/${id}`, {
+        name,
+        friendly_name,
+        description,
+        scene_ids,
+        is_published,
+        is_previewable,
     });
     return response;
 };

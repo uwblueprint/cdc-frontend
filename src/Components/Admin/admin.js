@@ -20,7 +20,11 @@ import EscapeRooms from "./Rooms/rooms.js";
 import Assets from "./Assets/assets.js";
 import Statistics from "./Stats/stats.js";
 import RoomModal from "./Rooms/roomModal";
-import { getAllScenarios, postScenario } from "../../lib/endpoints";
+import {
+    getAllScenarios,
+    postScenario,
+    editScenario,
+} from "../../lib/endpoints";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -112,7 +116,10 @@ export default function Admin() {
     const [value, setValue] = React.useState("rooms");
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [createModalOpen, setCreateModalOpen] = React.useState(false);
+    const [editModalOpen, setEditModalOpen] = React.useState(false);
     const [environments, setEnvironments] = React.useState([]);
+    const [editRoom, setEditRoom] = React.useState({});
+    const open = Boolean(anchorEl);
 
     const getAllEnvironments = async () => {
         const data = await getAllScenarios();
@@ -124,8 +131,6 @@ export default function Admin() {
             getAllEnvironments();
         }
     }, [value]);
-
-    const open = Boolean(anchorEl);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -147,6 +152,42 @@ export default function Admin() {
         setCreateModalOpen(false);
         const resp = await postScenario({ name, description, friendly_name });
         setEnvironments([...environments, resp.data]);
+    };
+
+    const handleEditRoomClick = (roomId) => {
+        const room = environments.find(
+            (environment) => environment.id === roomId
+        );
+        setEditRoom(room);
+        setEditModalOpen(true);
+    };
+
+    const handleEditRoomSubmit = async ({
+        name,
+        description,
+        friendly_name,
+    }) => {
+        setEditModalOpen(false);
+        const resp = await editScenario({
+            id: editRoom.id,
+            name,
+            friendly_name,
+            description,
+            scene_ids: editRoom.scene_ids,
+            is_published: editRoom.is_published,
+            is_previewable: editRoom.is_previewable,
+        });
+        const replaceIndex = environments.findIndex(
+            (env) => env.id === editRoom.id
+        );
+        const copiedEnvs = [...environments];
+        copiedEnvs[replaceIndex] = resp.data;
+        setEnvironments(copiedEnvs);
+    };
+
+    const handleEditRoomClose = () => {
+        setEditModalOpen(false);
+        setEditRoom({});
     };
 
     return (
@@ -212,6 +253,13 @@ export default function Admin() {
                         }}
                         handleSubmit={handleCreateRoomSubmit}
                     />
+                    <RoomModal
+                        modalOpen={editModalOpen}
+                        handleModalClose={handleEditRoomClose}
+                        handleSubmit={handleEditRoomSubmit}
+                        room={editRoom}
+                        isEdit
+                    />
                     <Tabs
                         value={value}
                         indicatorColor="primary"
@@ -241,7 +289,10 @@ export default function Admin() {
                         value={value}
                         index="rooms"
                     >
-                        <EscapeRooms environments={environments} />
+                        <EscapeRooms
+                            environments={environments}
+                            handleEditRoomClick={handleEditRoomClick}
+                        />
                     </TabPanel>
                     <TabPanel
                         className={classes.tabBackground}

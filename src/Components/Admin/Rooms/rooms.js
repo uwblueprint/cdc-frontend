@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function EscapeRooms({ environments }) {
+export default function EscapeRooms({ environments, handleEditRoomClick }) {
     const classes = useStyles();
 
     return (
@@ -34,7 +34,13 @@ export default function EscapeRooms({ environments }) {
                     justify="flex-start"
                 >
                     {environments.map(function (room) {
-                        return <RoomCard key={room.id} data={room} />;
+                        return (
+                            <RoomCard
+                                key={room.id}
+                                data={room}
+                                handleEditRoomClick={handleEditRoomClick}
+                            />
+                        );
                     })}
                 </Grid>
             </div>

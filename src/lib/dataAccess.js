@@ -30,17 +30,12 @@ export const httpPost = (endPoint, body) => {
     });
 };
 
-export const httpPut = (endPoint, accessToken, body) => {
+export const httpPut = (endPoint, body) => {
     const url = baseURL + endPoint;
 
     return new Promise((resolve, reject) => {
         axios
-            .put(url, body, {
-                headers: {
-                    Authorization: "Bearer " + accessToken,
-                    "Content-Type": "application/json",
-                },
-            })
+            .put(url, body)
             .then((response) => {
                 resolve(response);
             })
