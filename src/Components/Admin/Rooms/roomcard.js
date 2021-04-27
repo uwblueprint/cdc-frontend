@@ -18,7 +18,12 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-export default function RoomCard({ key, data, handleEditRoomClick }) {
+export default function RoomCard({
+    key,
+    data,
+    handleEditRoomClick,
+    handleDeleteRoomClick,
+}) {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -88,7 +93,14 @@ export default function RoomCard({ key, data, handleEditRoomClick }) {
                 </MenuItem>
                 <MenuItem>Copy game link</MenuItem>
                 <MenuItem>View stats</MenuItem>
-                <MenuItem>Delete room</MenuItem>
+                <MenuItem
+                    onClick={() => {
+                        setAnchorEl(null);
+                        handleDeleteRoomClick(data.id);
+                    }}
+                >
+                    Delete room
+                </MenuItem>
             </Menu>
         </Grid>
     );

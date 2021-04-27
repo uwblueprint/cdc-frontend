@@ -44,3 +44,18 @@ export const httpPut = (endPoint, body) => {
             });
     });
 };
+
+export const httpDelete = (endPoint) => {
+    const url = baseURL + endPoint;
+
+    return new Promise((resolve, reject) => {
+        axios
+            .delete(url)
+            .then((response) => {
+                resolve(response);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+};

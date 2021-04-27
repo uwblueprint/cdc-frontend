@@ -15,7 +15,11 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function EscapeRooms({ environments, handleEditRoomClick }) {
+export default function EscapeRooms({
+    environments,
+    handleEditRoomClick,
+    handleDeleteRoomClick,
+}) {
     const classes = useStyles();
 
     return (
@@ -39,6 +43,7 @@ export default function EscapeRooms({ environments, handleEditRoomClick }) {
                                 key={room.id}
                                 data={room}
                                 handleEditRoomClick={handleEditRoomClick}
+                                handleDeleteRoomClick={handleDeleteRoomClick}
                             />
                         );
                     })}

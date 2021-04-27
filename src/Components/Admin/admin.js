@@ -20,10 +20,12 @@ import EscapeRooms from "./Rooms/rooms.js";
 import Assets from "./Assets/assets.js";
 import Statistics from "./Stats/stats.js";
 import RoomModal from "./Rooms/roomModal";
+import DeleteModal from "./common/deleteModal";
 import {
     getAllScenarios,
     postScenario,
     editScenario,
+    deleteScenario,
 } from "../../lib/endpoints";
 
 function TabPanel(props) {
@@ -117,8 +119,10 @@ export default function Admin() {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [createModalOpen, setCreateModalOpen] = React.useState(false);
     const [editModalOpen, setEditModalOpen] = React.useState(false);
+    const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
     const [environments, setEnvironments] = React.useState([]);
     const [editRoom, setEditRoom] = React.useState({});
+    const [deleteRoomId, setDeleteRoomId] = React.useState(null);
     const open = Boolean(anchorEl);
 
     const getAllEnvironments = async () => {
@@ -188,6 +192,26 @@ export default function Admin() {
     const handleEditRoomClose = () => {
         setEditModalOpen(false);
         setEditRoom({});
+    };
+
+    const handleDeleteRoomClick = (roomId) => {
+        setDeleteRoomId(roomId);
+        setDeleteModalOpen(true);
+    };
+
+    const handleDeleteRoomCancel = () => {
+        setDeleteRoomId(null);
+        setDeleteModalOpen(false);
+    };
+
+    const handleDeleteRoomSubmit = async () => {
+        await deleteScenario(deleteRoomId);
+        const modifiedEnv = environments.filter(
+            (env) => env.id !== deleteRoomId
+        );
+        setEnvironments(modifiedEnv);
+        setDeleteRoomId(null);
+        setDeleteModalOpen(false);
     };
 
     return (
@@ -260,6 +284,12 @@ export default function Admin() {
                         room={editRoom}
                         isEdit
                     />
+                    <DeleteModal
+                        open={deleteModalOpen}
+                        confirmMessage="Are you sure you want to delete this room?"
+                        handleClose={handleDeleteRoomCancel}
+                        handleSubmit={handleDeleteRoomSubmit}
+                    />
                     <Tabs
                         value={value}
                         indicatorColor="primary"
@@ -292,6 +322,7 @@ export default function Admin() {
                         <EscapeRooms
                             environments={environments}
                             handleEditRoomClick={handleEditRoomClick}
+                            handleDeleteRoomClick={handleDeleteRoomClick}
                         />
                     </TabPanel>
                     <TabPanel
