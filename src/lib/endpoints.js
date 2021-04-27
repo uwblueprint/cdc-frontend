@@ -1,4 +1,4 @@
-import { httpGet, httpPost, httpPut } from "./dataAccess";
+import { httpGet, httpPost, httpPut, httpDelete } from "./dataAccess";
 
 const baseEndpoint = process.env.REACT_APP_ADMIN_BASE_ENDPOINT;
 
@@ -34,4 +34,8 @@ export const editScenario = async ({
         is_previewable,
     });
     return response;
+};
+
+export const deleteScenario = async (id) => {
+    await httpDelete(baseEndpoint + `scenario/${id}`);
 };
