@@ -1,5 +1,6 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { useHistory } from "react-router-dom";
 import defaultImage from "./defaultImage.svg";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
@@ -25,6 +26,7 @@ export default function RoomCard({
     handleDeleteRoomClick,
 }) {
     const classes = useStyles();
+    const history = useHistory();
     const [anchorEl, setAnchorEl] = React.useState(null);
 
     const handleMenuClick = (event) => {
@@ -33,6 +35,10 @@ export default function RoomCard({
 
     const handleMenuClose = () => {
         setAnchorEl(null);
+    };
+
+    const handleCardClick = () => {
+        history.push(`/admin/environment/${data.id}`);
     };
 
     const open = Boolean(anchorEl);
@@ -49,6 +55,7 @@ export default function RoomCard({
             justify="flex-start"
             className={classes.card}
             key={key}
+            onClick={handleCardClick}
         >
             <Grid container item xs={12} alignItems="center" justify="center">
                 <img

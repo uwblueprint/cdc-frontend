@@ -26,7 +26,7 @@ import {
     postScenario,
     editScenario,
     deleteScenario,
-} from "../../lib/endpoints";
+} from "../../lib/scenarioEndpoints";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;

@@ -7,6 +7,11 @@ export const getAllScenarios = async () => {
     return response.data.scenarios;
 };
 
+export const getScenario = async (id) => {
+    const response = await httpGet(baseEndpoint + `scenario/${id}`);
+    return response.data;
+};
+
 export const postScenario = async ({ name, description, friendly_name }) => {
     const response = await httpPost(baseEndpoint + "scenario", {
         name,
