@@ -55,9 +55,15 @@ export default function RoomCard({
             justify="flex-start"
             className={classes.card}
             key={key}
-            onClick={handleCardClick}
         >
-            <Grid container item xs={12} alignItems="center" justify="center">
+            <Grid
+                container
+                item
+                xs={12}
+                alignItems="center"
+                justify="center"
+                onClick={handleCardClick}
+            >
                 <img
                     className={classes.cardImage}
                     src={data.image ? data.image : defaultImage}
@@ -90,6 +96,14 @@ export default function RoomCard({
                 open={open}
                 onClose={handleMenuClose}
             >
+                <MenuItem
+                    onClick={() => {
+                        setAnchorEl(null);
+                        handleCardClick();
+                    }}
+                >
+                    Edit room
+                </MenuItem>
                 <MenuItem
                     onClick={() => {
                         setAnchorEl(null);
