@@ -12,8 +12,9 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import empty from "is-empty";
-import { auth } from "../../firebaseCredentials.js";
+import { auth, Auth } from "../../firebaseCredentials.js";
 import { useHistory } from "react-router-dom";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -51,18 +52,25 @@ export default function Login() {
         event.preventDefault();
         const errors = {};
 
+        auth.setPersistence(Auth.Persistence.NONE);
+
         auth.signInWithEmailAndPassword(email, password)
-            .then((user) => {
+            .then(() => {
                 // Get the user's ID token as it is needed to exchange for a session cookie.
-                return user.getIdToken().then((idToken) => {
-                    // Session login endpoint is queried and the session cookie is set.
-                    // CSRF protection should be taken into account.
-                    const csrfToken = getCookie("csrfToken");
-                    return postIdTokenToSessionLogin(
-                        "/sessionLogin",
-                        idToken,
-                        csrfToken
-                    );
+                return auth.currentUser.getIdToken().then((idToken) => {
+                    return axios
+                        .post("http://localhost:8888/admin_login", {
+                            idToken: idToken,
+                        })
+                        .then((response) => {
+                            console.log(response);
+                        })
+                        .catch((error) => {
+                            errors.login = error.response.data.message;
+                            setAllErrors(errors);
+                            history.push("/login");
+                            auth.signOut();
+                        });
                 });
             })
             .catch((error) => {
