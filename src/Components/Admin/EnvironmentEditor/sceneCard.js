@@ -19,7 +19,11 @@ const useStyles = makeStyles(() => ({
 export default function SceneCard({ scene, index }) {
     const classes = useStyles();
     return (
-        <Draggable key={scene.id} index={index} draggableId={scene.id}>
+        <Draggable
+            key={scene.id}
+            index={index}
+            draggableId={scene.id.toString()}
+        >
             {(provided) => (
                 <div
                     ref={provided.innerRef}

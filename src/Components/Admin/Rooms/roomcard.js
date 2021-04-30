@@ -1,5 +1,6 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { useHistory } from "react-router-dom";
 import defaultImage from "./defaultImage.svg";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
@@ -25,6 +26,7 @@ export default function RoomCard({
     handleDeleteRoomClick,
 }) {
     const classes = useStyles();
+    const history = useHistory();
     const [anchorEl, setAnchorEl] = React.useState(null);
 
     const handleMenuClick = (event) => {
@@ -33,6 +35,10 @@ export default function RoomCard({
 
     const handleMenuClose = () => {
         setAnchorEl(null);
+    };
+
+    const handleCardClick = () => {
+        history.push(`/admin/environment/${data.id}`);
     };
 
     const open = Boolean(anchorEl);
@@ -50,7 +56,14 @@ export default function RoomCard({
             className={classes.card}
             key={key}
         >
-            <Grid container item xs={12} alignItems="center" justify="center">
+            <Grid
+                container
+                item
+                xs={12}
+                alignItems="center"
+                justify="center"
+                onClick={handleCardClick}
+            >
                 <img
                     className={classes.cardImage}
                     src={data.image ? data.image : defaultImage}
@@ -83,6 +96,14 @@ export default function RoomCard({
                 open={open}
                 onClose={handleMenuClose}
             >
+                <MenuItem
+                    onClick={() => {
+                        setAnchorEl(null);
+                        handleCardClick();
+                    }}
+                >
+                    Edit room
+                </MenuItem>
                 <MenuItem
                     onClick={() => {
                         setAnchorEl(null);

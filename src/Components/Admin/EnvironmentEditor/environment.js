@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
@@ -8,6 +8,8 @@ import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import Navbar from "../navbar";
 import EnvironmentBar from "./environmentBar";
 import SceneCard from "./sceneCard";
+import { getScenario } from "../../../lib/scenarioEndpoints";
+import { getScene } from "../../../lib/sceneEndpoints";
 
 const useStyles = makeStyles((theme) => ({
     page: {
@@ -45,30 +47,38 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function EnvironmentEditor() {
+export default function EnvironmentEditor({
+    match: {
+        params: { environmentId },
+    },
+}) {
     const classes = useStyles();
-    const [scenes, setScenes] = useState([
-        {
-            id: "1",
-            name: "Scene 1",
-        },
-        {
-            id: "2",
-            name: "Scene 2",
-        },
-        {
-            id: "3",
-            name: "Scene 3",
-        },
-        {
-            id: "4",
-            name: "Scene 4",
-        },
-        {
-            id: "5",
-            name: "Scene 5",
-        },
-    ]);
+    const [environment, setEnvironment] = useState({});
+    const [scenes, setScenes] = useState([]);
+
+    useEffect(() => {
+        const getEnvironment = async () => {
+            const data = await getScenario(environmentId);
+            setEnvironment(data);
+        };
+
+        if (environmentId) {
+            getEnvironment();
+        }
+    }, [environmentId]);
+
+    useEffect(() => {
+        const getSceneData = async () => {
+            const data = await Promise.all(
+                environment.scene_ids.map(async (id) => getScene(id))
+            );
+            setScenes(data);
+        };
+
+        if (environment.scene_ids) {
+            getSceneData();
+        }
+    }, [environment]);
 
     const reorder = ({ scenes, startIndex, endIndex }) => {
         const result = Array.from(scenes);
