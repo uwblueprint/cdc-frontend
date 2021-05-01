@@ -17,6 +17,7 @@ import { useHistory } from "react-router-dom";
 import { auth } from "../../firebaseCredentials.js";
 import { UserContext } from "../../Providers/UserProviders";
 import EscapeRooms from "./Rooms/rooms.js";
+import Scenes from "./Scenes/scenes.js";
 import Assets from "./Assets/assets.js";
 import Statistics from "./Stats/stats.js";
 import RoomModal from "./Rooms/roomModal";
@@ -27,6 +28,7 @@ import {
     editScenario,
     deleteScenario,
 } from "../../lib/scenarioEndpoints";
+import { getAllScenes } from "../../lib/sceneEndpoints";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -123,6 +125,7 @@ export default function Admin() {
     const [editModalOpen, setEditModalOpen] = React.useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
     const [environments, setEnvironments] = React.useState([]);
+    const [scenes, setScenes] = React.useState([]);
     const [editRoom, setEditRoom] = React.useState({});
     const [deleteRoomId, setDeleteRoomId] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -132,9 +135,16 @@ export default function Admin() {
         setEnvironments(data);
     };
 
+    const getAllScenesAction = async () => {
+        const data = await getAllScenes();
+        setScenes(data);
+    };
+
     useEffect(() => {
         if (value === "rooms") {
             getAllEnvironments();
+        } else if (value === "scenes") {
+            getAllScenesAction();
         }
     }, [value]);
 
@@ -305,6 +315,12 @@ export default function Admin() {
                         />
                         <Tab
                             className={classes.tab}
+                            value="scenes"
+                            label="Scenes"
+                            {...TabHelper("scenes")}
+                        />
+                        <Tab
+                            className={classes.tab}
                             value="assets"
                             label="Object Assets"
                             {...TabHelper("assets")}
@@ -326,6 +342,13 @@ export default function Admin() {
                             handleEditRoomClick={handleEditRoomClick}
                             handleDeleteRoomClick={handleDeleteRoomClick}
                         />
+                    </TabPanel>
+                    <TabPanel
+                        className={classes.tabBackground}
+                        value={value}
+                        index="scenes"
+                    >
+                        <Scenes scenes={scenes} />
                     </TabPanel>
                     <TabPanel
                         className={classes.tabBackground}
