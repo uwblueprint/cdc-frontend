@@ -14,7 +14,6 @@ import Container from "@material-ui/core/Container";
 import empty from "is-empty";
 import { auth, Auth } from "../../firebaseCredentials.js";
 import { useHistory } from "react-router-dom";
-import axios from "axios";
 import { httpPost } from "../../lib/dataAccess";
 
 const useStyles = makeStyles((theme) => ({
