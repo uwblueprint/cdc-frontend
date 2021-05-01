@@ -15,6 +15,7 @@ import empty from "is-empty";
 import { auth, Auth } from "../../firebaseCredentials.js";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
+import { httpPost } from "../../lib/dataAccess";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -48,29 +49,26 @@ export default function Login() {
         return email.length > 0 && password.length > 0;
     }
 
-    function handleSubmit(event) {
+    async function handleSubmit(event) {
         event.preventDefault();
         const errors = {};
 
         auth.setPersistence(Auth.Persistence.NONE);
 
-        auth.signInWithEmailAndPassword(email, password)
-            .then(() => {
+        await auth
+            .signInWithEmailAndPassword(email, password)
+            .then(async () => {
                 // Get the user's ID token as it is needed to exchange for a session cookie.
-                return auth.currentUser.getIdToken().then((idToken) => {
-                    return axios
-                        .post("http://localhost:8888/admin_login", {
-                            idToken: idToken,
-                        })
-                        .then((response) => {
-                            console.log(response);
-                        })
-                        .catch((error) => {
-                            errors.login = error.response.data.message;
-                            setAllErrors(errors);
-                            history.push("/login");
-                            auth.signOut();
-                        });
+                await auth.currentUser.getIdToken().then(async (idToken) => {
+                    const response = await httpPost("/admin_login", {
+                        idToken: idToken,
+                    });
+
+                    if (response.data.status !== 200) {
+                        errors.login = response.data.message;
+                    }
+
+                    return response;
                 });
             })
             .catch((error) => {
@@ -91,9 +89,9 @@ export default function Login() {
                         errors.login = "Email or password is incorrect.";
                         break;
                 }
-                setAllErrors(errors);
             });
 
+        setAllErrors(errors);
         if (!errors.email && !errors.login) {
             history.push("/admin");
         }
