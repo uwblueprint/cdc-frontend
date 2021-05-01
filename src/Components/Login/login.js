@@ -14,7 +14,7 @@ import Container from "@material-ui/core/Container";
 import empty from "is-empty";
 import { auth, Auth } from "../../firebaseCredentials.js";
 import { useHistory } from "react-router-dom";
-import { httpPost } from "../../lib/dataAccess";
+import { httpGet, httpPost } from "../../lib/dataAccess";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -59,15 +59,21 @@ export default function Login() {
             .then(async () => {
                 // Get the user's ID token as it is needed to exchange for a session cookie.
                 await auth.currentUser.getIdToken().then(async (idToken) => {
-                    const response = await httpPost("/admin_login", {
-                        idToken: idToken,
-                    });
+                    try {
+                        const response = await httpPost("/admin_login", {
+                            idToken: idToken,
+                        });
 
-                    if (response.data.status !== 200) {
-                        errors.login = response.data.message;
+                        if (response.data.status !== 200) {
+                            alert(response.data.message);
+                            errors.login = response.data.message;
+                        }
+
+                        return response;
+                    } catch (error) {
+                        alert(error.response.data.message);
+                        errors.login = error.response.data.message;
                     }
-
-                    return response;
                 });
             })
             .catch((error) => {
