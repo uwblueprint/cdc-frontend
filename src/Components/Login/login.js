@@ -60,14 +60,13 @@ export default function Login() {
                 // Get the user's ID token as it is needed to exchange for a session cookie.
                 await auth.currentUser.getIdToken().then(async (idToken) => {
                     try {
-                        const response = await httpPost("/admin_login", {
-                            idToken: idToken,
-                        });
-
-                        if (response.data.status !== 200) {
-                            alert(response.data.message);
-                            errors.login = response.data.message;
-                        }
+                        const response = await httpPost(
+                            "/admin_login",
+                            {
+                                idToken: idToken,
+                            },
+                            true
+                        );
 
                         return response;
                     } catch (error) {
