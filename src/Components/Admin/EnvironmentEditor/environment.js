@@ -115,11 +115,11 @@ export default function EnvironmentEditor({
         setCreateModalOpen(false);
 
         const newScene = await createScene(name, background_id);
-        const newSceneData = [...scenes, newScene.id];
+        const newSceneData = [...scenes, newScene];
         setScenes(newSceneData);
 
         const newEnvData = environment;
-        newEnvData.scene_ids = [...environment.scene_ids, newScene.id.id];
+        newEnvData.scene_ids = [...environment.scene_ids, newScene.id];
         const newEnv = await editScenario(newEnvData);
         setEnvironment(newEnv);
     };

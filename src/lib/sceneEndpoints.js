@@ -12,6 +12,5 @@ export const createScene = async (name, background_id) => {
         name,
         background_id,
     });
-
     return response.data;
 };
