@@ -74,7 +74,7 @@ export default function RoomCard({
                 container
                 item
                 xs={12}
-                alignItems="space-between"
+                alignItems="center"
                 justify="center"
             >
                 <p>{data.name}</p>

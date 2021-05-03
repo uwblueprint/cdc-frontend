@@ -41,7 +41,9 @@ function TabPanel(props) {
         >
             {value === index && (
                 <Box p={3}>
-                    <Typography>{children}</Typography>
+                    <Typography component="div" variant="h5">
+                        {children}
+                    </Typography>
                 </Box>
             )}
         </div>
@@ -218,10 +220,10 @@ export default function Admin() {
         <Container component="main" maxWidth="xs">
             <CssBaseline />
             <div className={classes.paper}>
-                <Typography component="h1" variant="h5">
+                <Typography component="div" variant="h5">
                     Admin Dashboard 😎
                 </Typography>
-                <Typography component="h1" variant="h6">
+                <Typography component="div" variant="h6">
                     Welcome {user.displayName}
                 </Typography>
                 <Button
