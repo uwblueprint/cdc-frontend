@@ -20,7 +20,6 @@ const useStyles = makeStyles(() => ({
 }));
 
 export default function RoomCard({
-    key,
     data,
     handleEditRoomClick,
     handleDeleteRoomClick,
@@ -54,7 +53,6 @@ export default function RoomCard({
             alignItems="center"
             justify="flex-start"
             className={classes.card}
-            key={key}
         >
             <Grid
                 container
