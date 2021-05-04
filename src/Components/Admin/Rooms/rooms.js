@@ -26,7 +26,7 @@ export default function EscapeRooms({
         <Container component={"main"} maxWidth="lg">
             <CssBaseline />
             <div className={classes.page}>
-                <Typography component="h1" variant="h5">
+                <Typography component="div" variant="h5">
                     Escape Rooms Page
                 </Typography>
                 <Grid
