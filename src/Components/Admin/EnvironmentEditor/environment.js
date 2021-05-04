@@ -163,6 +163,7 @@ export default function EnvironmentEditor({
                             <Button
                                 startIcon={<AddIcon />}
                                 className={classes.button}
+                                onClick={onCreateButtonClick}
                             >
                                 New Scene from Scratch
                             </Button>
