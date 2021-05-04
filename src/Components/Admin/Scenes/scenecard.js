@@ -1,12 +1,13 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from "react-router-dom";
-import defaultImage from "./defaultImage.svg";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
+
+import defaultImage from "./defaultImage.svg";
 
 const useStyles = makeStyles(() => ({
     card: {
