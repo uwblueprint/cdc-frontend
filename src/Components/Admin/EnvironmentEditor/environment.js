@@ -8,8 +8,9 @@ import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import Navbar from "../navbar";
 import EnvironmentBar from "./environmentBar";
 import SceneCard from "./sceneCard";
-import { getScenario } from "../../../lib/scenarioEndpoints";
-import { getScene } from "../../../lib/sceneEndpoints";
+import SceneModal from "./sceneModal";
+import { getScenario, editScenario } from "../../../lib/scenarioEndpoints";
+import { getScene, createScene } from "../../../lib/sceneEndpoints";
 
 const useStyles = makeStyles((theme) => ({
     page: {
@@ -55,6 +56,7 @@ export default function EnvironmentEditor({
     const classes = useStyles();
     const [environment, setEnvironment] = useState({});
     const [scenes, setScenes] = useState([]);
+    const [createModalOpen, setCreateModalOpen] = useState(false);
 
     useEffect(() => {
         const getEnvironment = async () => {
@@ -101,11 +103,32 @@ export default function EnvironmentEditor({
         setScenes(items);
     };
 
+    const onCreateButtonClick = () => {
+        setCreateModalOpen(true);
+    };
+
+    const onCreateModalClose = () => {
+        setCreateModalOpen(false);
+    };
+
+    const onCreateModalSubmit = async (name, background_id) => {
+        setCreateModalOpen(false);
+
+        const newScene = await createScene(name, background_id);
+        const newSceneData = [...scenes, newScene];
+        setScenes(newSceneData);
+
+        const newEnvData = environment;
+        newEnvData.scene_ids = [...environment.scene_ids, newScene.id];
+        const newEnv = await editScenario(newEnvData);
+        setEnvironment(newEnv);
+    };
+
     return (
         <div>
             <Navbar home />
             <div className={classes.page}>
-                <EnvironmentBar />
+                <EnvironmentBar onCreateButtonClick={onCreateButtonClick} />
             </div>
             <div className={classes.container}>
                 {scenes !== undefined && scenes.length !== 0 ? (
@@ -155,6 +178,11 @@ export default function EnvironmentEditor({
                     </div>
                 )}
             </div>
+            <SceneModal
+                modalOpen={createModalOpen}
+                handleModalClose={onCreateModalClose}
+                handleSubmit={onCreateModalSubmit}
+            />
         </div>
     );
 }
