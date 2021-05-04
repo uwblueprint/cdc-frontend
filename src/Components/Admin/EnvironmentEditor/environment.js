@@ -121,7 +121,7 @@ export default function EnvironmentEditor({
         const newEnvData = environment;
         newEnvData.scene_ids = [...environment.scene_ids, newScene.id];
         const newEnv = await editScenario(newEnvData);
-        setEnvironment(newEnv);
+        setEnvironment(newEnv.data);
     };
 
     return (
@@ -163,6 +163,7 @@ export default function EnvironmentEditor({
                             <Button
                                 startIcon={<AddIcon />}
                                 className={classes.button}
+                                onClick={onCreateButtonClick}
                             >
                                 New Scene from Scratch
                             </Button>
