@@ -68,7 +68,7 @@ export default function PasswordReset() {
                 <Avatar className={classes.avatar}>
                     <RotateLeft />
                 </Avatar>
-                <Typography component="h1" variant="h5">
+                <Typography component="div" variant="h5">
                     Reset your Password
                 </Typography>
                 <form

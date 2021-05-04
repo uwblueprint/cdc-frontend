@@ -68,13 +68,7 @@ export default function RoomCard({
                     alt="Escape Room"
                 />
             </Grid>
-            <Grid
-                container
-                item
-                xs={12}
-                alignItems="space-between"
-                justify="center"
-            >
+            <Grid container item xs={12} alignItems="center" justify="center">
                 <p>{data.name}</p>
                 <IconButton onClick={handleMenuClick}>
                     <MoreVertIcon />
