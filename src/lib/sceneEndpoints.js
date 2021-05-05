@@ -14,3 +14,8 @@ export const createScene = async (name, background_id) => {
     });
     return response.data;
 };
+
+export const getAllScenes = async () => {
+    const response = await httpGet(baseEndpoint + "scenes");
+    return response.data.scenes;
+};

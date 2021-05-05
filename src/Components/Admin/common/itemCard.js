@@ -19,10 +19,11 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-export default function RoomCard({
+export default function ItemCard({
     data,
-    handleEditRoomClick,
-    handleDeleteRoomClick,
+    cardType, // "environment", "scene", or "asset"
+    handleEditClick,
+    handleDeleteClick,
 }) {
     const classes = useStyles();
     const history = useHistory();
@@ -37,7 +38,11 @@ export default function RoomCard({
     };
 
     const handleCardClick = () => {
-        history.push(`/admin/environment/${data.id}`);
+        history.push(
+            cardType === "environment"
+                ? `/admin/environment/${data.id}`
+                : `/admin/scene/${data.id}`
+        );
     };
 
     const open = Boolean(anchorEl);
@@ -65,7 +70,7 @@ export default function RoomCard({
                 <img
                     className={classes.cardImage}
                     src={data.image ? data.image : defaultImage}
-                    alt="Escape Room"
+                    alt={cardType === "environment" ? "Escape Room" : "Scene"}
                 />
             </Grid>
             <Grid container item xs={12} alignItems="center" justify="center">
@@ -94,25 +99,26 @@ export default function RoomCard({
                         handleCardClick();
                     }}
                 >
-                    Edit room
+                    Edit {cardType === "environment" ? "room" : "scene"}
                 </MenuItem>
                 <MenuItem
                     onClick={() => {
                         setAnchorEl(null);
-                        handleEditRoomClick(data.id);
+                        handleEditClick(data.id);
                     }}
                 >
-                    Edit room metadata
+                    Edit {cardType === "environment" ? "room" : "scene"}{" "}
+                    metadata
                 </MenuItem>
                 <MenuItem>Copy game link</MenuItem>
                 <MenuItem>View stats</MenuItem>
                 <MenuItem
                     onClick={() => {
                         setAnchorEl(null);
-                        handleDeleteRoomClick(data.id);
+                        handleDeleteClick(data.id);
                     }}
                 >
-                    Delete room
+                    Delete {cardType === "environment" ? "room" : "scene"}
                 </MenuItem>
             </Menu>
         </Grid>

@@ -16,19 +16,15 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function EscapeRooms({
-    environments,
-    handleEditRoomClick,
-    handleDeleteRoomClick,
-}) {
+export default function Scenes({ scenes }) {
     const classes = useStyles();
 
     return (
         <Container component={"main"} maxWidth="lg">
             <CssBaseline />
             <div className={classes.page}>
-                <Typography component="div" variant="h5">
-                    Escape Rooms Page
+                <Typography component="h1" variant="h5">
+                    Scenes Page
                 </Typography>
                 <Grid
                     container
@@ -38,14 +34,14 @@ export default function EscapeRooms({
                     alignItems="center"
                     justify="flex-start"
                 >
-                    {environments.map(function (room) {
+                    {scenes.map(function (room) {
                         return (
                             <ItemCard
                                 key={room.id}
                                 data={room}
-                                cardType="environment"
-                                handleEditClick={handleEditRoomClick}
-                                handleDeleteClick={handleDeleteRoomClick}
+                                cardType="scene"
+                                handleEditClick={() => {}}
+                                handleDeleteClick={() => {}}
                             />
                         );
                     })}
