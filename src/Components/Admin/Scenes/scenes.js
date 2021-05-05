@@ -5,7 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 
-import SceneCard from "./scenecard.js";
+import ItemCard from "../common/itemCard.js";
 
 const useStyles = makeStyles((theme) => ({
     page: {
@@ -35,7 +35,15 @@ export default function Scenes({ scenes }) {
                     justify="flex-start"
                 >
                     {scenes.map(function (room) {
-                        return <SceneCard key={room.id} data={room} />;
+                        return (
+                            <ItemCard
+                                key={room.id}
+                                data={room}
+                                cardType="scene"
+                                handleEditClick={() => {}}
+                                handleDeleteClick={() => {}}
+                            />
+                        );
                     })}
                 </Grid>
             </div>
