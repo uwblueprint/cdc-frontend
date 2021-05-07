@@ -86,11 +86,10 @@ export default function EnvironmentEditor({
         const result = Array.from(scenes);
         const [removed] = result.splice(startIndex, 1);
         result.splice(endIndex, 0, removed);
-
         return result;
     };
 
-    const onDragEnd = (result) => {
+    const onDragEnd = async (result) => {
         if (!result.destination) {
             return;
         }
@@ -101,6 +100,18 @@ export default function EnvironmentEditor({
             endIndex: result.destination.index,
         });
         setScenes(items);
+
+        const newSceneIds = items.map((scene) => scene.id);
+        const response = await editScenario({
+            id: environment.id,
+            name: environment.name,
+            friendly_name: environment.friendly_name,
+            description: environment.description,
+            scene_ids: newSceneIds,
+            is_published: environment.is_published,
+            is_previewable: environment.is_previewable,
+        });
+        setEnvironment(response.data);
     };
 
     const onCreateButtonClick = () => {
@@ -138,21 +149,24 @@ export default function EnvironmentEditor({
                             direction="horizontal"
                         >
                             {(provided) => (
-                                <div
-                                    ref={provided.innerRef}
-                                    className={classes.dragAndDropContainer}
-                                    {...provided.droppableProps}
-                                >
-                                    {scenes.map(function (scene, index) {
-                                        return (
-                                            <div key={scene.id}>
-                                                <SceneCard
-                                                    scene={scene}
-                                                    index={index}
-                                                />
-                                            </div>
-                                        );
-                                    })}
+                                <div>
+                                    <div
+                                        ref={provided.innerRef}
+                                        className={classes.dragAndDropContainer}
+                                        {...provided.droppableProps}
+                                    >
+                                        {scenes.map(function (scene, index) {
+                                            return (
+                                                <div key={scene.id}>
+                                                    <SceneCard
+                                                        scene={scene}
+                                                        index={index}
+                                                    />
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                    {provided.placeholder}
                                 </div>
                             )}
                         </Droppable>
