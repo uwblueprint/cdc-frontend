@@ -17,6 +17,20 @@ const useStyles = makeStyles(() => ({
         maxWidth: 400,
         marginTop: 16,
     },
+    metadata: {
+        display: "flex",
+        justifyContent: "space-between",
+        marginLeft: "5.7%",
+        marginRight: "5.7%",
+        marginTop: -4,
+        backgroundColor: "white",
+        borderBottomLeftRadius: "12px",
+        borderBottomRightRadius: "12px",
+    },
+    dataName: {
+        marginLeft: 10,
+        fontWeight: "bold",
+    },
 }));
 
 export default function ItemCard({
@@ -73,8 +87,14 @@ export default function ItemCard({
                     alt={cardType === "environment" ? "Escape Room" : "Scene"}
                 />
             </Grid>
-            <Grid container item xs={12} alignItems="center" justify="center">
-                <p>{data.name}</p>
+            <Grid
+                container
+                item
+                xs={12}
+                alignItems="center"
+                className={classes.metadata}
+            >
+                <p className={classes.dataName}>{data.name}</p>
                 <IconButton onClick={handleMenuClick}>
                     <MoreVertIcon />
                 </IconButton>
