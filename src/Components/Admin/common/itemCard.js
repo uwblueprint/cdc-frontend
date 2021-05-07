@@ -24,8 +24,8 @@ const useStyles = makeStyles(() => ({
         marginRight: "5.7%",
         marginTop: -4,
         backgroundColor: "white",
-        borderBottomLeftRadius: "5px",
-        borderBottomRightRadius: "5px",
+        borderBottomLeftRadius: "12px",
+        borderBottomRightRadius: "12px",
     },
     dataName: {
         marginLeft: 10,
