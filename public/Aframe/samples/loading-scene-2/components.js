@@ -1,7 +1,6 @@
 AFRAME.registerComponent("collision-detect", {
     init: function () {
         this.el.addEventListener("collide", function (e) {
-            console.log("Player has collided with ", e.detail.body.el);
             e.detail.target.el; // Original entity (playerEl).
             e.detail.body.el; // Other entity, which playerEl touched.
             e.detail.contact; // Stats about the collision (CANNON.ContactEquation).
@@ -12,8 +11,7 @@ AFRAME.registerComponent("collision-detect", {
 
 AFRAME.registerComponent("detect-key", {
     init: function () {
-        var data = this.data;
-        var el = this.el;
+        const el = this.el;
 
         el.addEventListener("mouseenter", function () {
             el.setAttribute(
@@ -31,7 +29,7 @@ AFRAME.registerComponent("detect-key", {
 
         el.addEventListener("mousedown", function () {
             let y = el.object3D.position.y;
-            if (-9 == y || -9.5 == y) {
+            if (-9 === y || -9.5 === y) {
                 y = -9.5;
             } else {
                 y = -10.5;
@@ -47,7 +45,7 @@ AFRAME.registerComponent("detect-key", {
 
         el.addEventListener("mouseup", function () {
             let y = el.object3D.position.y;
-            if (-9.5 == y || -9 == y) {
+            if (-9.5 === y || -9 === y) {
                 y = -9;
             } else {
                 y = -10;
