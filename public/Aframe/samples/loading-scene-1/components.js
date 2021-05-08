@@ -1,19 +1,6 @@
-AFRAME.registerComponent("collision-detect", {
-    init: function () {
-        this.el.addEventListener("collide", function (e) {
-            console.log("Player has collided with ", e.detail.body.el);
-            e.detail.target.el; // Original entity (playerEl).
-            e.detail.body.el; // Other entity, which playerEl touched.
-            e.detail.contact; // Stats about the collision (CANNON.ContactEquation).
-            e.detail.contact.ni; // Normal (direction) of the collision (CANNON.Vec3).
-        });
-    },
-});
-
 AFRAME.registerComponent("detect-button", {
     init: function () {
-        var data = this.data;
-        var el = this.el;
+        const el = this.el;
 
         el.addEventListener("mouseenter", function () {
             el.setAttribute(
@@ -47,9 +34,8 @@ AFRAME.registerComponent("detect-button", {
     },
 });
 
-function addBall() {
-    let container = document.querySelector("#container");
-    let colors = [
+function addBall(x, y, z) {
+    const colors = [
         "red",
         "orange",
         "yellow",
@@ -59,59 +45,83 @@ function addBall() {
         "hotpink",
     ];
 
-    let x = Math.random() * 10 - 5;
-    let y = Math.random() * 5 + 2;
-    let z = Math.random() * -10;
+    const scene = document.querySelector("a-scene");
+    const ball = document.createElement("a-sphere");
 
-    container.innerHTML += `<a-sphere collision-detect id="ball" click-drag kinematic-body position="${x} ${y} ${z}" radius="0.5" color="${
-        colors[Math.floor(Math.random() * colors.length)]
-    }" mass="0.5"></a-sphere>`;
+    ball.setAttribute("id", "ball");
+    ball.setAttribute("dynamic-body", "");
+    ball.setAttribute("position", { x: x, y: y, z: z });
+    ball.setAttribute("radius", "0.5");
+    ball.setAttribute(
+        "color",
+        `${colors[Math.floor(Math.random() * colors.length)]}`
+    );
+    ball.setAttribute("mass", "0.5");
+
+    scene.appendChild(ball);
 }
 
 AFRAME.registerComponent("add-ball", {
-    update: function () {
-        var data = this.data;
-        var el = this.el;
-
-        var curBalls = document.querySelectorAll("#ball");
-
-        console.log(curBalls);
-
-        for (let i = 0; i < curBalls.length; i++) {
-            let container = document.querySelector("#container");
-            container.removeChild(curBalls[i]);
-        }
+    init: function () {
+        const el = this.el;
 
         el.addEventListener("buttondown", function () {
-            for (let i = 0; i < 10; i++) {
-                addBall();
+            const curBalls = document.querySelectorAll("#ball");
+
+            for (let i = 0; i < curBalls.length; i++) {
+                curBalls[i].parentNode.removeChild(curBalls[i]);
             }
+
+            // generating all balls in one place, so when user runs into it, they
+            // get a ton of balls flying around which would not be initially expected
+            const x = Math.random() * 20 - 10;
+            const y = 0;
+            const z = Math.random() * -20 + 5;
+
+            for (let i = 0; i < 10; i++) {
+                addBall(x, y, z);
+            }
+
+            // reset camera position
+            const cameraEl = document.querySelector("#camera");
+            const prevPos = cameraEl.getAttribute("position");
+            cameraEl.setAttribute("position", {
+                x: prevPos.x,
+                y: 0,
+                z: prevPos.z,
+            });
         });
     },
-
-    remove: function () {},
 });
 
+//this function doesn't work only because I'm pretty sure you somehow can't change physics in a-scene.
+//I could change the background colour using this function, but not gravity or debug.
 AFRAME.registerComponent("gravity-switcher", {
-    /*init: function () { //not sure if this code is necessary but keeping it in just in case
-        var data = this.data;
-        var el = this.el; 
-    },*/
-
     update: function () {
-        var data = this.data;
-        var el = this.el;
+        const el = this.el;
 
         el.addEventListener("buttondown", function () {
-            var physics = el.getAttribute("physics");
-            console.log("physics check:", physics);
-            var gravity = physics["gravity"];
-            console.log("gravity before: ", physics);
+            const colors = [
+                "red",
+                "orange",
+                "yellow",
+                "green",
+                "blue",
+                "purple",
+                "hotpink",
+            ];
+
+            const physics = el.getAttribute("physics");
+            let gravity = physics["gravity"];
             gravity *= -1;
-            console.log("gravity after: ", physics);
+  
             el.setAttribute("physics", {
                 debug: false,
                 gravity: gravity,
+            });
+
+            el.setAttribute("background", {
+                color: `${colors[Math.floor(Math.random() * colors.length)]}`,
             });
         });
     },
