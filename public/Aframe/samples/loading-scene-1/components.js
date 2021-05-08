@@ -1,7 +1,6 @@
 AFRAME.registerComponent("detect-button", {
     init: function () {
-        var data = this.data;
-        var el = this.el;
+        const el = this.el;
 
         el.addEventListener("mouseenter", function () {
             el.setAttribute(
@@ -36,8 +35,7 @@ AFRAME.registerComponent("detect-button", {
 });
 
 function addBall(x, y, z) {
-    let container = document.querySelector("#container");
-    let colors = [
+    const colors = [
         "red",
         "orange",
         "yellow",
@@ -47,8 +45,8 @@ function addBall(x, y, z) {
         "hotpink",
     ];
 
-    var scene = document.querySelector("a-scene");
-    var ball = document.createElement("a-sphere");
+    const scene = document.querySelector("a-scene");
+    const ball = document.createElement("a-sphere");
 
     ball.setAttribute("id", "ball");
     ball.setAttribute("dynamic-body", "");
@@ -65,23 +63,33 @@ function addBall(x, y, z) {
 
 AFRAME.registerComponent("add-ball", {
     init: function () {
-        var data = this.data;
-        var el = this.el;
+        const el = this.el;
 
         el.addEventListener("buttondown", function () {
-            var curBalls = document.querySelectorAll("#ball");
+            const curBalls = document.querySelectorAll("#ball");
 
             for (let i = 0; i < curBalls.length; i++) {
                 curBalls[i].parentNode.removeChild(curBalls[i]);
             }
 
-            let x = Math.random() * 20 - 10;
-            let y = 0;
-            let z = Math.random() * -20 + 5;
+            // generating all balls in one place, so when user runs into it, they
+            // get a ton of balls flying around which would not be initially expected
+            const x = Math.random() * 20 - 10;
+            const y = 0;
+            const z = Math.random() * -20 + 5;
 
             for (let i = 0; i < 10; i++) {
                 addBall(x, y, z);
             }
+
+            // reset camera position
+            const cameraEl = document.querySelector("#camera");
+            const prevPos = cameraEl.getAttribute("position");
+            cameraEl.setAttribute("position", {
+                x: prevPos.x,
+                y: 0,
+                z: prevPos.z,
+            });
         });
     },
 });
@@ -89,17 +97,11 @@ AFRAME.registerComponent("add-ball", {
 //this function doesn't work only because I'm pretty sure you somehow can't change physics in a-scene.
 //I could change the background colour using this function, but not gravity or debug.
 AFRAME.registerComponent("gravity-switcher", {
-    init: function () {
-        var data = this.data;
-        var el = this.el;
-    },
-
     update: function () {
-        var data = this.data;
-        var el = this.el;
+        const el = this.el;
 
         el.addEventListener("buttondown", function () {
-            let colors = [
+            const colors = [
                 "red",
                 "orange",
                 "yellow",
@@ -109,8 +111,8 @@ AFRAME.registerComponent("gravity-switcher", {
                 "hotpink",
             ];
 
-            var physics = el.getAttribute("physics");
-            var gravity = physics["gravity"];
+            const physics = el.getAttribute("physics");
+            let gravity = physics["gravity"];
             gravity *= -1;
             el.setAttribute("physics", {
                 debug: false,
