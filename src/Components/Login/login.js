@@ -11,8 +11,9 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import validator from "validator";
 import empty from "is-empty";
+import { auth } from "../../firebaseCredentials.js";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -37,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Login() {
     const classes = useStyles();
 
+    const history = useHistory();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [allErrors, setAllErrors] = useState({});
@@ -48,18 +50,30 @@ export default function Login() {
     function handleSubmit(event) {
         event.preventDefault();
         const errors = {};
-        errors.email = validator.isEmail(email)
-            ? ""
-            : "Please enter a valid email.";
-        errors.login =
-            email === "example@gmail.com" && password === "1234"
-                ? ""
-                : "Email or password is incorrect.";
 
-        setAllErrors(errors);
+        auth.signInWithEmailAndPassword(email, password).catch((error) => {
+            errors.login = "Email or password is incorrect.";
+            const errorCode = error.code;
 
-        if (empty(errors.email) && empty(errors.login)) {
-            window.alert("You're in :)");
+            switch (errorCode) {
+                case "auth/invalid-email":
+                    errors.email = "Please enter a valid email.";
+                    break;
+                case "auth/user-disabled":
+                    errors.email = "Email has been disabled.";
+                    break;
+                case "auth/wrong-password":
+                    errors.login = "Email or password is incorrect.";
+                    break;
+                default:
+                    errors.login = "Email or password is incorrect.";
+                    break;
+            }
+            setAllErrors(errors);
+        });
+
+        if (!errors.email && !errors.login) {
+            history.push("/admin");
         }
     }
 
@@ -70,7 +84,7 @@ export default function Login() {
                 <Avatar className={classes.avatar}>
                     <LockOutlinedIcon />
                 </Avatar>
-                <Typography component="h1" variant="h5">
+                <Typography component="div" variant="h5">
                     Login
                 </Typography>
                 <form
@@ -122,12 +136,12 @@ export default function Login() {
                     </Button>
                     <Grid container>
                         <Grid item xs>
-                            <Link href="#" variant="body2">
+                            <Link href="/passwordReset" variant="body2">
                                 Forgot password?
                             </Link>
                         </Grid>
                         <Grid item>
-                            <Link href="#" variant="body2">
+                            <Link href="/signup" variant="body2">
                                 {"Don't have an account? Sign Up"}
                             </Link>
                         </Grid>

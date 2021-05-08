@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>CoronaEscape</title>
+        <meta name="description" content="CoronaEscape" />
+        <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+        <script src="aframe-super-keyboard.min.js"></script>
+        <script src="keypad.js"></script>
+    </head>
+    <body>
+        <a-scene
+            cursor="rayOrigin:mouse"
+            background="color: #ECECEC"
+            raycaster="objects: .link"
+        >
+            <!-- <a-entity id="keypad-popup-container" visible="true"> -->
+            <a-entity
+                id="keyboard-display"
+                position="0 1.2 -3.9"
+                rotation="0 0 0"
+                scale="3 3 3"
+                super-keyboard="imagePath:./; multipleInputs:true; model: numpad; pass: 1234; align: center; maxLength: 4; label: Enter Password; labelColor: black"
+                my_keyboard_controller
+                passfilter
+            >
+            </a-entity>
+            <!-- Hand entity not needed for now -->
+            <!-- <a-entity id="hand" laser-controls="hand: right">
+          <a-sphere radius="0.01"></a-sphere>
+        </a-entity> -->
+            <!-- </a-entity> -->
+        </a-scene>
+    </body>
+</html>
