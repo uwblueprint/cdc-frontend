@@ -1,21 +1,34 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import PropTypes from "prop-types";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import { auth } from "../../firebaseCredentials.js";
-import { UserContext } from "../../Providers/UserProviders";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
-import EscapeRooms from "./Rooms/rooms.js";
-import Assets from "./Assets/assets.js";
-import Statistics from "./Stats/stats.js";
 import AddIcon from "@material-ui/icons/Add";
 import IconButton from "@material-ui/core/IconButton";
+import MenuItem from "@material-ui/core/MenuItem";
+import Menu from "@material-ui/core/Menu";
 import { useHistory } from "react-router-dom";
+
+import { auth } from "../../firebaseCredentials.js";
+import { UserContext } from "../../Providers/UserProviders";
+import EscapeRooms from "./Rooms/rooms.js";
+import Scenes from "./Scenes/scenes.js";
+import Assets from "./Assets/assets.js";
+import Statistics from "./Stats/stats.js";
+import RoomModal from "./Rooms/roomModal";
+import DeleteModal from "./common/deleteModal";
+import {
+    getAllScenarios,
+    postScenario,
+    editScenario,
+    deleteScenario,
+} from "../../lib/scenarioEndpoints";
+import { getAllScenes } from "../../lib/sceneEndpoints";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -30,7 +43,9 @@ function TabPanel(props) {
         >
             {value === index && (
                 <Box p={3}>
-                    <Typography>{children}</Typography>
+                    <Typography component="div" variant="h5">
+                        {children}
+                    </Typography>
                 </Box>
             )}
         </div>
@@ -105,19 +120,120 @@ export default function Admin() {
 
     const history = useHistory();
     const [value, setValue] = React.useState("rooms");
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [createModalOpen, setCreateModalOpen] = React.useState(false);
+    const [editModalOpen, setEditModalOpen] = React.useState(false);
+    const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
+    const [environments, setEnvironments] = React.useState([]);
+    const [scenes, setScenes] = React.useState([]);
+    const [editRoom, setEditRoom] = React.useState({});
+    const [deleteRoomId, setDeleteRoomId] = React.useState(null);
+    const open = Boolean(anchorEl);
+
+    const getAllEnvironments = async () => {
+        const data = await getAllScenarios();
+        setEnvironments(data);
+    };
+
+    const getAllScenesAction = async () => {
+        const data = await getAllScenes();
+        setScenes(data);
+    };
+
+    useEffect(() => {
+        if (value === "rooms") {
+            getAllEnvironments();
+        } else if (value === "scenes") {
+            getAllScenesAction();
+        }
+    }, [value]);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
+    };
+
+    const handleAddButtonClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleAddButtonClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleCreateRoomSubmit = async ({
+        name,
+        description,
+        friendly_name,
+    }) => {
+        setCreateModalOpen(false);
+        const resp = await postScenario({ name, description, friendly_name });
+        setEnvironments([...environments, resp.data]);
+    };
+
+    const handleEditRoomClick = (roomId) => {
+        const room = environments.find(
+            (environment) => environment.id === roomId
+        );
+        setEditRoom(room);
+        setEditModalOpen(true);
+    };
+
+    const handleEditRoomSubmit = async ({
+        name,
+        description,
+        friendly_name,
+    }) => {
+        setEditModalOpen(false);
+        const resp = await editScenario({
+            id: editRoom.id,
+            name,
+            friendly_name,
+            description,
+            scene_ids: editRoom.scene_ids,
+            is_published: editRoom.is_published,
+            is_previewable: editRoom.is_previewable,
+        });
+        const replaceIndex = environments.findIndex(
+            (env) => env.id === editRoom.id
+        );
+        const copiedEnvs = [...environments];
+        copiedEnvs[replaceIndex] = resp.data;
+        setEnvironments(copiedEnvs);
+    };
+
+    const handleEditRoomClose = () => {
+        setEditModalOpen(false);
+        setEditRoom({});
+    };
+
+    const handleDeleteRoomClick = (roomId) => {
+        setDeleteRoomId(roomId);
+        setDeleteModalOpen(true);
+    };
+
+    const handleDeleteRoomCancel = () => {
+        setDeleteRoomId(null);
+        setDeleteModalOpen(false);
+    };
+
+    const handleDeleteRoomSubmit = async () => {
+        await deleteScenario(deleteRoomId);
+        const modifiedEnv = environments.filter(
+            (env) => env.id !== deleteRoomId
+        );
+        setEnvironments(modifiedEnv);
+        setDeleteRoomId(null);
+        setDeleteModalOpen(false);
     };
 
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
             <div className={classes.paper}>
-                <Typography component="h1" variant="h5">
+                <Typography component="div" variant="h5">
                     Admin Dashboard 😎
                 </Typography>
-                <Typography component="h1" variant="h6">
+                <Typography component="div" variant="h6">
                     Welcome {user.displayName}
                 </Typography>
                 <Button
@@ -133,13 +249,59 @@ export default function Admin() {
                 >
                     Sign Out
                 </Button>
+
                 <div className={classes.root}>
                     <IconButton
                         className={classes.addButton}
                         aria-label="delete"
+                        onClick={handleAddButtonClick}
                     >
                         <AddIcon />
                     </IconButton>
+                    <Menu
+                        anchorEl={anchorEl}
+                        anchorOrigin={{
+                            vertical: "top",
+                            horizontal: "center",
+                        }}
+                        transformOrigin={{
+                            vertical: "top",
+                            horizontal: "center",
+                        }}
+                        keepMounted
+                        open={open}
+                        onClose={handleAddButtonClose}
+                    >
+                        <MenuItem>Object Upload</MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setAnchorEl(null);
+                                setCreateModalOpen(true);
+                            }}
+                        >
+                            New Escape Room
+                        </MenuItem>
+                    </Menu>
+                    <RoomModal
+                        modalOpen={createModalOpen}
+                        handleModalClose={() => {
+                            setCreateModalOpen(false);
+                        }}
+                        handleSubmit={handleCreateRoomSubmit}
+                    />
+                    <RoomModal
+                        modalOpen={editModalOpen}
+                        handleModalClose={handleEditRoomClose}
+                        handleSubmit={handleEditRoomSubmit}
+                        room={editRoom}
+                        isEdit
+                    />
+                    <DeleteModal
+                        open={deleteModalOpen}
+                        confirmMessage="Are you sure you want to delete this room?"
+                        handleClose={handleDeleteRoomCancel}
+                        handleSubmit={handleDeleteRoomSubmit}
+                    />
                     <Tabs
                         value={value}
                         indicatorColor="primary"
@@ -150,6 +312,12 @@ export default function Admin() {
                             value="rooms"
                             label="Escape Rooms"
                             {...TabHelper("rooms")}
+                        />
+                        <Tab
+                            className={classes.tab}
+                            value="scenes"
+                            label="Scenes"
+                            {...TabHelper("scenes")}
                         />
                         <Tab
                             className={classes.tab}
@@ -169,7 +337,18 @@ export default function Admin() {
                         value={value}
                         index="rooms"
                     >
-                        <EscapeRooms />
+                        <EscapeRooms
+                            environments={environments}
+                            handleEditRoomClick={handleEditRoomClick}
+                            handleDeleteRoomClick={handleDeleteRoomClick}
+                        />
+                    </TabPanel>
+                    <TabPanel
+                        className={classes.tabBackground}
+                        value={value}
+                        index="scenes"
+                    >
+                        <Scenes scenes={scenes} />
                     </TabPanel>
                     <TabPanel
                         className={classes.tabBackground}
