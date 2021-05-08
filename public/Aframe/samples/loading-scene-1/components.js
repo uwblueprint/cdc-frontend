@@ -114,7 +114,7 @@ AFRAME.registerComponent("gravity-switcher", {
             const physics = el.getAttribute("physics");
             let gravity = physics["gravity"];
             gravity *= -1;
-  
+
             el.setAttribute("physics", {
                 debug: false,
                 gravity: gravity,

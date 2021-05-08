@@ -57,6 +57,7 @@ export default function EnvironmentEditor({
     const [environment, setEnvironment] = useState({});
     const [scenes, setScenes] = useState([]);
     const [createModalOpen, setCreateModalOpen] = useState(false);
+    const [editModalOpen, setEditModalOpen] = useState(false);
 
     useEffect(() => {
         const getEnvironment = async () => {
@@ -135,6 +136,31 @@ export default function EnvironmentEditor({
         setEnvironment(newEnv.data);
     };
 
+    const onEditButtonClick = () => {
+        setEditModalOpen(true);
+    };
+
+    const onEditModalClose = () => {
+        setEditModalOpen(false);
+    };
+
+    /*const onEditModalSubmit = async ({
+        name,
+        description,
+        friendly_name,
+    }) => {
+        setEditModalOpen(false);
+        const resp = await editScenario({
+            id: editRoom.id,
+            name,
+            friendly_name,
+            description,
+            scene_ids: editRoom.scene_ids,
+            is_published: editRoom.is_published,
+            is_previewable: editRoom.is_previewable,
+        });
+    };*/
+
     return (
         <div>
             <Navbar home />
@@ -161,6 +187,9 @@ export default function EnvironmentEditor({
                                                     <SceneCard
                                                         scene={scene}
                                                         index={index}
+                                                        handleEditClick={
+                                                            onCreateButtonClick
+                                                        }
                                                     />
                                                 </div>
                                             );
@@ -193,6 +222,7 @@ export default function EnvironmentEditor({
                     </div>
                 )}
             </div>
+
             <SceneModal
                 modalOpen={createModalOpen}
                 handleModalClose={onCreateModalClose}
