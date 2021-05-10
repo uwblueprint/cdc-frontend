@@ -175,16 +175,18 @@ export default function Admin() {
         description,
         friendly_name,
     }) => {
-
         try {
             setCreateModalOpen(false);
-            const resp = await postScenario({ name, description, friendly_name });
+            const resp = await postScenario({
+                name,
+                description,
+                friendly_name,
+            });
             setEnvironments([...environments, resp.data]);
         } catch (error) {
             console.log("ERROR");
             handleError(error);
         }
-        
     };
 
     const handleEditRoomClick = (roomId) => {
@@ -200,7 +202,6 @@ export default function Admin() {
         description,
         friendly_name,
     }) => {
-
         try {
             setEditModalOpen(false);
             const resp = await editScenario({
@@ -220,7 +221,7 @@ export default function Admin() {
             setEnvironments(copiedEnvs);
         } catch (error) {
             handleError(error);
-        }        
+        }
     };
 
     const handleEditRoomClose = () => {
@@ -239,13 +240,12 @@ export default function Admin() {
     };
 
     const handleDeleteRoomSubmit = async () => {
-
         try {
             await deleteScenario(deleteRoomId);
         } catch (error) {
             handleError(error);
         }
-        
+
         const modifiedEnv = environments.filter(
             (env) => env.id !== deleteRoomId
         );
@@ -328,7 +328,7 @@ export default function Admin() {
                         open={deleteModalOpen}
                         confirmMessage="Are you sure you want to delete this room?"
                         handleClose={handleDeleteRoomCancel}
-                         handleSubmit={handleDeleteRoomSubmit}
+                        handleSubmit={handleDeleteRoomSubmit}
                     />
                     <Tabs
                         value={value}
