@@ -184,7 +184,6 @@ export default function Admin() {
             });
             setEnvironments([...environments, resp.data]);
         } catch (error) {
-            console.log("ERROR");
             handleError(error);
         }
     };

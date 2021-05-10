@@ -11,6 +11,7 @@ import SceneCard from "./sceneCard";
 import SceneModal from "./sceneModal";
 import { getScenario, editScenario } from "../../../lib/scenarioEndpoints";
 import { getScene, createScene } from "../../../lib/sceneEndpoints";
+import { useErrorHandler } from "react-error-boundary";
 
 const useStyles = makeStyles((theme) => ({
     page: {
@@ -54,31 +55,40 @@ export default function EnvironmentEditor({
     },
 }) {
     const classes = useStyles();
+    const handleError = useErrorHandler();
     const [environment, setEnvironment] = useState({});
     const [scenes, setScenes] = useState([]);
     const [createModalOpen, setCreateModalOpen] = useState(false);
 
     useEffect(() => {
-        const getEnvironment = async () => {
-            const data = await getScenario(environmentId);
-            setEnvironment(data);
-        };
+        try {
+            const getEnvironment = async () => {
+                const data = await getScenario(environmentId);
+                setEnvironment(data);
+            };
 
-        if (environmentId) {
-            getEnvironment();
+            if (environmentId) {
+                getEnvironment();
+            }
+        } catch (error) {
+            handleError(error);
         }
     }, [environmentId]);
 
     useEffect(() => {
-        const getSceneData = async () => {
-            const data = await Promise.all(
-                environment.scene_ids.map(async (id) => getScene(id))
-            );
-            setScenes(data);
-        };
+        try {
+            const getSceneData = async () => {
+                const data = await Promise.all(
+                    environment.scene_ids.map(async (id) => getScene(id))
+                );
+                setScenes(data);
+            };
 
-        if (environment.scene_ids) {
-            getSceneData();
+            if (environment.scene_ids) {
+                getSceneData();
+            }
+        } catch (error) {
+            handleError(error);
         }
     }, [environment]);
 
@@ -102,16 +112,21 @@ export default function EnvironmentEditor({
         setScenes(items);
 
         const newSceneIds = items.map((scene) => scene.id);
-        const response = await editScenario({
-            id: environment.id,
-            name: environment.name,
-            friendly_name: environment.friendly_name,
-            description: environment.description,
-            scene_ids: newSceneIds,
-            is_published: environment.is_published,
-            is_previewable: environment.is_previewable,
-        });
-        setEnvironment(response.data);
+
+        try {
+            const response = await editScenario({
+                id: environment.id,
+                name: environment.name,
+                friendly_name: environment.friendly_name,
+                description: environment.description,
+                scene_ids: newSceneIds,
+                is_published: environment.is_published,
+                is_previewable: environment.is_previewable,
+            });
+            setEnvironment(response.data);
+        } catch (error) {
+            handleError(error);
+        }
     };
 
     const onCreateButtonClick = () => {
@@ -123,16 +138,20 @@ export default function EnvironmentEditor({
     };
 
     const onCreateModalSubmit = async (name, background_id) => {
-        setCreateModalOpen(false);
+        try {
+            setCreateModalOpen(false);
 
-        const newScene = await createScene(name, background_id);
-        const newSceneData = [...scenes, newScene];
-        setScenes(newSceneData);
+            const newScene = await createScene(name, background_id);
+            const newSceneData = [...scenes, newScene];
+            setScenes(newSceneData);
 
-        const newEnvData = environment;
-        newEnvData.scene_ids = [...environment.scene_ids, newScene.id];
-        const newEnv = await editScenario(newEnvData);
-        setEnvironment(newEnv.data);
+            const newEnvData = environment;
+            newEnvData.scene_ids = [...environment.scene_ids, newScene.id];
+            const newEnv = await editScenario(newEnvData);
+            setEnvironment(newEnv.data);
+        } catch (error) {
+            handleError(error);
+        }
     };
 
     return (
