@@ -133,30 +133,26 @@ export default function Admin() {
     const open = Boolean(anchorEl);
 
     const getAllEnvironments = async () => {
-        try {
-            const data = await getAllScenarios();
-            setEnvironments(data);
-        } catch (error) {
-            handleError(error);
-        }
+        const data = await getAllScenarios();
+        setEnvironments(data);
     };
 
     const getAllScenesAction = async () => {
-        try {
-            const data = await getAllScenes();
-            setScenes(data);
-        } catch (error) {
-            handleError(error);
-        }
+        const data = await getAllScenes();
+        setScenes(data);
     };
 
     useEffect(() => {
-        if (value === "rooms") {
-            getAllEnvironments();
-        } else if (value === "scenes") {
-            getAllScenesAction();
+        try {
+            if (value === "rooms") {
+                getAllEnvironments();
+            } else if (value === "scenes") {
+                getAllScenesAction();
+            }
+        } catch (error) {
+            handleError(error);
         }
-    }, [value]);
+    }, [value, handleError]);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);

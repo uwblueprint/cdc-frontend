@@ -61,36 +61,36 @@ export default function EnvironmentEditor({
     const [createModalOpen, setCreateModalOpen] = useState(false);
 
     useEffect(() => {
-        try {
-            const getEnvironment = async () => {
+        const getEnvironment = async () => {
+            try {
                 const data = await getScenario(environmentId);
                 setEnvironment(data);
-            };
-
-            if (environmentId) {
-                getEnvironment();
+            } catch (error) {
+                handleError(error);
             }
-        } catch (error) {
-            handleError(error);
+        };
+
+        if (environmentId) {
+            getEnvironment();
         }
-    }, [environmentId]);
+    }, [environmentId, handleError]);
 
     useEffect(() => {
-        try {
-            const getSceneData = async () => {
+        const getSceneData = async () => {
+            try {
                 const data = await Promise.all(
                     environment.scene_ids.map(async (id) => getScene(id))
                 );
                 setScenes(data);
-            };
-
-            if (environment.scene_ids) {
-                getSceneData();
+            } catch (error) {
+                handleError(error);
             }
-        } catch (error) {
-            handleError(error);
+        };
+
+        if (environment.scene_ids) {
+            getSceneData();
         }
-    }, [environment]);
+    }, [environment, handleError]);
 
     const reorder = ({ scenes, startIndex, endIndex }) => {
         const result = Array.from(scenes);
