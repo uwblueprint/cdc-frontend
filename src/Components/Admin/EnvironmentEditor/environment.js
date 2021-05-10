@@ -58,7 +58,7 @@ export default function EnvironmentEditor({
     const [scenes, setScenes] = useState([]);
     const [createModalOpen, setCreateModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
-    const [editSceneCard, setEditSceneCard] = useState({});
+    const [editSceneInfo, setEditSceneInfo] = useState({});
 
     useEffect(() => {
         const getEnvironment = async () => {
@@ -139,30 +139,30 @@ export default function EnvironmentEditor({
 
     const onEditButtonClick = (sceneId) => {
         const scene = scenes.find((scene) => scene.id === sceneId);
-        setEditSceneCard(scene);
+        setEditSceneInfo(scene);
         setEditModalOpen(true);
     };
 
     const onEditModalClose = () => {
         setEditModalOpen(false);
-        setEditSceneCard({});
+        setEditSceneInfo({});
     };
 
     const onEditModalSubmit = async (name, background_id) => {
         setEditModalOpen(false);
         const resp = await editScene({
-            id: editSceneCard.id,
+            id: editSceneInfo.id,
             name,
-            description: editSceneCard.description,
-            object_ids: editSceneCard.object_ids,
-            position: editSceneCard.position,
-            scale: editSceneCard.scale,
-            rotation: editSceneCard.rotation,
+            description: editSceneInfo.description,
+            object_ids: editSceneInfo.object_ids,
+            position: editSceneInfo.position,
+            scale: editSceneInfo.scale,
+            rotation: editSceneInfo.rotation,
             background_id,
-            camera_properties: editSceneCard.camera_properties,
+            camera_properties: editSceneInfo.camera_properties,
         });
         const replaceIndex = scenes.findIndex(
-            (scene) => scene.id === editSceneCard.id
+            (scene) => scene.id === editSceneInfo.id
         );
         const copiedScenes = [...scenes];
         copiedScenes[replaceIndex] = resp.data;
@@ -237,7 +237,7 @@ export default function EnvironmentEditor({
                 handleSubmit={onCreateModalSubmit}
             />
             <SceneModal
-                scene={editSceneCard}
+                scene={editSceneInfo}
                 modalOpen={editModalOpen}
                 handleModalClose={onEditModalClose}
                 handleSubmit={onEditModalSubmit}
