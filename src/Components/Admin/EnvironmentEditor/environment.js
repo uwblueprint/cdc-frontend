@@ -10,7 +10,7 @@ import EnvironmentBar from "./environmentBar";
 import SceneCard from "./sceneCard";
 import SceneModal from "./sceneModal";
 import { getScenario, editScenario } from "../../../lib/scenarioEndpoints";
-import { getScene, createScene } from "../../../lib/sceneEndpoints";
+import { getScene, createScene, editScene } from "../../../lib/sceneEndpoints";
 
 const useStyles = makeStyles((theme) => ({
     page: {
@@ -57,6 +57,8 @@ export default function EnvironmentEditor({
     const [environment, setEnvironment] = useState({});
     const [scenes, setScenes] = useState([]);
     const [createModalOpen, setCreateModalOpen] = useState(false);
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const [editSceneInfo, setEditSceneInfo] = useState({});
 
     useEffect(() => {
         const getEnvironment = async () => {
@@ -135,6 +137,38 @@ export default function EnvironmentEditor({
         setEnvironment(newEnv.data);
     };
 
+    const onEditButtonClick = (sceneId) => {
+        const scene = scenes.find((scene) => scene.id === sceneId);
+        setEditSceneInfo(scene);
+        setEditModalOpen(true);
+    };
+
+    const onEditModalClose = () => {
+        setEditModalOpen(false);
+        setEditSceneInfo({});
+    };
+
+    const onEditModalSubmit = async (name, background_id) => {
+        setEditModalOpen(false);
+        const resp = await editScene({
+            id: editSceneInfo.id,
+            name,
+            description: editSceneInfo.description,
+            object_ids: editSceneInfo.object_ids,
+            position: editSceneInfo.position,
+            scale: editSceneInfo.scale,
+            rotation: editSceneInfo.rotation,
+            background_id,
+            camera_properties: editSceneInfo.camera_properties,
+        });
+        const replaceIndex = scenes.findIndex(
+            (scene) => scene.id === editSceneInfo.id
+        );
+        const copiedScenes = [...scenes];
+        copiedScenes[replaceIndex] = resp.data;
+        setScenes(copiedScenes);
+    };
+
     return (
         <div>
             <Navbar home />
@@ -161,6 +195,9 @@ export default function EnvironmentEditor({
                                                     <SceneCard
                                                         scene={scene}
                                                         index={index}
+                                                        handleEditClick={
+                                                            onEditButtonClick
+                                                        }
                                                     />
                                                 </div>
                                             );
@@ -193,10 +230,18 @@ export default function EnvironmentEditor({
                     </div>
                 )}
             </div>
+
             <SceneModal
                 modalOpen={createModalOpen}
                 handleModalClose={onCreateModalClose}
                 handleSubmit={onCreateModalSubmit}
+            />
+            <SceneModal
+                scene={editSceneInfo}
+                modalOpen={editModalOpen}
+                handleModalClose={onEditModalClose}
+                handleSubmit={onEditModalSubmit}
+                isEdit
             />
         </div>
     );
