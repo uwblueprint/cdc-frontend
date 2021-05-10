@@ -7,17 +7,23 @@ import Admin from "./Components/Admin/admin";
 import PasswordReset from "./Components/Login/passwordReset";
 import EnvironmentEditor from "./Components/Admin/EnvironmentEditor/environment";
 import { UserContext } from "./Providers/UserProviders";
+import ErrorModal from "./Components/Admin/common/errorModal.js";
+import { ErrorBoundary } from "react-error-boundary";
 
 export default function Routes() {
     const user = useContext(UserContext);
+
     return user ? (
         <Switch>
-            <Route exact path="/admin" component={Admin} />
-            <Route
-                exact
-                path="/admin/environment/:environmentId"
-                component={EnvironmentEditor}
-            />
+            {/* <ErrorBoundary FallbackComponent={ErrorModal}> */}
+                <Route exact path="/admin" component={Admin} />
+                <Route
+                    exact
+                    path="/admin/environment/:environmentId"
+                    component={EnvironmentEditor}
+                />
+            {/* </ErrorBoundary> */}
+            
         </Switch>
     ) : (
         <Switch>

@@ -29,6 +29,7 @@ import {
     deleteScenario,
 } from "../../lib/scenarioEndpoints";
 import { getAllScenes } from "../../lib/sceneEndpoints";
+import { useErrorHandler } from "react-error-boundary";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -117,6 +118,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Admin() {
     const classes = useStyles();
     const user = useContext(UserContext);
+    const handleError = useErrorHandler();
 
     const history = useHistory();
     const [value, setValue] = React.useState("rooms");
@@ -131,13 +133,21 @@ export default function Admin() {
     const open = Boolean(anchorEl);
 
     const getAllEnvironments = async () => {
-        const data = await getAllScenarios();
-        setEnvironments(data);
+        try {
+            const data = await getAllScenarios();
+            setEnvironments(data);
+        } catch (error) {
+            handleError(error);
+        }
     };
 
     const getAllScenesAction = async () => {
-        const data = await getAllScenes();
-        setScenes(data);
+        try {
+            const data = await getAllScenes();
+            setScenes(data);
+        } catch (error) {
+            handleError(error);
+        }
     };
 
     useEffect(() => {
@@ -165,9 +175,16 @@ export default function Admin() {
         description,
         friendly_name,
     }) => {
-        setCreateModalOpen(false);
-        const resp = await postScenario({ name, description, friendly_name });
-        setEnvironments([...environments, resp.data]);
+
+        try {
+            setCreateModalOpen(false);
+            const resp = await postScenario({ name, description, friendly_name });
+            setEnvironments([...environments, resp.data]);
+        } catch (error) {
+            console.log("ERROR");
+            handleError(error);
+        }
+        
     };
 
     const handleEditRoomClick = (roomId) => {
@@ -183,22 +200,27 @@ export default function Admin() {
         description,
         friendly_name,
     }) => {
-        setEditModalOpen(false);
-        const resp = await editScenario({
-            id: editRoom.id,
-            name,
-            friendly_name,
-            description,
-            scene_ids: editRoom.scene_ids,
-            is_published: editRoom.is_published,
-            is_previewable: editRoom.is_previewable,
-        });
-        const replaceIndex = environments.findIndex(
-            (env) => env.id === editRoom.id
-        );
-        const copiedEnvs = [...environments];
-        copiedEnvs[replaceIndex] = resp.data;
-        setEnvironments(copiedEnvs);
+
+        try {
+            setEditModalOpen(false);
+            const resp = await editScenario({
+                id: editRoom.id,
+                name,
+                friendly_name,
+                description,
+                scene_ids: editRoom.scene_ids,
+                is_published: editRoom.is_published,
+                is_previewable: editRoom.is_previewable,
+            });
+            const replaceIndex = environments.findIndex(
+                (env) => env.id === editRoom.id
+            );
+            const copiedEnvs = [...environments];
+            copiedEnvs[replaceIndex] = resp.data;
+            setEnvironments(copiedEnvs);
+        } catch (error) {
+            handleError(error);
+        }        
     };
 
     const handleEditRoomClose = () => {
@@ -217,7 +239,13 @@ export default function Admin() {
     };
 
     const handleDeleteRoomSubmit = async () => {
-        await deleteScenario(deleteRoomId);
+
+        try {
+            await deleteScenario(deleteRoomId);
+        } catch (error) {
+            handleError(error);
+        }
+        
         const modifiedEnv = environments.filter(
             (env) => env.id !== deleteRoomId
         );
@@ -300,7 +328,7 @@ export default function Admin() {
                         open={deleteModalOpen}
                         confirmMessage="Are you sure you want to delete this room?"
                         handleClose={handleDeleteRoomCancel}
-                        handleSubmit={handleDeleteRoomSubmit}
+                         handleSubmit={handleDeleteRoomSubmit}
                     />
                     <Tabs
                         value={value}
