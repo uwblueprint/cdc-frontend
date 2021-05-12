@@ -132,21 +132,21 @@ export default function Admin() {
     const [deleteRoomId, setDeleteRoomId] = React.useState(null);
     const open = Boolean(anchorEl);
 
-    const getAllEnvironments = async () => {
+    const getAllEnvironments = async (handleError) => {
         const data = await getAllScenarios(handleError);
         setEnvironments(data);
     };
 
-    const getAllScenesAction = async () => {
+    const getAllScenesAction = async (handleError) => {
         const data = await getAllScenes(handleError);
         setScenes(data);
     };
 
     useEffect(() => {
         if (value === "rooms") {
-            getAllEnvironments();
+            getAllEnvironments(handleError);
         } else if (value === "scenes") {
-            getAllScenesAction();
+            getAllScenesAction(handleError);
         }
     }, [value, handleError]);
 

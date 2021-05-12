@@ -133,13 +133,13 @@ export default function EnvironmentEditor({
     const onCreateModalSubmit = async (name, background_id) => {
         setCreateModalOpen(false);
 
-        const newScene = await createScene(name, background_id, handleSubmit);
+        const newScene = await createScene(name, background_id, handleError);
         const newSceneData = [...scenes, newScene];
         setScenes(newSceneData);
 
         const newEnvData = environment;
         newEnvData.scene_ids = [...environment.scene_ids, newScene.id];
-        const newEnv = await editScenario(newEnvData, handleSubmit);
+        const newEnv = await editScenario(newEnvData, handleError);
         setEnvironment(newEnv.data);
     };
 
