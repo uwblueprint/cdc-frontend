@@ -35,18 +35,9 @@ export const getAllScenes = async (handleError) => {
     }
 };
 
-export const editScene = async ({
-    id,
-    name,
-    description,
-    object_ids,
-    position,
-    scale,
-    rotation,
-    background_id,
-    camera_properties,
-}) => {
-    const response = await httpPut(baseEndpoint + `scene/${id}`, {
+export const editScene = async (
+    {
+        id,
         name,
         description,
         object_ids,
@@ -55,6 +46,23 @@ export const editScene = async ({
         rotation,
         background_id,
         camera_properties,
-    });
-    return response;
+    },
+    handleError
+) => {
+    try {
+        const response = await httpPut(baseEndpoint + `scene/${id}`, {
+            name,
+            description,
+            object_ids,
+            position,
+            scale,
+            rotation,
+            background_id,
+            camera_properties,
+        });
+        return response;
+    } catch (error) {
+        handleError(error);
+        throw error;
+    }
 };

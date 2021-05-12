@@ -158,17 +158,20 @@ export default function EnvironmentEditor({
 
     const onEditModalSubmit = async (name, background_id) => {
         setEditModalOpen(false);
-        const resp = await editScene({
-            id: editSceneInfo.id,
-            name,
-            description: editSceneInfo.description,
-            object_ids: editSceneInfo.object_ids,
-            position: editSceneInfo.position,
-            scale: editSceneInfo.scale,
-            rotation: editSceneInfo.rotation,
-            background_id,
-            camera_properties: editSceneInfo.camera_properties,
-        });
+        const resp = await editScene(
+            {
+                id: editSceneInfo.id,
+                name,
+                description: editSceneInfo.description,
+                object_ids: editSceneInfo.object_ids,
+                position: editSceneInfo.position,
+                scale: editSceneInfo.scale,
+                rotation: editSceneInfo.rotation,
+                background_id,
+                camera_properties: editSceneInfo.camera_properties,
+            },
+            handleError
+        );
         const replaceIndex = scenes.findIndex(
             (scene) => scene.id === editSceneInfo.id
         );
