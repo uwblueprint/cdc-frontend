@@ -29,6 +29,7 @@ import {
     deleteScenario,
 } from "../../lib/scenarioEndpoints";
 import { getAllScenes } from "../../lib/sceneEndpoints";
+import { useErrorHandler } from "react-error-boundary";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -117,6 +118,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Admin() {
     const classes = useStyles();
     const user = useContext(UserContext);
+    const handleError = useErrorHandler();
 
     const history = useHistory();
     const [value, setValue] = React.useState("rooms");
@@ -130,23 +132,23 @@ export default function Admin() {
     const [deleteRoomId, setDeleteRoomId] = React.useState(null);
     const open = Boolean(anchorEl);
 
-    const getAllEnvironments = async () => {
-        const data = await getAllScenarios();
+    const getAllEnvironments = async (handleError) => {
+        const data = await getAllScenarios(handleError);
         setEnvironments(data);
     };
 
-    const getAllScenesAction = async () => {
-        const data = await getAllScenes();
+    const getAllScenesAction = async (handleError) => {
+        const data = await getAllScenes(handleError);
         setScenes(data);
     };
 
     useEffect(() => {
         if (value === "rooms") {
-            getAllEnvironments();
+            getAllEnvironments(handleError);
         } else if (value === "scenes") {
-            getAllScenesAction();
+            getAllScenesAction(handleError);
         }
-    }, [value]);
+    }, [value, handleError]);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -166,7 +168,14 @@ export default function Admin() {
         friendly_name,
     }) => {
         setCreateModalOpen(false);
-        const resp = await postScenario({ name, description, friendly_name });
+        const resp = await postScenario(
+            {
+                name,
+                description,
+                friendly_name,
+            },
+            handleError
+        );
         setEnvironments([...environments, resp.data]);
     };
 
@@ -184,15 +193,18 @@ export default function Admin() {
         friendly_name,
     }) => {
         setEditModalOpen(false);
-        const resp = await editScenario({
-            id: editRoom.id,
-            name,
-            friendly_name,
-            description,
-            scene_ids: editRoom.scene_ids,
-            is_published: editRoom.is_published,
-            is_previewable: editRoom.is_previewable,
-        });
+        const resp = await editScenario(
+            {
+                id: editRoom.id,
+                name,
+                friendly_name,
+                description,
+                scene_ids: editRoom.scene_ids,
+                is_published: editRoom.is_published,
+                is_previewable: editRoom.is_previewable,
+            },
+            handleError
+        );
         const replaceIndex = environments.findIndex(
             (env) => env.id === editRoom.id
         );
@@ -217,7 +229,8 @@ export default function Admin() {
     };
 
     const handleDeleteRoomSubmit = async () => {
-        await deleteScenario(deleteRoomId);
+        await deleteScenario(deleteRoomId, handleError);
+
         const modifiedEnv = environments.filter(
             (env) => env.id !== deleteRoomId
         );

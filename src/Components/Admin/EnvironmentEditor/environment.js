@@ -11,6 +11,7 @@ import SceneCard from "./sceneCard";
 import SceneModal from "./sceneModal";
 import { getScenario, editScenario } from "../../../lib/scenarioEndpoints";
 import { getScene, createScene, editScene } from "../../../lib/sceneEndpoints";
+import { useErrorHandler } from "react-error-boundary";
 
 const useStyles = makeStyles((theme) => ({
     page: {
@@ -54,6 +55,7 @@ export default function EnvironmentEditor({
     },
 }) {
     const classes = useStyles();
+    const handleError = useErrorHandler();
     const [environment, setEnvironment] = useState({});
     const [scenes, setScenes] = useState([]);
     const [createModalOpen, setCreateModalOpen] = useState(false);
@@ -62,19 +64,21 @@ export default function EnvironmentEditor({
 
     useEffect(() => {
         const getEnvironment = async () => {
-            const data = await getScenario(environmentId);
+            const data = await getScenario(environmentId, handleError);
             setEnvironment(data);
         };
 
         if (environmentId) {
             getEnvironment();
         }
-    }, [environmentId]);
+    }, [environmentId, handleError]);
 
     useEffect(() => {
         const getSceneData = async () => {
             const data = await Promise.all(
-                environment.scene_ids.map(async (id) => getScene(id))
+                environment.scene_ids.map(async (id) =>
+                    getScene(id, handleError)
+                )
             );
             setScenes(data);
         };
@@ -82,7 +86,7 @@ export default function EnvironmentEditor({
         if (environment.scene_ids) {
             getSceneData();
         }
-    }, [environment]);
+    }, [environment, handleError]);
 
     const reorder = ({ scenes, startIndex, endIndex }) => {
         const result = Array.from(scenes);
@@ -104,15 +108,19 @@ export default function EnvironmentEditor({
         setScenes(items);
 
         const newSceneIds = items.map((scene) => scene.id);
-        const response = await editScenario({
-            id: environment.id,
-            name: environment.name,
-            friendly_name: environment.friendly_name,
-            description: environment.description,
-            scene_ids: newSceneIds,
-            is_published: environment.is_published,
-            is_previewable: environment.is_previewable,
-        });
+
+        const response = await editScenario(
+            {
+                id: environment.id,
+                name: environment.name,
+                friendly_name: environment.friendly_name,
+                description: environment.description,
+                scene_ids: newSceneIds,
+                is_published: environment.is_published,
+                is_previewable: environment.is_previewable,
+            },
+            handleError
+        );
         setEnvironment(response.data);
     };
 
@@ -127,13 +135,13 @@ export default function EnvironmentEditor({
     const onCreateModalSubmit = async (name, background_id) => {
         setCreateModalOpen(false);
 
-        const newScene = await createScene(name, background_id);
+        const newScene = await createScene(name, background_id, handleError);
         const newSceneData = [...scenes, newScene];
         setScenes(newSceneData);
 
         const newEnvData = environment;
         newEnvData.scene_ids = [...environment.scene_ids, newScene.id];
-        const newEnv = await editScenario(newEnvData);
+        const newEnv = await editScenario(newEnvData, handleError);
         setEnvironment(newEnv.data);
     };
 
@@ -150,17 +158,20 @@ export default function EnvironmentEditor({
 
     const onEditModalSubmit = async (name, background_id) => {
         setEditModalOpen(false);
-        const resp = await editScene({
-            id: editSceneInfo.id,
-            name,
-            description: editSceneInfo.description,
-            object_ids: editSceneInfo.object_ids,
-            position: editSceneInfo.position,
-            scale: editSceneInfo.scale,
-            rotation: editSceneInfo.rotation,
-            background_id,
-            camera_properties: editSceneInfo.camera_properties,
-        });
+        const resp = await editScene(
+            {
+                id: editSceneInfo.id,
+                name,
+                description: editSceneInfo.description,
+                object_ids: editSceneInfo.object_ids,
+                position: editSceneInfo.position,
+                scale: editSceneInfo.scale,
+                rotation: editSceneInfo.rotation,
+                background_id,
+                camera_properties: editSceneInfo.camera_properties,
+            },
+            handleError
+        );
         const replaceIndex = scenes.findIndex(
             (scene) => scene.id === editSceneInfo.id
         );
