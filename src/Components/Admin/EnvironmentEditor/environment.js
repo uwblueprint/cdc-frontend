@@ -10,12 +10,8 @@ import EnvironmentBar from "./environmentBar";
 import SceneCard from "./sceneCard";
 import SceneModal from "./sceneModal";
 import { getScenario, editScenario } from "../../../lib/scenarioEndpoints";
-<<<<<<< HEAD
-import { getScene, createScene } from "../../../lib/sceneEndpoints";
-import { useErrorHandler } from "react-error-boundary";
-=======
 import { getScene, createScene, editScene } from "../../../lib/sceneEndpoints";
->>>>>>> bc8b93ededc04ed478a494acdb73c8e725b30b0b
+import { useErrorHandler } from "react-error-boundary";
 
 const useStyles = makeStyles((theme) => ({
     page: {
