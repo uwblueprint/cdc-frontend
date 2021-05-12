@@ -62,12 +62,8 @@ export default function EnvironmentEditor({
 
     useEffect(() => {
         const getEnvironment = async () => {
-            try {
-                const data = await getScenario(environmentId);
-                setEnvironment(data);
-            } catch (error) {
-                handleError(error);
-            }
+            const data = await getScenario(environmentId, handleError);
+            setEnvironment(data);
         };
 
         if (environmentId) {
@@ -77,14 +73,12 @@ export default function EnvironmentEditor({
 
     useEffect(() => {
         const getSceneData = async () => {
-            try {
-                const data = await Promise.all(
-                    environment.scene_ids.map(async (id) => getScene(id))
-                );
-                setScenes(data);
-            } catch (error) {
-                handleError(error);
-            }
+            const data = await Promise.all(
+                environment.scene_ids.map(async (id) =>
+                    getScene(id, handleError)
+                )
+            );
+            setScenes(data);
         };
 
         if (environment.scene_ids) {
@@ -113,8 +107,8 @@ export default function EnvironmentEditor({
 
         const newSceneIds = items.map((scene) => scene.id);
 
-        try {
-            const response = await editScenario({
+        const response = await editScenario(
+            {
                 id: environment.id,
                 name: environment.name,
                 friendly_name: environment.friendly_name,
@@ -122,11 +116,10 @@ export default function EnvironmentEditor({
                 scene_ids: newSceneIds,
                 is_published: environment.is_published,
                 is_previewable: environment.is_previewable,
-            });
-            setEnvironment(response.data);
-        } catch (error) {
-            handleError(error);
-        }
+            },
+            handleError
+        );
+        setEnvironment(response.data);
     };
 
     const onCreateButtonClick = () => {
@@ -138,20 +131,16 @@ export default function EnvironmentEditor({
     };
 
     const onCreateModalSubmit = async (name, background_id) => {
-        try {
-            setCreateModalOpen(false);
+        setCreateModalOpen(false);
 
-            const newScene = await createScene(name, background_id);
-            const newSceneData = [...scenes, newScene];
-            setScenes(newSceneData);
+        const newScene = await createScene(name, background_id, handleSubmit);
+        const newSceneData = [...scenes, newScene];
+        setScenes(newSceneData);
 
-            const newEnvData = environment;
-            newEnvData.scene_ids = [...environment.scene_ids, newScene.id];
-            const newEnv = await editScenario(newEnvData);
-            setEnvironment(newEnv.data);
-        } catch (error) {
-            handleError(error);
-        }
+        const newEnvData = environment;
+        newEnvData.scene_ids = [...environment.scene_ids, newScene.id];
+        const newEnv = await editScenario(newEnvData, handleSubmit);
+        setEnvironment(newEnv.data);
     };
 
     return (

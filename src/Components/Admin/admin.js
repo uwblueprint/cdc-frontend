@@ -133,24 +133,20 @@ export default function Admin() {
     const open = Boolean(anchorEl);
 
     const getAllEnvironments = async () => {
-        const data = await getAllScenarios();
+        const data = await getAllScenarios(handleError);
         setEnvironments(data);
     };
 
     const getAllScenesAction = async () => {
-        const data = await getAllScenes();
+        const data = await getAllScenes(handleError);
         setScenes(data);
     };
 
     useEffect(() => {
-        try {
-            if (value === "rooms") {
-                getAllEnvironments();
-            } else if (value === "scenes") {
-                getAllScenesAction();
-            }
-        } catch (error) {
-            handleError(error);
+        if (value === "rooms") {
+            getAllEnvironments();
+        } else if (value === "scenes") {
+            getAllScenesAction();
         }
     }, [value, handleError]);
 
@@ -171,17 +167,16 @@ export default function Admin() {
         description,
         friendly_name,
     }) => {
-        try {
-            setCreateModalOpen(false);
-            const resp = await postScenario({
+        setCreateModalOpen(false);
+        const resp = await postScenario(
+            {
                 name,
                 description,
                 friendly_name,
-            });
-            setEnvironments([...environments, resp.data]);
-        } catch (error) {
-            handleError(error);
-        }
+            },
+            handleError
+        );
+        setEnvironments([...environments, resp.data]);
     };
 
     const handleEditRoomClick = (roomId) => {
@@ -197,9 +192,9 @@ export default function Admin() {
         description,
         friendly_name,
     }) => {
-        try {
-            setEditModalOpen(false);
-            const resp = await editScenario({
+        setEditModalOpen(false);
+        const resp = await editScenario(
+            {
                 id: editRoom.id,
                 name,
                 friendly_name,
@@ -207,16 +202,15 @@ export default function Admin() {
                 scene_ids: editRoom.scene_ids,
                 is_published: editRoom.is_published,
                 is_previewable: editRoom.is_previewable,
-            });
-            const replaceIndex = environments.findIndex(
-                (env) => env.id === editRoom.id
-            );
-            const copiedEnvs = [...environments];
-            copiedEnvs[replaceIndex] = resp.data;
-            setEnvironments(copiedEnvs);
-        } catch (error) {
-            handleError(error);
-        }
+            },
+            handleError
+        );
+        const replaceIndex = environments.findIndex(
+            (env) => env.id === editRoom.id
+        );
+        const copiedEnvs = [...environments];
+        copiedEnvs[replaceIndex] = resp.data;
+        setEnvironments(copiedEnvs);
     };
 
     const handleEditRoomClose = () => {
@@ -235,11 +229,7 @@ export default function Admin() {
     };
 
     const handleDeleteRoomSubmit = async () => {
-        try {
-            await deleteScenario(deleteRoomId);
-        } catch (error) {
-            handleError(error);
-        }
+        await deleteScenario(deleteRoomId, handleError);
 
         const modifiedEnv = environments.filter(
             (env) => env.id !== deleteRoomId
