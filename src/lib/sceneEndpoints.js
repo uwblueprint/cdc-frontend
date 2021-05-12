@@ -1,4 +1,4 @@
-import { httpGet, httpPost } from "./dataAccess";
+import { httpGet, httpPost, httpPut } from "./dataAccess";
 
 const baseEndpoint = process.env.REACT_APP_ADMIN_BASE_ENDPOINT;
 
@@ -33,4 +33,28 @@ export const getAllScenes = async (handleError) => {
         handleError(error);
         throw error;
     }
+};
+
+export const editScene = async ({
+    id,
+    name,
+    description,
+    object_ids,
+    position,
+    scale,
+    rotation,
+    background_id,
+    camera_properties,
+}) => {
+    const response = await httpPut(baseEndpoint + `scene/${id}`, {
+        name,
+        description,
+        object_ids,
+        position,
+        scale,
+        rotation,
+        background_id,
+        camera_properties,
+    });
+    return response;
 };
