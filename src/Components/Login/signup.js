@@ -87,7 +87,7 @@ export default function Signup() {
                 <Avatar className={classes.avatar}>
                     <AccountCircle />
                 </Avatar>
-                <Typography component="h1" variant="h5">
+                <Typography component="div" variant="h5">
                     Signup
                 </Typography>
                 <form

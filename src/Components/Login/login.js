@@ -108,7 +108,7 @@ export default function Login() {
                 <Avatar className={classes.avatar}>
                     <LockOutlinedIcon />
                 </Avatar>
-                <Typography component="h1" variant="h5">
+                <Typography component="div" variant="h5">
                     Login
                 </Typography>
                 <form

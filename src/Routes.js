@@ -10,6 +10,7 @@ import { UserContext } from "./Providers/UserProviders";
 
 export default function Routes() {
     const user = useContext(UserContext);
+
     return user ? (
         <Switch>
             <Route exact path="/admin" component={Admin} />

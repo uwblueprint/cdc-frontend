@@ -20,7 +20,7 @@ export default function Assets() {
         <Container component={"main"} maxWidth="xs">
             <CssBaseline />
             <div className={classes.page}>
-                <Typography component="h1" variant="h5">
+                <Typography component="div" variant="h5">
                     Assets Page
                 </Typography>
             </div>

@@ -17,13 +17,27 @@ const useStyles = makeStyles(() => ({
         maxWidth: 400,
         marginTop: 16,
     },
+    metadata: {
+        display: "flex",
+        justifyContent: "space-between",
+        marginLeft: "5.7%",
+        marginRight: "5.7%",
+        marginTop: -4,
+        backgroundColor: "white",
+        borderBottomLeftRadius: "12px",
+        borderBottomRightRadius: "12px",
+    },
+    dataName: {
+        marginLeft: 10,
+        fontWeight: "bold",
+    },
 }));
 
-export default function RoomCard({
-    key,
+export default function ItemCard({
     data,
-    handleEditRoomClick,
-    handleDeleteRoomClick,
+    cardType, // "environment", "scene", or "asset"
+    handleEditClick,
+    handleDeleteClick,
 }) {
     const classes = useStyles();
     const history = useHistory();
@@ -38,7 +52,11 @@ export default function RoomCard({
     };
 
     const handleCardClick = () => {
-        history.push(`/admin/environment/${data.id}`);
+        history.push(
+            cardType === "environment"
+                ? `/admin/environment/${data.id}`
+                : `/admin/scene/${data.id}`
+        );
     };
 
     const open = Boolean(anchorEl);
@@ -54,7 +72,6 @@ export default function RoomCard({
             alignItems="center"
             justify="flex-start"
             className={classes.card}
-            key={key}
         >
             <Grid
                 container
@@ -67,17 +84,17 @@ export default function RoomCard({
                 <img
                     className={classes.cardImage}
                     src={data.image ? data.image : defaultImage}
-                    alt="Escape Room"
+                    alt={cardType === "environment" ? "Escape Room" : "Scene"}
                 />
             </Grid>
             <Grid
                 container
                 item
                 xs={12}
-                alignItems="space-between"
-                justify="center"
+                alignItems="center"
+                className={classes.metadata}
             >
-                <p>{data.name}</p>
+                <p className={classes.dataName}>{data.name}</p>
                 <IconButton onClick={handleMenuClick}>
                     <MoreVertIcon />
                 </IconButton>
@@ -102,25 +119,26 @@ export default function RoomCard({
                         handleCardClick();
                     }}
                 >
-                    Edit room
+                    Edit {cardType === "environment" ? "room" : "scene"}
                 </MenuItem>
                 <MenuItem
                     onClick={() => {
                         setAnchorEl(null);
-                        handleEditRoomClick(data.id);
+                        handleEditClick(data.id);
                     }}
                 >
-                    Edit room metadata
+                    Edit {cardType === "environment" ? "room" : "scene"}{" "}
+                    metadata
                 </MenuItem>
                 <MenuItem>Copy game link</MenuItem>
                 <MenuItem>View stats</MenuItem>
                 <MenuItem
                     onClick={() => {
                         setAnchorEl(null);
-                        handleDeleteRoomClick(data.id);
+                        handleDeleteClick(data.id);
                     }}
                 >
-                    Delete room
+                    Delete {cardType === "environment" ? "room" : "scene"}
                 </MenuItem>
             </Menu>
         </Grid>
