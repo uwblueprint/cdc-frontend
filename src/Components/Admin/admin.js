@@ -27,6 +27,7 @@ import {
     deleteScenario,
 } from "../../lib/scenarioEndpoints";
 import { httpGet } from "../../lib/dataAccess";
+import { auth } from "../../firebaseCredentials";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -232,6 +233,7 @@ export default function Admin() {
                     className={classes.submit}
                     onClick={async () => {
                         history.push("/login");
+                        auth.signOut();
                         await httpGet(
                             process.env.REACT_APP_ADMIN_BASE_ENDPOINT +
                                 "admin_logout"
