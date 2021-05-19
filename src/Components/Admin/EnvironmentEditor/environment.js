@@ -199,29 +199,20 @@ export default function EnvironmentEditor({
     };
 
     const onDeleteModalSubmit = async () => {
-        console.log(environment);
-        console.log(scenes);
-        console.log(deleteSceneId);
         await deleteScene(deleteSceneId, handleError);
 
         const modifiedScenes = scenes.filter(
             (scene) => scene.id !== deleteSceneId
         );
 
-        console.log(modifiedScenes);
-
         const newEnvData = environment;
         newEnvData.scene_ids = modifiedScenes.map((scene) => scene.id);
         const newEnv = await editScenario(newEnvData, handleError);
 
-        console.log(newEnvData);
-        console.log(newEnv);
         setEnvironment(newEnv.data);
         setScenes(modifiedScenes);
         setDeleteSceneId(null);
         setDeleteModalOpen(false);
-        console.log(environment);
-        console.log(scenes);
     };
 
     return (
