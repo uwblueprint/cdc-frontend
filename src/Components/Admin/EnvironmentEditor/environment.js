@@ -9,8 +9,14 @@ import Navbar from "../navbar";
 import EnvironmentBar from "./environmentBar";
 import SceneCard from "./sceneCard";
 import SceneModal from "./sceneModal";
+import DeleteModal from "../common/deleteModal";
 import { getScenario, editScenario } from "../../../lib/scenarioEndpoints";
-import { getScene, createScene, editScene } from "../../../lib/sceneEndpoints";
+import {
+    getScene,
+    createScene,
+    editScene,
+    deleteScene,
+} from "../../../lib/sceneEndpoints";
 import { useErrorHandler } from "react-error-boundary";
 
 const useStyles = makeStyles((theme) => ({
@@ -61,6 +67,8 @@ export default function EnvironmentEditor({
     const [createModalOpen, setCreateModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [editSceneInfo, setEditSceneInfo] = useState({});
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [deleteSceneId, setDeleteSceneId] = React.useState(null);
 
     useEffect(() => {
         const getEnvironment = async () => {
@@ -180,6 +188,42 @@ export default function EnvironmentEditor({
         setScenes(copiedScenes);
     };
 
+    const onDeleteButtonClick = (sceneId) => {
+        setDeleteSceneId(sceneId);
+        setDeleteModalOpen(true);
+    };
+
+    const onDeleteModalCancel = () => {
+        setDeleteSceneId(null);
+        setDeleteModalOpen(false);
+    };
+
+    const onDeleteModalSubmit = async () => {
+        console.log(environment);
+        console.log(scenes);
+        console.log(deleteSceneId);
+        await deleteScene(deleteSceneId, handleError);
+
+        const modifiedScenes = scenes.filter(
+            (scene) => scene.id !== deleteSceneId
+        );
+
+        console.log(modifiedScenes);
+
+        const newEnvData = environment;
+        newEnvData.scene_ids = modifiedScenes.map((scene) => scene.id);
+        const newEnv = await editScenario(newEnvData, handleError);
+
+        console.log(newEnvData);
+        console.log(newEnv);
+        setEnvironment(newEnv.data);
+        setScenes(modifiedScenes);
+        setDeleteSceneId(null);
+        setDeleteModalOpen(false);
+        console.log(environment);
+        console.log(scenes);
+    };
+
     return (
         <div>
             <Navbar home />
@@ -208,6 +252,9 @@ export default function EnvironmentEditor({
                                                         index={index}
                                                         handleEditClick={
                                                             onEditButtonClick
+                                                        }
+                                                        handleDeleteClick={
+                                                            onDeleteButtonClick
                                                         }
                                                     />
                                                 </div>
@@ -253,6 +300,12 @@ export default function EnvironmentEditor({
                 handleModalClose={onEditModalClose}
                 handleSubmit={onEditModalSubmit}
                 isEdit
+            />
+            <DeleteModal
+                open={deleteModalOpen}
+                confirmMessage="Are you sure you want to delete this scene?"
+                handleClose={onDeleteModalCancel}
+                handleSubmit={onDeleteModalSubmit}
             />
         </div>
     );
