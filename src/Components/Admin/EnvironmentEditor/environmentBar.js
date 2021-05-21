@@ -6,6 +6,8 @@ import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import Button from "@material-ui/core/Button";
 import AddIcon from "@material-ui/icons/Add";
+import MenuItem from "@material-ui/core/MenuItem";
+import Menu from "@material-ui/core/Menu";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 const useStyles = makeStyles((theme) => ({
@@ -41,8 +43,23 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function EnvironmentBar() {
+export default function EnvironmentBar({ onCreateButtonClick }) {
     const classes = useStyles();
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const addMenuOpen = Boolean(anchorEl);
+
+    const onAddMenuClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const onAddMenuClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleCreateButtonClick = () => {
+        setAnchorEl(null);
+        onCreateButtonClick();
+    };
 
     return (
         <div className={classes.root}>
@@ -59,9 +76,29 @@ export default function EnvironmentBar() {
                             className={classes.button}
                             startIcon={<AddIcon />}
                             endIcon={<ExpandMoreIcon />}
+                            onClick={onAddMenuClick}
                         >
                             New Scene
                         </Button>
+                        <Menu
+                            anchorEl={anchorEl}
+                            anchorOrigin={{
+                                vertical: "top",
+                                horizontal: "center",
+                            }}
+                            transformOrigin={{
+                                vertical: "top",
+                                horizontal: "center",
+                            }}
+                            keepMounted
+                            open={addMenuOpen}
+                            onClose={onAddMenuClose}
+                        >
+                            <MenuItem onClick={handleCreateButtonClick}>
+                                From Scratch
+                            </MenuItem>
+                            <MenuItem>From Template</MenuItem>
+                        </Menu>
                     </div>
                     <div className={classes.buttonWrapperRight}>
                         <Button className={classes.button}> Preview </Button>

@@ -75,7 +75,9 @@ export default function RoomModal({
             </DialogTitle>
             <DialogContent>
                 <div>
-                    <Typography>Room Name: </Typography>
+                    <Typography component="div" variant="h5">
+                        Room Name:{" "}
+                    </Typography>
                     <TextField
                         value={roomName}
                         onChange={handleRoomNameChange}
@@ -83,7 +85,9 @@ export default function RoomModal({
                     />
                 </div>
                 <div>
-                    <Typography>Room Friendly Name: </Typography>
+                    <Typography component="div" variant="h5">
+                        Room Friendly Name:{" "}
+                    </Typography>
                     <TextField
                         value={friendlyName}
                         onChange={handleFriendlyNameChange}
@@ -91,7 +95,9 @@ export default function RoomModal({
                     />
                 </div>
                 <div>
-                    <Typography>Room Description: </Typography>
+                    <Typography component="div" variant="h5">
+                        Room Description:{" "}
+                    </Typography>
                     <TextField
                         value={roomDescription}
                         onChange={handleRoomDescriptionChange}

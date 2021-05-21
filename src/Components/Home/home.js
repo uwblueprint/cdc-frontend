@@ -24,7 +24,7 @@ export default function Home() {
         <Container component={"main"} maxWidth="xs">
             <CssBaseline />
             <div className={classes.page}>
-                <Typography component="h1" variant="h5">
+                <Typography component="div" variant="h5">
                     Calgary Distress Centre 🤠
                 </Typography>
             </div>

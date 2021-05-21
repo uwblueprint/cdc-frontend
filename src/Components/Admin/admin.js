@@ -16,6 +16,7 @@ import { useHistory } from "react-router-dom";
 
 import { UserContext } from "../../Providers/UserProviders";
 import EscapeRooms from "./Rooms/rooms.js";
+import Scenes from "./Scenes/scenes.js";
 import Assets from "./Assets/assets.js";
 import Statistics from "./Stats/stats.js";
 import RoomModal from "./Rooms/roomModal";
@@ -28,6 +29,8 @@ import {
 } from "../../lib/scenarioEndpoints";
 import { httpGet } from "../../lib/dataAccess";
 import { auth } from "../../firebaseCredentials";
+import { getAllScenes } from "../../lib/sceneEndpoints";
+import { useErrorHandler } from "react-error-boundary";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -42,7 +45,9 @@ function TabPanel(props) {
         >
             {value === index && (
                 <Box p={3}>
-                    <Typography>{children}</Typography>
+                    <Typography component="div" variant="h5">
+                        {children}
+                    </Typography>
                 </Box>
             )}
         </div>
@@ -114,6 +119,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Admin() {
     const classes = useStyles();
     const user = useContext(UserContext);
+    const handleError = useErrorHandler();
 
     const history = useHistory();
     const [value, setValue] = React.useState("rooms");
@@ -122,20 +128,28 @@ export default function Admin() {
     const [editModalOpen, setEditModalOpen] = React.useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
     const [environments, setEnvironments] = React.useState([]);
+    const [scenes, setScenes] = React.useState([]);
     const [editRoom, setEditRoom] = React.useState({});
     const [deleteRoomId, setDeleteRoomId] = React.useState(null);
     const open = Boolean(anchorEl);
 
-    const getAllEnvironments = async () => {
-        const data = await getAllScenarios();
+    const getAllEnvironments = async (handleError) => {
+        const data = await getAllScenarios(handleError);
         setEnvironments(data);
+    };
+
+    const getAllScenesAction = async (handleError) => {
+        const data = await getAllScenes(handleError);
+        setScenes(data);
     };
 
     useEffect(() => {
         if (value === "rooms") {
-            getAllEnvironments();
+            getAllEnvironments(handleError);
+        } else if (value === "scenes") {
+            getAllScenesAction(handleError);
         }
-    }, [value]);
+    }, [value, handleError]);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -155,7 +169,14 @@ export default function Admin() {
         friendly_name,
     }) => {
         setCreateModalOpen(false);
-        const resp = await postScenario({ name, description, friendly_name });
+        const resp = await postScenario(
+            {
+                name,
+                description,
+                friendly_name,
+            },
+            handleError
+        );
         setEnvironments([...environments, resp.data]);
     };
 
@@ -173,15 +194,18 @@ export default function Admin() {
         friendly_name,
     }) => {
         setEditModalOpen(false);
-        const resp = await editScenario({
-            id: editRoom.id,
-            name,
-            friendly_name,
-            description,
-            scene_ids: editRoom.scene_ids,
-            is_published: editRoom.is_published,
-            is_previewable: editRoom.is_previewable,
-        });
+        const resp = await editScenario(
+            {
+                id: editRoom.id,
+                name,
+                friendly_name,
+                description,
+                scene_ids: editRoom.scene_ids,
+                is_published: editRoom.is_published,
+                is_previewable: editRoom.is_previewable,
+            },
+            handleError
+        );
         const replaceIndex = environments.findIndex(
             (env) => env.id === editRoom.id
         );
@@ -206,7 +230,8 @@ export default function Admin() {
     };
 
     const handleDeleteRoomSubmit = async () => {
-        await deleteScenario(deleteRoomId);
+        await deleteScenario(deleteRoomId, handleError);
+
         const modifiedEnv = environments.filter(
             (env) => env.id !== deleteRoomId
         );
@@ -219,10 +244,10 @@ export default function Admin() {
         <Container component="main" maxWidth="xs">
             <CssBaseline />
             <div className={classes.paper}>
-                <Typography component="h1" variant="h5">
+                <Typography component="div" variant="h5">
                     Admin Dashboard 😎
                 </Typography>
-                <Typography component="h1" variant="h6">
+                <Typography component="div" variant="h6">
                     Welcome {user.displayName}
                 </Typography>
                 <Button
@@ -308,6 +333,12 @@ export default function Admin() {
                         />
                         <Tab
                             className={classes.tab}
+                            value="scenes"
+                            label="Scenes"
+                            {...TabHelper("scenes")}
+                        />
+                        <Tab
+                            className={classes.tab}
                             value="assets"
                             label="Object Assets"
                             {...TabHelper("assets")}
@@ -329,6 +360,13 @@ export default function Admin() {
                             handleEditRoomClick={handleEditRoomClick}
                             handleDeleteRoomClick={handleDeleteRoomClick}
                         />
+                    </TabPanel>
+                    <TabPanel
+                        className={classes.tabBackground}
+                        value={value}
+                        index="scenes"
+                    >
+                        <Scenes scenes={scenes} />
                     </TabPanel>
                     <TabPanel
                         className={classes.tabBackground}
