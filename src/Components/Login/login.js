@@ -12,9 +12,11 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import empty from "is-empty";
-import { auth, Auth } from "../../firebaseCredentials.js";
 import { useHistory } from "react-router-dom";
+
+import { auth, Auth } from "../../firebaseCredentials.js";
 import { httpPost } from "../../lib/dataAccess";
+import { LoginErrors } from "./loginErrors.ts";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -76,28 +78,30 @@ export default function Login() {
                 });
             })
             .catch((error) => {
-                errors.login = "Email or password is incorrect.";
                 const errorCode = error.code;
-
-                switch (errorCode) {
-                    case "auth/invalid-email":
-                        errors.email = "Please enter a valid email.";
-                        break;
-                    case "auth/user-disabled":
-                        errors.email = "Email has been disabled.";
-                        break;
-                    case "auth/wrong-password":
-                        errors.login = "Email or password is incorrect.";
-                        break;
-                    default:
-                        errors.login = "Email or password is incorrect.";
-                        break;
-                }
+                setErrorMessage(errorCode, errors);
             });
 
         setAllErrors(errors);
         if (!errors.email && !errors.login) {
             history.push("/admin");
+        }
+    }
+
+    function setErrorMessage(errorCode, errors) {
+        switch (errorCode) {
+            case "auth/invalid-email":
+                errors.email = LoginErrors.InvalidEmail;
+                break;
+            case "auth/user-disabled":
+                errors.email = LoginErrors.UserDisabled;
+                break;
+            case "auth/wrong-password":
+                errors.login = LoginErrors.WrongPassword;
+                break;
+            default:
+                errors.login = LoginErrors.Default;
+                break;
         }
     }
 
