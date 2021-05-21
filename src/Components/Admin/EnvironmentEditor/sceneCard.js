@@ -29,7 +29,12 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-export default function SceneCard({ scene, index, handleEditClick }) {
+export default function SceneCard({
+    scene,
+    index,
+    handleEditClick,
+    handleDeleteClick,
+}) {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -84,7 +89,14 @@ export default function SceneCard({ scene, index, handleEditClick }) {
                         >
                             Edit
                         </MenuItem>
-                        <MenuItem>Delete</MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setAnchorEl(null);
+                                handleDeleteClick(scene.id);
+                            }}
+                        >
+                            Delete
+                        </MenuItem>
                     </Menu>
                 </div>
             )}
