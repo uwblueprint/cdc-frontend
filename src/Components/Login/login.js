@@ -54,7 +54,7 @@ export default function Login() {
         event.preventDefault();
         const errors = {};
 
-        auth.setPersistence(Auth.Persistence.NONE);
+        auth.setPersistence(Auth.Persistence.SESSION);
 
         await auth
             .signInWithEmailAndPassword(email, password)

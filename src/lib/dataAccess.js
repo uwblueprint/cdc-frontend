@@ -1,7 +1,6 @@
 import axios from "axios";
 
 const baseURL = process.env.REACT_APP_ADMIN_BACKEND_URL;
-axios.defaults.withCredentials = true;
 
 export function getCookie(name) {
     const r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
