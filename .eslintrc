@@ -21,7 +21,12 @@
     ],
     "rules": {
         "react/react-in-jsx-scope": "off",
-        "prettier/prettier": "error",
+        "prettier/prettier": [
+            "error",
+            {
+                "endOfLine": "auto"
+            },
+        ],
         "react/prefer-stateless-function": "warn",
         "react/prop-types": "off",
         "react/display-name": "off",
