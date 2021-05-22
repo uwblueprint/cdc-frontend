@@ -25,7 +25,7 @@
             "error",
             {
                 "endOfLine": "auto"
-            },
+            }
         ],
         "react/prefer-stateless-function": "warn",
         "react/prop-types": "off",
