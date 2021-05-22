@@ -14,7 +14,6 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import { useHistory } from "react-router-dom";
 
-import { auth } from "../../firebaseCredentials.js";
 import { UserContext } from "../../Providers/UserProviders";
 import EscapeRooms from "./Rooms/rooms.js";
 import Scenes from "./Scenes/scenes.js";
@@ -28,6 +27,8 @@ import {
     editScenario,
     deleteScenario,
 } from "../../lib/scenarioEndpoints";
+import { httpGet } from "../../lib/dataAccess";
+import { auth } from "../../firebaseCredentials";
 import { getAllScenes } from "../../lib/sceneEndpoints";
 import { useErrorHandler } from "react-error-boundary";
 
@@ -255,9 +256,13 @@ export default function Admin() {
                     variant="contained"
                     color="primary"
                     className={classes.submit}
-                    onClick={() => {
+                    onClick={async () => {
                         history.push("/login");
                         auth.signOut();
+                        await httpGet(
+                            process.env.REACT_APP_ADMIN_BASE_ENDPOINT +
+                                "admin_logout"
+                        );
                     }}
                 >
                     Sign Out
