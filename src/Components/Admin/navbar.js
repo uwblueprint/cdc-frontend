@@ -9,6 +9,9 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import HomeIcon from "@material-ui/icons/Home";
 
+import { httpGet } from "../../lib/dataAccess";
+import { auth } from "../../firebaseCredentials";
+
 const useStyles = makeStyles(() => ({
     root: {
         flexGrow: 1,
@@ -79,7 +82,20 @@ export default function Navbar({ home }) {
                                 Documentation
                             </MenuItem>
                             <MenuItem onClick={handleClose}>Settings</MenuItem>
-                            <MenuItem onClick={handleClose}>Logout</MenuItem>
+                            <MenuItem
+                                onClick={async () => {
+                                    handleClose();
+                                    history.push("/login");
+                                    auth.signOut();
+                                    await httpGet(
+                                        process.env
+                                            .REACT_APP_ADMIN_BASE_ENDPOINT +
+                                            "admin_logout"
+                                    );
+                                }}
+                            >
+                                Logout
+                            </MenuItem>
                         </Menu>
                     </div>
                 </Toolbar>
