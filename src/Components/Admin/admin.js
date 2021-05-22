@@ -14,7 +14,6 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import { useHistory } from "react-router-dom";
 
-import { UserContext } from "../../Providers/UserProviders";
 import EscapeRooms from "./Rooms/rooms.js";
 import Scenes from "./Scenes/scenes.js";
 import Assets from "./Assets/assets.js";
@@ -29,6 +28,7 @@ import {
 } from "../../lib/scenarioEndpoints";
 import { httpGet } from "../../lib/dataAccess";
 import { auth } from "../../firebaseCredentials";
+import { UserContext } from "../../Providers/UserProviders";
 import { getAllScenes } from "../../lib/sceneEndpoints";
 import { useErrorHandler } from "react-error-boundary";
 

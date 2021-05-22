@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
@@ -11,6 +11,7 @@ import HomeIcon from "@material-ui/icons/Home";
 
 import { httpGet } from "../../lib/dataAccess";
 import { auth } from "../../firebaseCredentials";
+import { UserContext } from "../../Providers/UserProviders";
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -28,6 +29,7 @@ const useStyles = makeStyles(() => ({
 export default function Navbar({ home }) {
     const classes = useStyles();
     const history = useHistory();
+    const user = useContext(UserContext);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
 
@@ -52,52 +54,56 @@ export default function Navbar({ home }) {
                             <HomeIcon />
                         </IconButton>
                     )}
-                    <div className={classes.profileEnd}>
-                        <IconButton
-                            aria-label="account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            onClick={handleMenu}
-                            color="inherit"
-                        >
-                            <AccountCircle />
-                        </IconButton>
-                        <Menu
-                            id="menu-appbar"
-                            anchorEl={anchorEl}
-                            anchorOrigin={{
-                                vertical: "bottom",
-                                horizontal: "center",
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: "top",
-                                horizontal: "right",
-                            }}
-                            open={open}
-                            onClose={handleClose}
-                            className={classes.menu}
-                        >
-                            <MenuItem onClick={handleClose}>
-                                Documentation
-                            </MenuItem>
-                            <MenuItem onClick={handleClose}>Settings</MenuItem>
-                            <MenuItem
-                                onClick={async () => {
-                                    handleClose();
-                                    history.push("/login");
-                                    auth.signOut();
-                                    await httpGet(
-                                        process.env
-                                            .REACT_APP_ADMIN_BASE_ENDPOINT +
-                                            "admin_logout"
-                                    );
-                                }}
+                    {user && (
+                        <div className={classes.profileEnd}>
+                            <IconButton
+                                aria-label="account of current user"
+                                aria-controls="menu-appbar"
+                                aria-haspopup="true"
+                                onClick={handleMenu}
+                                color="inherit"
                             >
-                                Logout
-                            </MenuItem>
-                        </Menu>
-                    </div>
+                                <AccountCircle />
+                            </IconButton>
+                            <Menu
+                                id="menu-appbar"
+                                anchorEl={anchorEl}
+                                anchorOrigin={{
+                                    vertical: "bottom",
+                                    horizontal: "center",
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: "top",
+                                    horizontal: "right",
+                                }}
+                                open={open}
+                                onClose={handleClose}
+                                className={classes.menu}
+                            >
+                                <MenuItem onClick={handleClose}>
+                                    Documentation
+                                </MenuItem>
+                                <MenuItem onClick={handleClose}>
+                                    Settings
+                                </MenuItem>
+                                <MenuItem
+                                    onClick={async () => {
+                                        handleClose();
+                                        history.push("/login");
+                                        auth.signOut();
+                                        await httpGet(
+                                            process.env
+                                                .REACT_APP_ADMIN_BASE_ENDPOINT +
+                                                "admin_logout"
+                                        );
+                                    }}
+                                >
+                                    Logout
+                                </MenuItem>
+                            </Menu>
+                        </div>
+                    )}
                 </Toolbar>
             </AppBar>
         </div>
