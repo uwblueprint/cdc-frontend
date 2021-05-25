@@ -10,6 +10,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import empty from "is-empty";
 import { AccountCircle } from "@material-ui/icons";
+import { useHistory } from "react-router-dom";
+
 import { auth, generateUserDocument } from "../../firebaseCredentials.js";
 
 const useStyles = makeStyles((theme) => ({
@@ -34,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Signup() {
     const classes = useStyles();
+    const history = useHistory();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -53,8 +56,11 @@ export default function Signup() {
                 email,
                 password
             );
+            user.sendEmailVerification().then(() => {
+                auth.signOut();
+            });
             generateUserDocument(user, { displayName });
-            errors.login = "";
+            history.push("/login");
         } catch (error) {
             const errorCode = error.code;
 

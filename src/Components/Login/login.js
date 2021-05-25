@@ -13,6 +13,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import empty from "is-empty";
 import { useHistory } from "react-router-dom";
+import { useErrorHandler } from "react-error-boundary";
 
 import { auth, Auth } from "../../firebaseCredentials.js";
 import { httpPost } from "../../lib/dataAccess";
@@ -40,8 +41,9 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Login() {
     const classes = useStyles();
-
     const history = useHistory();
+    const handleError = useErrorHandler();
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [allErrors, setAllErrors] = useState({});
@@ -72,14 +74,18 @@ export default function Login() {
 
                         return response;
                     } catch (error) {
-                        alert(error.response.data.message);
+                        handleError(error);
                         errors.login = error.response.data.message;
+
+                        // Given the nesting of logic here, the "user" object has already been updated
+                        // so our routing will begin using admin routes. This signout ensures the user
+                        // remains in the login/signup screens (ie. non-admin routes).
+                        auth.signOut();
                     }
                 });
             })
             .catch((error) => {
-                const errorCode = error.code;
-                setErrorMessage(errorCode, errors);
+                setErrorMessage(error, errors);
             });
 
         setAllErrors(errors);
@@ -88,7 +94,8 @@ export default function Login() {
         }
     }
 
-    function setErrorMessage(errorCode, errors) {
+    function setErrorMessage(error, errors) {
+        const errorCode = error.code;
         switch (errorCode) {
             case "auth/invalid-email":
                 errors.email = LoginErrors.InvalidEmail;
@@ -99,8 +106,13 @@ export default function Login() {
             case "auth/wrong-password":
                 errors.login = LoginErrors.WrongPassword;
                 break;
+            case "auth/user-not-found":
+                errors.email = LoginErrors.UserNotFound;
+                break;
             default:
-                errors.login = LoginErrors.Default;
+                handleError(error);
+                errors.login = error.message;
+                auth.signOut();
                 break;
         }
     }
