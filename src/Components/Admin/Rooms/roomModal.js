@@ -7,6 +7,8 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 const useStyles = makeStyles(() => ({
     textField: {
@@ -29,12 +31,18 @@ export default function RoomModal({
     const [roomName, setRoomName] = React.useState("");
     const [friendlyName, setFriendlyName] = React.useState("");
     const [roomDescription, setRoomDescription] = React.useState("");
+    const [roomSolveTime, setRoomSolveTime] = React.useState("");
+    const [isPublished, setIsPublished] = React.useState(false);
+    const [isPreviewable, setIsPreviewable] = React.useState(false);
 
     useEffect(() => {
         if (room) {
             setRoomName(room.name);
             setFriendlyName(room.friendly_name);
             setRoomDescription(room.description);
+            setIsPublished(room.is_published);
+            setIsPreviewable(room.is_previewable);
+            setRoomSolveTime(room.expected_solve_time);
         }
     }, [room]);
 
@@ -50,11 +58,18 @@ export default function RoomModal({
         setFriendlyName(event.target.value);
     };
 
+    const handleRoomSolveTimeChange = (event) => {
+        setRoomSolveTime(event.target.value);
+    };
+
     const handleModalCloseClick = () => {
         handleModalClose();
         setRoomName("");
         setRoomDescription("");
         setFriendlyName("");
+        setRoomSolveTime("");
+        setIsPublished(false);
+        setIsPreviewable(false);
     };
 
     const handleModalSubmitClick = () => {
@@ -62,10 +77,31 @@ export default function RoomModal({
             name: roomName,
             description: roomDescription,
             friendly_name: friendlyName,
+            is_published: isPublished,
+            is_previewable: isPreviewable,
         });
         setRoomName("");
         setRoomDescription("");
         setFriendlyName("");
+        setRoomSolveTime("");
+        setIsPublished(false);
+        setIsPreviewable(false);
+    };
+
+    const handleIsPublishedClick = () => {
+        if (isPublished === true) {
+            setIsPublished(false);
+        } else {
+            setIsPublished(true);
+        }
+    };
+
+    const handleIsPreviewableClick = () => {
+        if (isPreviewable === true) {
+            setIsPreviewable(false);
+        } else {
+            setIsPreviewable(true);
+        }
     };
 
     return (
@@ -101,6 +137,38 @@ export default function RoomModal({
                     <TextField
                         value={roomDescription}
                         onChange={handleRoomDescriptionChange}
+                        className={classes.textField}
+                    />
+                </div>
+                <div>
+                    <FormControlLabel
+                        value="Room is Published"
+                        control={
+                            <Checkbox
+                                onClick={handleIsPublishedClick}
+                                checked={isPublished}
+                            />
+                        }
+                        label="Room is Published"
+                    />
+                    <FormControlLabel
+                        value="Room is Previewable"
+                        control={
+                            <Checkbox
+                                onClick={handleIsPreviewableClick}
+                                checked={isPreviewable}
+                            />
+                        }
+                        label="Room is Previewable"
+                    />
+                </div>
+                <div>
+                    <Typography component="div" variant="h5">
+                        Expected Solve Time:{" "}
+                    </Typography>
+                    <TextField
+                        value={roomSolveTime}
+                        onChange={handleRoomSolveTimeChange}
                         className={classes.textField}
                     />
                 </div>
