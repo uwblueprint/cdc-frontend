@@ -58,7 +58,6 @@ export default function Signup() {
             );
             user.sendEmailVerification();
             generateUserDocument(user, { displayName });
-            errors.login = "";
             history.push("/login");
         } catch (error) {
             const errorCode = error.code;
