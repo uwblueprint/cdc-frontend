@@ -1,6 +1,5 @@
 import React, { useContext, useEffect } from "react";
 import PropTypes from "prop-types";
-import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
@@ -12,9 +11,7 @@ import AddIcon from "@material-ui/icons/Add";
 import IconButton from "@material-ui/core/IconButton";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
-import { useHistory } from "react-router-dom";
 
-import { UserContext } from "../../Providers/UserProviders";
 import EscapeRooms from "./Rooms/rooms.js";
 import Scenes from "./Scenes/scenes.js";
 import Assets from "./Assets/assets.js";
@@ -27,8 +24,7 @@ import {
     editScenario,
     deleteScenario,
 } from "../../lib/scenarioEndpoints";
-import { httpGet } from "../../lib/dataAccess";
-import { auth } from "../../firebaseCredentials";
+import { UserContext } from "../../Providers/UserProviders";
 import { getAllScenes } from "../../lib/sceneEndpoints";
 import { useErrorHandler } from "react-error-boundary";
 
@@ -74,9 +70,6 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: "column",
         alignItems: "center",
     },
-    submit: {
-        margin: theme.spacing(3, 0, 2),
-    },
     root: {
         flexGrow: 1,
         background: "#fafafa",
@@ -121,7 +114,6 @@ export default function Admin() {
     const user = useContext(UserContext);
     const handleError = useErrorHandler();
 
-    const history = useHistory();
     const [value, setValue] = React.useState("rooms");
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [createModalOpen, setCreateModalOpen] = React.useState(false);
@@ -250,23 +242,6 @@ export default function Admin() {
                 <Typography component="div" variant="h6">
                     Welcome {user.displayName}
                 </Typography>
-                <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    className={classes.submit}
-                    onClick={async () => {
-                        history.push("/login");
-                        auth.signOut();
-                        await httpGet(
-                            process.env.REACT_APP_ADMIN_BASE_ENDPOINT +
-                                "admin_logout"
-                        );
-                    }}
-                >
-                    Sign Out
-                </Button>
 
                 <div className={classes.root}>
                     <IconButton
