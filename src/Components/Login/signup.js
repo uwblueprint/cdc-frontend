@@ -56,7 +56,9 @@ export default function Signup() {
                 email,
                 password
             );
-            user.sendEmailVerification();
+            user.sendEmailVerification().then(() => {
+                auth.signOut();
+            });
             generateUserDocument(user, { displayName });
             history.push("/login");
         } catch (error) {
