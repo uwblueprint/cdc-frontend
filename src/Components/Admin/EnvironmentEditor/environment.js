@@ -205,11 +205,6 @@ export default function EnvironmentEditor({
             (scene) => scene.id !== deleteSceneId
         );
 
-        const newEnvData = environment;
-        newEnvData.scene_ids = modifiedScenes.map((scene) => scene.id);
-        const newEnv = await editScenario(newEnvData, handleError);
-
-        setEnvironment(newEnv.data);
         setScenes(modifiedScenes);
         setDeleteSceneId(null);
         setDeleteModalOpen(false);
