@@ -45,6 +45,15 @@ export default function Navbar({ home }) {
         history.push("/admin");
     };
 
+    async function handleLogout() {
+        handleClose();
+        history.push("/login");
+        auth.signOut();
+        await httpGet(
+            process.env.REACT_APP_ADMIN_BASE_ENDPOINT + "admin_logout"
+        );
+    }
+
     return (
         <div className={classes.root}>
             <AppBar position="fixed">
@@ -87,18 +96,7 @@ export default function Navbar({ home }) {
                                 <MenuItem onClick={handleClose}>
                                     Settings
                                 </MenuItem>
-                                <MenuItem
-                                    onClick={async () => {
-                                        handleClose();
-                                        history.push("/login");
-                                        auth.signOut();
-                                        await httpGet(
-                                            process.env
-                                                .REACT_APP_ADMIN_BASE_ENDPOINT +
-                                                "admin_logout"
-                                        );
-                                    }}
-                                >
+                                <MenuItem onClick={handleLogout}>
                                     Logout
                                 </MenuItem>
                             </Menu>
