@@ -87,7 +87,19 @@ export default function SceneCard({
                                 handleEditClick(scene.id);
                             }}
                         >
-                            Edit
+                            Edit Metadata
+                        </MenuItem>
+                        <MenuItem
+                            target="_blank"
+                            onClick={(event) =>
+                                window.open(
+                                    process.env.REACT_APP_ADMIN_BACKEND_URL +
+                                        "/admin/scene/" +
+                                        scene.id
+                                )
+                            }
+                        >
+                            Open Inspector
                         </MenuItem>
                         <MenuItem
                             onClick={() => {
@@ -95,7 +107,7 @@ export default function SceneCard({
                                 handleDeleteClick(scene.id);
                             }}
                         >
-                            Delete
+                            Delete Scene
                         </MenuItem>
                     </Menu>
                 </div>
