@@ -89,17 +89,22 @@ export default function SceneCard({
                         >
                             Edit Metadata
                         </MenuItem>
-                        <MenuItem
-                            target="_blank"
-                            onClick={() =>
-                                window.open(
+                        <MenuItem>
+                            <a
+                                href={
                                     process.env.REACT_APP_ADMIN_BACKEND_URL +
-                                        "/admin/scene/" +
-                                        scene.id
-                                )
-                            }
-                        >
-                            Open Inspector
+                                    "/admin/scene/" +
+                                    scene.id
+                                }
+                                target="_blank"
+                                rel="noreferrer"
+                                style={{
+                                    textDecoration: "none",
+                                    color: "#000",
+                                }}
+                            >
+                                Open Inspector
+                            </a>
                         </MenuItem>
                         <MenuItem
                             onClick={() => {
