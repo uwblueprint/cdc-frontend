@@ -75,4 +75,8 @@ See cdc-backend for backend setup.
 
 # Deployment
 
-todo
+Deployment is done through Netlify.
+
+It can be found [here](https://distresscenter.netlify.app/).
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/e3c6d294-8df3-4841-b171-7d5e5782d9ec/deploy-status)](https://app.netlify.com/sites/distresscenter/deploys)
