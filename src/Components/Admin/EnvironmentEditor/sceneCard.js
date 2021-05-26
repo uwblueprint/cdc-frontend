@@ -91,7 +91,7 @@ export default function SceneCard({
                         </MenuItem>
                         <MenuItem
                             target="_blank"
-                            onClick={(event) =>
+                            onClick={() =>
                                 window.open(
                                     process.env.REACT_APP_ADMIN_BACKEND_URL +
                                         "/admin/scene/" +
