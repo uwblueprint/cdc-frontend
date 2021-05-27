@@ -1,4 +1,4 @@
-import { httpGet, httpPost, httpPut } from "./dataAccess";
+import { httpGet, httpPost, httpPut, httpDelete } from "./dataAccess";
 
 const baseEndpoint = process.env.REACT_APP_ADMIN_BASE_ENDPOINT;
 
@@ -61,6 +61,15 @@ export const editScene = async (
             camera_properties,
         });
         return response;
+    } catch (error) {
+        handleError(error);
+        throw error;
+    }
+};
+
+export const deleteScene = async (id, handleError) => {
+    try {
+        await httpDelete(baseEndpoint + `scene/${id}`);
     } catch (error) {
         handleError(error);
         throw error;

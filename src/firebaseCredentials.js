@@ -15,6 +15,7 @@ export const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 export const auth = firebase.auth();
+export const Auth = firebase.auth.Auth;
 export const firestore = firebase.firestore();
 
 export const generateUserDocument = async (user, additionalData) => {

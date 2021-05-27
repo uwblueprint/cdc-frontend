@@ -12,8 +12,12 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import empty from "is-empty";
-import { auth } from "../../firebaseCredentials.js";
 import { useHistory } from "react-router-dom";
+import { useErrorHandler } from "react-error-boundary";
+
+import { auth, Auth } from "../../firebaseCredentials.js";
+import { httpPost } from "../../lib/dataAccess";
+import { LoginErrors } from "./loginErrors.ts";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -37,8 +41,9 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Login() {
     const classes = useStyles();
-
     const history = useHistory();
+    const handleError = useErrorHandler();
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [allErrors, setAllErrors] = useState({});
@@ -47,33 +52,68 @@ export default function Login() {
         return email.length > 0 && password.length > 0;
     }
 
-    function handleSubmit(event) {
+    async function handleSubmit(event) {
         event.preventDefault();
         const errors = {};
 
-        auth.signInWithEmailAndPassword(email, password).catch((error) => {
-            errors.login = "Email or password is incorrect.";
-            const errorCode = error.code;
+        auth.setPersistence(Auth.Persistence.SESSION);
 
-            switch (errorCode) {
-                case "auth/invalid-email":
-                    errors.email = "Please enter a valid email.";
-                    break;
-                case "auth/user-disabled":
-                    errors.email = "Email has been disabled.";
-                    break;
-                case "auth/wrong-password":
-                    errors.login = "Email or password is incorrect.";
-                    break;
-                default:
-                    errors.login = "Email or password is incorrect.";
-                    break;
-            }
-            setAllErrors(errors);
-        });
+        await auth
+            .signInWithEmailAndPassword(email, password)
+            .then(async () => {
+                // Get the user's ID token as it is needed to exchange for a session cookie.
+                await auth.currentUser.getIdToken().then(async (idToken) => {
+                    try {
+                        const response = await httpPost(
+                            "/admin_login",
+                            {
+                                idToken: idToken,
+                            },
+                            true
+                        );
 
+                        return response;
+                    } catch (error) {
+                        handleError(error);
+                        errors.login = error.response.data.message;
+
+                        // Given the nesting of logic here, the "user" object has already been updated
+                        // so our routing will begin using admin routes. This signout ensures the user
+                        // remains in the login/signup screens (ie. non-admin routes).
+                        auth.signOut();
+                    }
+                });
+            })
+            .catch((error) => {
+                setErrorMessage(error, errors);
+            });
+
+        setAllErrors(errors);
         if (!errors.email && !errors.login) {
             history.push("/admin");
+        }
+    }
+
+    function setErrorMessage(error, errors) {
+        const errorCode = error.code;
+        switch (errorCode) {
+            case "auth/invalid-email":
+                errors.email = LoginErrors.InvalidEmail;
+                break;
+            case "auth/user-disabled":
+                errors.email = LoginErrors.UserDisabled;
+                break;
+            case "auth/wrong-password":
+                errors.login = LoginErrors.WrongPassword;
+                break;
+            case "auth/user-not-found":
+                errors.email = LoginErrors.UserNotFound;
+                break;
+            default:
+                handleError(error);
+                errors.login = error.message;
+                auth.signOut();
+                break;
         }
     }
 

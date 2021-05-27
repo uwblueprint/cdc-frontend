@@ -29,7 +29,12 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-export default function SceneCard({ scene, index, handleEditClick }) {
+export default function SceneCard({
+    scene,
+    index,
+    handleEditClick,
+    handleDeleteClick,
+}) {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -82,9 +87,33 @@ export default function SceneCard({ scene, index, handleEditClick }) {
                                 handleEditClick(scene.id);
                             }}
                         >
-                            Edit
+                            Edit Metadata
                         </MenuItem>
-                        <MenuItem>Delete</MenuItem>
+                        <MenuItem>
+                            <a
+                                href={
+                                    process.env.REACT_APP_ADMIN_BACKEND_URL +
+                                    "/admin/scene/" +
+                                    scene.id
+                                }
+                                target="_blank"
+                                rel="noreferrer"
+                                style={{
+                                    textDecoration: "none",
+                                    color: "#000",
+                                }}
+                            >
+                                Open Inspector
+                            </a>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setAnchorEl(null);
+                                handleDeleteClick(scene.id);
+                            }}
+                        >
+                            Delete Scene
+                        </MenuItem>
                     </Menu>
                 </div>
             )}
