@@ -98,19 +98,11 @@ export default function RoomModal({
     };
 
     const handleIsPublishedClick = () => {
-        if (isPublished === true) {
-            setIsPublished(false);
-        } else {
-            setIsPublished(true);
-        }
+        setIsPublished(!isPublished);
     };
 
     const handleIsPreviewableClick = () => {
-        if (isPreviewable === true) {
-            setIsPreviewable(false);
-        } else {
-            setIsPreviewable(true);
-        }
+        setIsPreviewable(!isPreviewable);
     };
 
     return (
@@ -149,7 +141,7 @@ export default function RoomModal({
                         className={classes.textField}
                     />
                 </div>
-                {isEdit ? (
+                {isEdit && (
                     <div>
                         <Typography component="div" variant="h5">
                             Expected Solve Time:{" "}
@@ -180,7 +172,7 @@ export default function RoomModal({
                             label="Room is Previewable"
                         />
                     </div>
-                ) : null}
+                )}
             </DialogContent>
             <DialogActions className={classes.buttonContainer}>
                 <Button onClick={handleModalCloseClick}> Cancel </Button>
