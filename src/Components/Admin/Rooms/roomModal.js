@@ -36,14 +36,12 @@ export default function RoomModal({
     const [isPreviewable, setIsPreviewable] = React.useState(false);
 
     useEffect(() => {
-        if (room) {
-            setRoomName(room.name);
-            setFriendlyName(room.friendly_name);
-            setRoomDescription(room.description);
-            setIsPublished(room.is_published);
-            setIsPreviewable(room.is_previewable);
-            setRoomSolveTime(room.expected_solve_time);
-        }
+        setRoomName(room ? room.name : "");
+        setFriendlyName(room ? room.friendly_name : "");
+        setRoomDescription(room ? room.description : "");
+        setIsPublished(room ? room.is_published : false);
+        setIsPreviewable(room ? room.is_previewable : false);
+        setRoomSolveTime(room ? room.expected_solve_time : "");
     }, [room]);
 
     const handleRoomNameChange = (event) => {
@@ -62,16 +60,6 @@ export default function RoomModal({
         setRoomSolveTime(event.target.value);
     };
 
-    const handleModalCloseClick = () => {
-        handleModalClose();
-        setRoomName("");
-        setRoomDescription("");
-        setFriendlyName("");
-        setRoomSolveTime("");
-        setIsPublished(false);
-        setIsPreviewable(false);
-    };
-
     const handleModalSubmitClick = () => {
         if (isEdit) {
             handleSubmit({
@@ -82,9 +70,6 @@ export default function RoomModal({
                 is_previewable: isPreviewable,
                 expected_solve_time: roomSolveTime,
             });
-            setRoomSolveTime("");
-            setIsPublished(false);
-            setIsPreviewable(false);
         } else {
             handleSubmit({
                 name: roomName,
@@ -92,9 +77,6 @@ export default function RoomModal({
                 friendly_name: friendlyName,
             });
         }
-        setRoomName("");
-        setRoomDescription("");
-        setFriendlyName("");
     };
 
     const handleIsPublishedClick = () => {
@@ -106,7 +88,7 @@ export default function RoomModal({
     };
 
     return (
-        <Dialog open={modalOpen} onClose={handleModalCloseClick}>
+        <Dialog open={modalOpen} onClose={handleModalClose}>
             <DialogTitle>
                 {isEdit ? "Edit Escape Room" : "New Escape Room"}
             </DialogTitle>
@@ -175,7 +157,7 @@ export default function RoomModal({
                 )}
             </DialogContent>
             <DialogActions className={classes.buttonContainer}>
-                <Button onClick={handleModalCloseClick}> Cancel </Button>
+                <Button onClick={handleModalClose}> Cancel </Button>
                 <Button onClick={handleModalSubmitClick}>
                     {isEdit ? "Edit" : "Create"}
                 </Button>
