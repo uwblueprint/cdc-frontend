@@ -73,19 +73,28 @@ export default function RoomModal({
     };
 
     const handleModalSubmitClick = () => {
-        handleSubmit({
-            name: roomName,
-            description: roomDescription,
-            friendly_name: friendlyName,
-            is_published: isPublished,
-            is_previewable: isPreviewable,
-        });
+        if (isEdit) {
+            handleSubmit({
+                name: roomName,
+                description: roomDescription,
+                friendly_name: friendlyName,
+                is_published: isPublished,
+                is_previewable: isPreviewable,
+                expected_solve_time: roomSolveTime,
+            });
+            setRoomSolveTime("");
+            setIsPublished(false);
+            setIsPreviewable(false);
+        } else {
+            handleSubmit({
+                name: roomName,
+                description: roomDescription,
+                friendly_name: friendlyName,
+            });
+        }
         setRoomName("");
         setRoomDescription("");
         setFriendlyName("");
-        setRoomSolveTime("");
-        setIsPublished(false);
-        setIsPreviewable(false);
     };
 
     const handleIsPublishedClick = () => {
@@ -140,38 +149,38 @@ export default function RoomModal({
                         className={classes.textField}
                     />
                 </div>
-                <div>
-                    <FormControlLabel
-                        value="Room is Published"
-                        control={
-                            <Checkbox
-                                onClick={handleIsPublishedClick}
-                                checked={isPublished}
-                            />
-                        }
-                        label="Room is Published"
-                    />
-                    <FormControlLabel
-                        value="Room is Previewable"
-                        control={
-                            <Checkbox
-                                onClick={handleIsPreviewableClick}
-                                checked={isPreviewable}
-                            />
-                        }
-                        label="Room is Previewable"
-                    />
-                </div>
-                <div>
-                    <Typography component="div" variant="h5">
-                        Expected Solve Time:{" "}
-                    </Typography>
-                    <TextField
-                        value={roomSolveTime}
-                        onChange={handleRoomSolveTimeChange}
-                        className={classes.textField}
-                    />
-                </div>
+                {isEdit ? (
+                    <div>
+                        <Typography component="div" variant="h5">
+                            Expected Solve Time:{" "}
+                        </Typography>
+                        <TextField
+                            value={roomSolveTime}
+                            onChange={handleRoomSolveTimeChange}
+                            className={classes.textField}
+                        />
+                        <FormControlLabel
+                            value="Room is Published"
+                            control={
+                                <Checkbox
+                                    onClick={handleIsPublishedClick}
+                                    checked={isPublished}
+                                />
+                            }
+                            label="Room is Published"
+                        />
+                        <FormControlLabel
+                            value="Room is Previewable"
+                            control={
+                                <Checkbox
+                                    onClick={handleIsPreviewableClick}
+                                    checked={isPreviewable}
+                                />
+                            }
+                            label="Room is Previewable"
+                        />
+                    </div>
+                ) : null}
             </DialogContent>
             <DialogActions className={classes.buttonContainer}>
                 <Button onClick={handleModalCloseClick}> Cancel </Button>

@@ -193,6 +193,7 @@ export default function Admin() {
         friendly_name,
         is_published,
         is_previewable,
+        expected_solve_time,
     }) => {
         setEditModalOpen(false);
         const resp = await editScenario(
@@ -204,7 +205,7 @@ export default function Admin() {
                 scene_ids: editRoom.scene_ids,
                 is_published,
                 is_previewable,
-                expected_solve_time: editRoom.expected_solve_time,
+                expected_solve_time,
             },
             handleError
         );

@@ -48,6 +48,7 @@ export const editScenario = async (
         scene_ids,
         is_published,
         is_previewable,
+        expected_solve_time,
     },
     handleError
 ) => {
@@ -59,6 +60,7 @@ export const editScenario = async (
             scene_ids,
             is_published,
             is_previewable,
+            expected_solve_time,
         });
         return response;
     } catch (error) {
