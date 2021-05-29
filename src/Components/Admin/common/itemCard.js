@@ -52,11 +52,15 @@ export default function ItemCard({
     };
 
     const handleCardClick = () => {
-        history.push(
-            cardType === "environment"
-                ? `/admin/environment/${data.id}`
-                : `/admin/scene/${data.id}`
-        );
+        if (cardType === "environment") {
+            history.push(`/admin/environment/${data.id}`);
+        } else {
+            window.open(
+                process.env.REACT_APP_ADMIN_BACKEND_URL +
+                    "/admin/scene/" +
+                    data.id
+            );
+        }
     };
 
     const open = Boolean(anchorEl);
@@ -119,7 +123,9 @@ export default function ItemCard({
                         handleCardClick();
                     }}
                 >
-                    Edit {cardType === "environment" ? "room" : "scene"}
+                    {cardType === "environment"
+                        ? "Edit room"
+                        : "Open Inspector"}
                 </MenuItem>
                 <MenuItem
                     onClick={() => {
