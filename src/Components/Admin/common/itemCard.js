@@ -116,10 +116,23 @@ export default function ItemCard({
                 <MenuItem
                     onClick={() => {
                         setAnchorEl(null);
-                        handleCardClick();
                     }}
                 >
-                    Edit {cardType === "environment" ? "room" : "scene"}
+                    <a
+                        href={
+                            process.env.REACT_APP_ADMIN_BACKEND_URL +
+                            "/admin/scene/" +
+                            data.id
+                        }
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{
+                            textDecoration: "none",
+                            color: "#000",
+                        }}
+                    >
+                        Open Inspector
+                    </a>
                 </MenuItem>
                 <MenuItem
                     onClick={() => {
