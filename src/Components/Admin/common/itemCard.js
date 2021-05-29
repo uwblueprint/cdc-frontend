@@ -51,14 +51,6 @@ export default function ItemCard({
         setAnchorEl(null);
     };
 
-    const handleCardClick = () => {
-        history.push(
-            cardType === "environment"
-                ? `/admin/environment/${data.id}`
-                : `/admin/scene/${data.id}`
-        );
-    };
-
     const open = Boolean(anchorEl);
 
     return (
@@ -73,19 +65,28 @@ export default function ItemCard({
             justify="flex-start"
             className={classes.card}
         >
-            <Grid
-                container
-                item
-                xs={12}
-                alignItems="center"
-                justify="center"
-                onClick={handleCardClick}
-            >
-                <img
-                    className={classes.cardImage}
-                    src={data.image ? data.image : defaultImage}
-                    alt={cardType === "environment" ? "Escape Room" : "Scene"}
-                />
+            <Grid container item xs={12} alignItems="center" justify="center">
+                <a
+                    href={
+                        process.env.REACT_APP_ADMIN_BACKEND_URL +
+                        "/admin/scene/" +
+                        data.id
+                    }
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{
+                        textDecoration: "none",
+                        color: "#000",
+                    }}
+                >
+                    <img
+                        className={classes.cardImage}
+                        src={data.image ? data.image : defaultImage}
+                        alt={
+                            cardType === "environment" ? "Escape Room" : "Scene"
+                        }
+                    />
+                </a>
             </Grid>
             <Grid
                 container
