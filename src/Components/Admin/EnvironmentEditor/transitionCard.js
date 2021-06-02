@@ -6,33 +6,30 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 
 const useStyles = makeStyles(() => ({
-    sceneItem: {
+    transitionItem: {
         display: "inline-flex",
         flexDirection: "column",
         backgroundColor: "#E2E5ED",
         padding: 16,
         userSelect: "none",
-        margin: "0 16px 0 0",
-        width: "300px",
-        height: "300px",
+        margin: "0 25px 0 0",
+        verticalAlign: "center",
+        width: "150px",
+        height: "150px",
     },
-    sceneTopRow: {
+    transitionTopRow: {
         display: "flex",
         width: "100%",
-        height: "90%",
+        height: "100px",
         justifyContent: "center",
-        marginTop: 140,
+        marginTop: 75,
     },
-    sceneBottomRow: {
+    transitionBottomRow: {
         alignSelf: "flex-end",
     },
 }));
 
-export default function SceneCard({
-    scene,
-    handleEditClick,
-    handleDeleteClick,
-}) {
+export default function TransitionCard({ scene, handleEditClick }) {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -46,9 +43,9 @@ export default function SceneCard({
     };
 
     return (
-        <div className={classes.sceneItem}>
-            <div className={classes.sceneTopRow}>{scene.name}</div>
-            <div className={classes.sceneBottomRow}>
+        <div className={classes.transitionItem}>
+            <div className={classes.transitionTopRow}>Transition</div>
+            <div className={classes.transitionBottomRow}>
                 <IconButton onClick={handleMenuClick}>
                     <MoreVertIcon />
                 </IconButton>
@@ -73,32 +70,7 @@ export default function SceneCard({
                         handleEditClick(scene.id);
                     }}
                 >
-                    Edit Metadata
-                </MenuItem>
-                <MenuItem>
-                    <a
-                        href={
-                            process.env.REACT_APP_ADMIN_BACKEND_URL +
-                            "/admin/scene/" +
-                            scene.id
-                        }
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{
-                            textDecoration: "none",
-                            color: "#000",
-                        }}
-                    >
-                        Open Inspector
-                    </a>
-                </MenuItem>
-                <MenuItem
-                    onClick={() => {
-                        setAnchorEl(null);
-                        handleDeleteClick(scene.id);
-                    }}
-                >
-                    Delete Scene
+                    Edit Transitions
                 </MenuItem>
             </Menu>
         </div>
