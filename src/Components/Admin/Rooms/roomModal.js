@@ -34,6 +34,12 @@ export default function RoomModal({
     const [roomSolveTime, setRoomSolveTime] = React.useState("");
     const [isPublished, setIsPublished] = React.useState(false);
     const [isPreviewable, setIsPreviewable] = React.useState(false);
+    const [errors, setErrors] = React.useState({
+        name: "",
+        friendlyName: "",
+        description: "",
+        solveTime: "",
+    });
 
     useEffect(() => {
         setRoomName(room ? room.name : "");
@@ -42,26 +48,86 @@ export default function RoomModal({
         setIsPublished(room ? room.is_published : false);
         setIsPreviewable(room ? room.is_previewable : false);
         setRoomSolveTime(room ? room.expected_solve_time : "");
+        setErrors(
+            room
+                ? room.errors
+                : {
+                      name: "",
+                      friendlyName: "",
+                      description: "",
+                      solveTime: "",
+                  }
+        );
     }, [room]);
 
     const handleRoomNameChange = (event) => {
         setRoomName(event.target.value);
-    };
-
-    const handleRoomDescriptionChange = (event) => {
-        setRoomDescription(event.target.value);
+        setErrors({ name: "" });
+        const reg = new RegExp(/^[a-zA-Z0-9 _-]{1,50}$/).test(
+            event.target.value
+        );
+        if (!reg) {
+            setErrors({
+                name:
+                    "Only characters allowed are alphanumeric (a-z, A-Z, 0-9), dashes (- and _), and spaces",
+            });
+        }
     };
 
     const handleFriendlyNameChange = (event) => {
         setFriendlyName(event.target.value);
+        setErrors({ friendlyName: "" });
+        const reg = new RegExp(/^[a-zA-Z0-9_-]{1,50}$/).test(
+            event.target.value
+        );
+        if (!reg) {
+            setErrors({
+                friendlyName:
+                    "Only characters allowed are alphanumeric (a-z, A-Z, 0-9) and dashes (- and _)",
+            });
+        }
+    };
+
+    const handleRoomDescriptionChange = (event) => {
+        setRoomDescription(event.target.value);
+        setErrors({ description: "" });
+        const reg = new RegExp(/^[?!.,a-zA-Z0-9 _-]{,2000}$/).test(
+            event.target.value
+        );
+        if (!reg) {
+            setErrors({
+                description:
+                    "Only characters allowed are alphanumeric (a-z, A-Z, 0-9), dashes (- and _), punctuation (?!.,), and spaces",
+            });
+        }
     };
 
     const handleRoomSolveTimeChange = (event) => {
         setRoomSolveTime(event.target.value);
+        setErrors({ solveTime: "" });
+        const reg = new RegExp(/^[a-zA-Z0-9 _-]{,50}$/).test(
+            event.target.value
+        );
+        if (!reg) {
+            setErrors({
+                solveTime:
+                    "Only characters allowed are alphanumeric (a-z, A-Z, 0-9), dashes (- and _), and spaces",
+            });
+        }
     };
 
     const handleModalSubmitClick = () => {
-        if (isEdit) {
+        const error = Boolean(
+            errors
+                ? errors.name ||
+                      errors.friendlyName ||
+                      errors.description ||
+                      errors.solveTime
+                : false
+        );
+
+        if (isEdit && !error) {
+            console.log("made it to edit");
             handleSubmit({
                 name: roomName,
                 description: roomDescription,
@@ -70,7 +136,8 @@ export default function RoomModal({
                 is_previewable: isPreviewable,
                 expected_solve_time: roomSolveTime,
             });
-        } else {
+        } else if (!isEdit && !error) {
+            console.log("made it to create");
             handleSubmit({
                 name: roomName,
                 description: roomDescription,
@@ -101,6 +168,9 @@ export default function RoomModal({
                         value={roomName}
                         onChange={handleRoomNameChange}
                         className={classes.textField}
+                        required
+                        error={Boolean(errors ? errors.name : false)}
+                        helperText={errors ? errors.name : false}
                     />
                 </div>
                 <div>
@@ -111,6 +181,9 @@ export default function RoomModal({
                         value={friendlyName}
                         onChange={handleFriendlyNameChange}
                         className={classes.textField}
+                        required
+                        error={Boolean(errors ? errors.friendlyName : false)}
+                        helperText={errors ? errors.friendlyName : false}
                     />
                 </div>
                 <div>
@@ -121,6 +194,9 @@ export default function RoomModal({
                         value={roomDescription}
                         onChange={handleRoomDescriptionChange}
                         className={classes.textField}
+                        required
+                        error={Boolean(errors ? errors.description : false)}
+                        helperText={errors ? errors.description : false}
                     />
                 </div>
                 {isEdit && (
@@ -132,6 +208,9 @@ export default function RoomModal({
                             value={roomSolveTime}
                             onChange={handleRoomSolveTimeChange}
                             className={classes.textField}
+                            required
+                            error={Boolean(errors ? errors.solveTime : false)}
+                            helperText={errors ? errors.solveTime : false}
                         />
                         <FormControlLabel
                             value="Room is Published"
