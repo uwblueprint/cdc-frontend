@@ -127,7 +127,6 @@ export default function RoomModal({
         );
 
         if (isEdit && !error) {
-            console.log("made it to edit");
             handleSubmit({
                 name: roomName,
                 description: roomDescription,
@@ -137,7 +136,6 @@ export default function RoomModal({
                 expected_solve_time: roomSolveTime,
             });
         } else if (!isEdit && !error) {
-            console.log("made it to create");
             handleSubmit({
                 name: roomName,
                 description: roomDescription,
