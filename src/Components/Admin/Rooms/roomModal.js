@@ -91,7 +91,7 @@ export default function RoomModal({
     const handleRoomDescriptionChange = (event) => {
         setRoomDescription(event.target.value);
         setErrors({ description: "" });
-        const reg = new RegExp(/^[?!.,a-zA-Z0-9 _-]{,2000}$/).test(
+        const reg = new RegExp(/^[?!.,a-zA-Z0-9 _-]{1,2000}$/).test(
             event.target.value
         );
         if (!reg) {
@@ -105,7 +105,7 @@ export default function RoomModal({
     const handleRoomSolveTimeChange = (event) => {
         setRoomSolveTime(event.target.value);
         setErrors({ solveTime: "" });
-        const reg = new RegExp(/^[a-zA-Z0-9 _-]{,50}$/).test(
+        const reg = new RegExp(/^[a-zA-Z0-9 _-]{1,50}$/).test(
             event.target.value
         );
         if (!reg) {
