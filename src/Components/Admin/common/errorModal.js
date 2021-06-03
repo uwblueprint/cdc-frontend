@@ -44,7 +44,7 @@ export default function ErrorModal({ error, resetErrorBoundary }) {
             <DialogActions className={classes.buttonContainer}>
                 <Button
                     onClick={resetErrorBoundary}
-                    classname={classes.deleteButton}
+                    className={classes.deleteButton}
                 >
                     Close
                 </Button>

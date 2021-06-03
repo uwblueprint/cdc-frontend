@@ -22,7 +22,7 @@ const useStyles = makeStyles(() => ({
         width: "100%",
         height: "100px",
         justifyContent: "center",
-        marginTop: 75,
+        marginTop: 65,
     },
     transitionBottomRow: {
         alignSelf: "flex-end",

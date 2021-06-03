@@ -4,12 +4,14 @@ import Button from "@material-ui/core/Button";
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 import AddIcon from "@material-ui/icons/Add";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { useErrorHandler } from "react-error-boundary";
 
 import Navbar from "../navbar";
 import EnvironmentBar from "./environmentBar";
 import SceneCard from "./sceneCard";
-import TransitionCard from "./transitionCard";
 import SceneModal from "./sceneModal";
+import TransitionCard from "./transitionCard";
+import TransitionModal from "./transitionModal";
 import DeleteModal from "../common/deleteModal";
 import { getScenario, editScenario } from "../../../lib/scenarioEndpoints";
 import {
@@ -18,7 +20,6 @@ import {
     editScene,
     deleteScene,
 } from "../../../lib/sceneEndpoints";
-import { useErrorHandler } from "react-error-boundary";
 
 const useStyles = makeStyles((theme) => ({
     page: {
@@ -73,7 +74,7 @@ export default function EnvironmentEditor({
     const [editSceneInfo, setEditSceneInfo] = useState({});
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [deleteSceneId, setDeleteSceneId] = React.useState(null);
-    const [editTransitionInfo, setEditTransitionInfo] = useState({});
+    const [editTransitionInfo, setEditTransitionInfo] = useState([]);
     const [editTransitionModalOpen, setEditTransitionModalOpen] = useState(
         false
     );
@@ -168,10 +169,11 @@ export default function EnvironmentEditor({
     };
 
     const onTransitionEditClick = (sceneId) => {
-        const scene = scenes.find((scene) => scene.id === sceneId);
+        const sceneIndex = environment.scene_ids.indexOf(sceneId);
+        const allTransitions = environment.transitions;
+        const transitions = allTransitions[sceneIndex + 1];
 
-        // TODO: get transition information (have to go up to scenario and match index from scene table)
-        setEditTransitionInfo(scene);
+        setEditTransitionInfo(transitions.data);
         setEditTransitionModalOpen(true);
     };
 
@@ -182,7 +184,7 @@ export default function EnvironmentEditor({
 
     const onTransitionModalClose = () => {
         setEditTransitionModalOpen(false);
-        setEditTransitionInfo({});
+        setEditTransitionInfo([]);
     };
 
     const onEditModalSubmit = async (name, background_id) => {
@@ -209,10 +211,13 @@ export default function EnvironmentEditor({
         setScenes(copiedScenes);
     };
 
-    const onTransitionModalSubmit = async () => {
+    const onTransitionModalSubmit = async (transitions) => {
         setEditTransitionModalOpen(false);
 
-        // TODO: edit transition data upon edit
+        const envData = environment;
+        envData.transitions = [...transitions];
+        const response = await editScenario(envData, handleError);
+        setEnvironment(response.data);
     };
 
     const onDeleteButtonClick = (sceneId) => {
@@ -341,12 +346,11 @@ export default function EnvironmentEditor({
                 handleSubmit={onEditModalSubmit}
                 isEdit
             />
-            <SceneModal
-                scene={editTransitionInfo}
+            <TransitionModal
+                originalTransitions={editTransitionInfo}
                 modalOpen={editTransitionModalOpen}
                 handleModalClose={onTransitionModalClose}
                 handleSubmit={onTransitionModalSubmit}
-                isEdit
             />
             <DeleteModal
                 open={deleteModalOpen}
