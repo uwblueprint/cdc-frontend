@@ -3,11 +3,12 @@ import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 import AddIcon from "@material-ui/icons/Add";
-import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 import Navbar from "../navbar";
 import EnvironmentBar from "./environmentBar";
 import SceneCard from "./sceneCard";
+import TransitionCard from "./transitionCard";
 import SceneModal from "./sceneModal";
 import DeleteModal from "../common/deleteModal";
 import { getScenario, editScenario } from "../../../lib/scenarioEndpoints";
@@ -22,6 +23,9 @@ import { useErrorHandler } from "react-error-boundary";
 const useStyles = makeStyles((theme) => ({
     page: {
         marginTop: theme.spacing(8),
+    },
+    sceneAndTransitionContainer: {
+        minWidth: 600,
     },
     container: {
         paddingTop: theme.spacing(12),
@@ -69,6 +73,10 @@ export default function EnvironmentEditor({
     const [editSceneInfo, setEditSceneInfo] = useState({});
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [deleteSceneId, setDeleteSceneId] = React.useState(null);
+    const [editTransitionInfo, setEditTransitionInfo] = useState({});
+    const [editTransitionModalOpen, setEditTransitionModalOpen] = useState(
+        false
+    );
 
     useEffect(() => {
         const getEnvironment = async () => {
@@ -159,9 +167,22 @@ export default function EnvironmentEditor({
         setEditModalOpen(true);
     };
 
+    const onTransitionEditClick = (sceneId) => {
+        const scene = scenes.find((scene) => scene.id === sceneId);
+
+        // TODO: get transition information (have to go up to scenario and match index from scene table)
+        setEditTransitionInfo(scene);
+        setEditTransitionModalOpen(true);
+    };
+
     const onEditModalClose = () => {
         setEditModalOpen(false);
         setEditSceneInfo({});
+    };
+
+    const onTransitionModalClose = () => {
+        setEditTransitionModalOpen(false);
+        setEditTransitionInfo({});
     };
 
     const onEditModalSubmit = async (name, background_id) => {
@@ -186,6 +207,12 @@ export default function EnvironmentEditor({
         const copiedScenes = [...scenes];
         copiedScenes[replaceIndex] = resp.data;
         setScenes(copiedScenes);
+    };
+
+    const onTransitionModalSubmit = async () => {
+        setEditTransitionModalOpen(false);
+
+        // TODO: edit transition data upon edit
     };
 
     const onDeleteButtonClick = (sceneId) => {
@@ -232,18 +259,45 @@ export default function EnvironmentEditor({
                                     >
                                         {scenes.map(function (scene, index) {
                                             return (
-                                                <div key={scene.id}>
-                                                    <SceneCard
-                                                        scene={scene}
-                                                        index={index}
-                                                        handleEditClick={
-                                                            onEditButtonClick
-                                                        }
-                                                        handleDeleteClick={
-                                                            onDeleteButtonClick
-                                                        }
-                                                    />
-                                                </div>
+                                                <Draggable
+                                                    key={scene.id}
+                                                    index={index}
+                                                    draggableId={scene.id.toString()}
+                                                >
+                                                    {(provided) => (
+                                                        <div
+                                                            ref={
+                                                                provided.innerRef
+                                                            }
+                                                            className={
+                                                                classes.sceneAndTransitionContainer
+                                                            }
+                                                            style={
+                                                                provided
+                                                                    .draggableProps
+                                                                    .style
+                                                            }
+                                                            {...provided.draggableProps}
+                                                            {...provided.dragHandleProps}
+                                                        >
+                                                            <SceneCard
+                                                                scene={scene}
+                                                                handleEditClick={
+                                                                    onEditButtonClick
+                                                                }
+                                                                handleDeleteClick={
+                                                                    onDeleteButtonClick
+                                                                }
+                                                            />
+                                                            <TransitionCard
+                                                                scene={scene}
+                                                                handleEditClick={
+                                                                    onTransitionEditClick
+                                                                }
+                                                            />
+                                                        </div>
+                                                    )}
+                                                </Draggable>
                                             );
                                         })}
                                     </div>
@@ -285,6 +339,13 @@ export default function EnvironmentEditor({
                 modalOpen={editModalOpen}
                 handleModalClose={onEditModalClose}
                 handleSubmit={onEditModalSubmit}
+                isEdit
+            />
+            <SceneModal
+                scene={editTransitionInfo}
+                modalOpen={editTransitionModalOpen}
+                handleModalClose={onTransitionModalClose}
+                handleSubmit={onTransitionModalSubmit}
                 isEdit
             />
             <DeleteModal
