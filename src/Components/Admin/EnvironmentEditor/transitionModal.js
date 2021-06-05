@@ -59,10 +59,10 @@ export default function TransitionModal({
                 {transitions.map((transition, index) => {
                     return (
                         <div key={transition.id}>
-                            <h4>{transition.text}</h4>
-                            <h5>
+                            <h4>
                                 Transition {index + 1} of {transitions.length}
-                            </h5>
+                            </h4>
+                            <p>{transition.text}</p>
                             <IconButton onClick={() => onMoveUpClick(index)}>
                                 <KeyboardArrowUp />
                             </IconButton>

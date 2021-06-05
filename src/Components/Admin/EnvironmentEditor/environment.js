@@ -78,6 +78,7 @@ export default function EnvironmentEditor({
     const [editTransitionModalOpen, setEditTransitionModalOpen] = useState(
         false
     );
+    const [selectedTransitionId, setSelectedTransitionId] = useState(0);
 
     useEffect(() => {
         const getEnvironment = async () => {
@@ -178,6 +179,7 @@ export default function EnvironmentEditor({
         const allTransitions = environment.transitions;
         const transitions = allTransitions[sceneIndex + 1];
 
+        setSelectedTransitionId(sceneIndex + 1);
         setEditTransitionInfo(transitions.data);
         setEditTransitionModalOpen(true);
     };
@@ -220,9 +222,11 @@ export default function EnvironmentEditor({
         setEditTransitionModalOpen(false);
 
         const envData = environment;
-        envData.transitions.data = transitions;
-        const response = await editScenario(envData, handleError);
-        setEnvironment(response.data);
+        if (envData.transitions[selectedTransitionId].data !== transitions) {
+            envData.transitions[selectedTransitionId].data = transitions;
+            const response = await editScenario(envData, handleError);
+            setEnvironment(response.data);
+        }
     };
 
     const onDeleteButtonClick = (sceneId) => {
