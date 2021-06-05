@@ -27,37 +27,76 @@ export default function SceneModal({
 }) {
     const classes = useStyles();
     const [sceneName, setSceneName] = React.useState("");
-    const [backgroundId, setBackgroundId] = React.useState("");
+    const [backgroundId, setBackgroundId] = React.useState(null);
+    const [description, setDescription] = React.useState("");
+    const [errors, setErrors] = React.useState({
+        name: "",
+        backgroundId: "",
+        description: "",
+    });
 
     useEffect(() => {
         if (scene) {
-            setSceneName(scene.name);
-            setBackgroundId(scene.background_id);
+            setSceneName(scene ? scene.name : "");
+            setBackgroundId(scene ? scene.background_id : null);
+            setDescription(scene ? scene.description : "");
+            setErrors(
+                scene
+                    ? scene.errors
+                    : {
+                          name: "",
+                          backgroundId: "",
+                          description: "",
+                      }
+            );
         }
     }, [scene]);
 
     const handleSceneNameChange = (event) => {
         setSceneName(event.target.value);
+        setErrors({ name: "" });
+        const reg = new RegExp(/^[a-zA-Z0-9 _-]{1,50}$/).test(
+            event.target.value
+        );
+        if (!reg) {
+            setErrors({
+                name:
+                    "Only characters allowed are alphanumeric (a-z, A-Z, 0-9), dashes (- and _), and spaces",
+            });
+        }
     };
 
     const handleSceneBackgroundChange = (event) => {
         setBackgroundId(event.target.value);
     };
 
-    const handleModalCloseClick = () => {
-        handleModalClose();
-        setSceneName("");
-        setBackgroundId(null);
+    const handleSceneDescriptionChange = (event) => {
+        setDescription(event.target.value);
+        setErrors({ description: "" });
+        const reg = new RegExp(/^[?!.,a-zA-Z0-9 _-]{1,2000}$/).test(
+            event.target.value
+        );
+        if (!reg) {
+            setErrors({
+                description:
+                    "Only characters allowed are alphanumeric (a-z, A-Z, 0-9), dashes (- and _), punctuation (?!.,), and spaces",
+            });
+        }
     };
 
     const handleModalSubmitClick = () => {
-        handleSubmit(sceneName, parseInt(backgroundId));
-        setSceneName("");
-        setBackgroundId(null);
+        const error = Boolean(
+            errors
+                ? errors.name || errors.backgroundId || errors.description
+                : false
+        );
+        if (!error) {
+            handleSubmit(sceneName, parseInt(backgroundId), description);
+        }
     };
 
     return (
-        <Dialog open={modalOpen} onClose={handleModalCloseClick}>
+        <Dialog open={modalOpen} onClose={handleModalClose}>
             <DialogTitle>{isEdit ? "Edit Scene" : "New Scene"}</DialogTitle>
             <DialogContent>
                 <div>
@@ -66,6 +105,9 @@ export default function SceneModal({
                         value={sceneName}
                         onChange={handleSceneNameChange}
                         className={classes.textField}
+                        required
+                        error={Boolean(errors ? errors.name : false)}
+                        helperText={errors ? errors.name : false}
                     />
                 </div>
                 <div>
@@ -76,9 +118,20 @@ export default function SceneModal({
                         className={classes.textField}
                     />
                 </div>
+                <div>
+                    <Typography>Description: </Typography>
+                    <TextField
+                        value={description}
+                        onChange={handleSceneDescriptionChange}
+                        className={classes.textField}
+                        required
+                        error={Boolean(errors ? errors.description : false)}
+                        helperText={errors ? errors.description : false}
+                    />
+                </div>
             </DialogContent>
             <DialogActions className={classes.buttonContainer}>
-                <Button onClick={handleModalCloseClick}> Cancel </Button>
+                <Button onClick={handleModalClose}> Cancel </Button>
                 <Button onClick={handleModalSubmitClick}>
                     {isEdit ? "Edit" : "Create"}
                 </Button>
