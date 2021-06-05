@@ -148,10 +148,15 @@ export default function EnvironmentEditor({
         setCreateModalOpen(false);
     };
 
-    const onCreateModalSubmit = async (name, background_id) => {
+    const onCreateModalSubmit = async (name, background_id, description) => {
         setCreateModalOpen(false);
 
-        const newScene = await createScene(name, background_id, handleError);
+        const newScene = await createScene(
+            name,
+            background_id,
+            description,
+            handleError
+        );
         const newSceneData = [...scenes, newScene];
         setScenes(newSceneData);
 
@@ -185,13 +190,13 @@ export default function EnvironmentEditor({
         setEditTransitionInfo({});
     };
 
-    const onEditModalSubmit = async (name, background_id) => {
+    const onEditModalSubmit = async (name, background_id, description) => {
         setEditModalOpen(false);
         const resp = await editScene(
             {
                 id: editSceneInfo.id,
                 name,
-                description: editSceneInfo.description,
+                description,
                 object_ids: editSceneInfo.object_ids,
                 position: editSceneInfo.position,
                 scale: editSceneInfo.scale,
