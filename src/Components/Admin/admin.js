@@ -26,6 +26,7 @@ import {
 } from "../../lib/scenarioEndpoints";
 import { UserContext } from "../../Providers/UserProviders";
 import { getAllScenes } from "../../lib/sceneEndpoints";
+import { getAllAssets } from "../../lib/assetEndpoints";
 import { useErrorHandler } from "react-error-boundary";
 
 function TabPanel(props) {
@@ -121,6 +122,7 @@ export default function Admin() {
     const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
     const [environments, setEnvironments] = React.useState([]);
     const [scenes, setScenes] = React.useState([]);
+    const [assets, setAssets] = React.useState([]);
     const [editRoom, setEditRoom] = React.useState({});
     const [deleteRoomId, setDeleteRoomId] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -135,11 +137,18 @@ export default function Admin() {
         setScenes(data);
     };
 
+    const getAllAssetsAction = async (handleError) => {
+        const data = await getAllAssets(handleError);
+        setAssets(data);
+    };
+
     useEffect(() => {
         if (value === "rooms") {
             getAllEnvironments(handleError);
         } else if (value === "scenes") {
             getAllScenesAction(handleError);
+        } else if (value === "assets") {
+            getAllAssetsAction(handleError);
         }
     }, [value, handleError]);
 
@@ -352,7 +361,7 @@ export default function Admin() {
                         value={value}
                         index="assets"
                     >
-                        <Assets />
+                        <Assets assets={assets} />
                     </TabPanel>
                     <TabPanel
                         className={classes.tabBackground}
