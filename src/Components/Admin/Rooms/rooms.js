@@ -5,7 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 
-import ItemCard from "../common/itemCard.js";
+import RoomCard from "./roomCard.js";
 
 const useStyles = makeStyles((theme) => ({
     page: {
@@ -40,10 +40,9 @@ export default function EscapeRooms({
                 >
                     {environments.map(function (room) {
                         return (
-                            <ItemCard
+                            <RoomCard
                                 key={room.id}
                                 data={room}
-                                cardType="environment"
                                 handleEditClick={handleEditRoomClick}
                                 handleDeleteClick={handleDeleteRoomClick}
                             />
