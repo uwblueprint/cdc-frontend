@@ -11,4 +11,3 @@ export const getAllAssets = async (handleError) => {
         throw error;
     }
 };
-

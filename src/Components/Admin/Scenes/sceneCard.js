@@ -52,9 +52,7 @@ export default function SceneCard({
 
     const handleCardClick = () => {
         window.open(
-                process.env.REACT_APP_ADMIN_BACKEND_URL +
-                    "/admin/scene/" +
-                    data.id
+            process.env.REACT_APP_ADMIN_BACKEND_URL + "/admin/scene/" + data.id
         );
     };
 
