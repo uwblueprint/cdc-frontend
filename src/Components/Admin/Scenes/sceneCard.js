@@ -1,7 +1,6 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { useHistory } from "react-router-dom";
-import defaultImage from "./defaultImage.png";
+import defaultImage from "../common/defaultImage.png";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
@@ -33,14 +32,12 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-export default function ItemCard({
+export default function SceneCard({
     data,
-    cardType, // "environment", "scene", or "asset"
     handleEditClick,
     handleDeleteClick,
 }) {
     const classes = useStyles();
-    const history = useHistory();
     const [anchorEl, setAnchorEl] = React.useState(null);
 
     const handleMenuClick = (event) => {
@@ -52,15 +49,9 @@ export default function ItemCard({
     };
 
     const handleCardClick = () => {
-        if (cardType === "environment") {
-            history.push(`/admin/environment/${data.id}`);
-        } else {
-            window.open(
-                process.env.REACT_APP_ADMIN_BACKEND_URL +
-                    "/admin/scene/" +
-                    data.id
-            );
-        }
+        window.open(
+            process.env.REACT_APP_ADMIN_BACKEND_URL + "/admin/scene/" + data.id
+        );
     };
 
     const open = Boolean(anchorEl);
@@ -88,7 +79,7 @@ export default function ItemCard({
                 <img
                     className={classes.cardImage}
                     src={data.image ? data.image : defaultImage}
-                    alt={cardType === "environment" ? "Escape Room" : "Scene"}
+                    alt="Scene"
                 />
             </Grid>
             <Grid
@@ -123,9 +114,7 @@ export default function ItemCard({
                         handleCardClick();
                     }}
                 >
-                    {cardType === "environment"
-                        ? "Edit room"
-                        : "Open Inspector"}
+                    Open Inspector
                 </MenuItem>
                 <MenuItem
                     onClick={() => {
@@ -133,8 +122,7 @@ export default function ItemCard({
                         handleEditClick(data.id);
                     }}
                 >
-                    Edit {cardType === "environment" ? "room" : "scene"}{" "}
-                    metadata
+                    Edit scene metadata
                 </MenuItem>
                 <MenuItem>Copy game link</MenuItem>
                 <MenuItem>View stats</MenuItem>
@@ -144,7 +132,7 @@ export default function ItemCard({
                         handleDeleteClick(data.id);
                     }}
                 >
-                    Delete {cardType === "environment" ? "room" : "scene"}
+                    Delete scene
                 </MenuItem>
             </Menu>
         </Grid>
