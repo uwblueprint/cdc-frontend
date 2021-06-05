@@ -215,7 +215,7 @@ export default function EnvironmentEditor({
         setEditTransitionModalOpen(false);
 
         const envData = environment;
-        envData.transitions = [...transitions];
+        envData.transitions.data = transitions;
         const response = await editScenario(envData, handleError);
         setEnvironment(response.data);
     };

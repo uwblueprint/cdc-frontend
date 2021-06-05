@@ -16,12 +16,6 @@ export default function TransitionModal({
     const [transitions, setTransitions] = React.useState([]);
 
     useEffect(() => {
-        // if (originalTransitions) {
-        //     originalTransitions.forEach((item, i) => {
-        //         item.id = i + 1;
-        //     });
-        //     setTransitions(originalTransitions);
-        // }
         setTransitions(originalTransitions);
     }, [originalTransitions]);
 
@@ -46,6 +40,7 @@ export default function TransitionModal({
             sourceIndex,
             destinationIndex
         );
+
         setTransitions([...reorderedList]);
     };
 
