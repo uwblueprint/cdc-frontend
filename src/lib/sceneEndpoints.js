@@ -12,11 +12,17 @@ export const getScene = async (id, handleError) => {
     }
 };
 
-export const createScene = async (name, background_id, handleError) => {
+export const createScene = async (
+    name,
+    background_id,
+    description,
+    handleError
+) => {
     try {
         const response = await httpPost(baseEndpoint + `scene`, {
             name,
             background_id,
+            description,
         });
         return response.data;
     } catch (error) {
