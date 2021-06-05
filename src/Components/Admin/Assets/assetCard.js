@@ -39,7 +39,6 @@ export default function AssetCard({
     handleDeleteClick,
 }) {
     const classes = useStyles();
-    const history = useHistory();
     const [anchorEl, setAnchorEl] = React.useState(null);
 
     const handleMenuClick = (event) => {
