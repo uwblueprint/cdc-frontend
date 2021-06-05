@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
         minWidth: 600,
     },
     introContainer: {
-        minWidth: 800,
+        minWidth: 850,
         display: "flex",
     },
     container: {
@@ -282,13 +282,23 @@ export default function EnvironmentEditor({
                                                     }
                                                 >
                                                     {index === 0 && (
-                                                        <TransitionCard
-                                                            scene={null}
-                                                            handleEditClick={
-                                                                onTransitionEditClick
-                                                            }
-                                                            isIntroduction
-                                                        />
+                                                        <div
+                                                            style={{
+                                                                display:
+                                                                    "block",
+                                                                maxHeight: 300,
+                                                                padding: 16,
+                                                                marginTop: 65,
+                                                            }}
+                                                        >
+                                                            <TransitionCard
+                                                                scene={null}
+                                                                handleEditClick={
+                                                                    onTransitionEditClick
+                                                                }
+                                                                isIntroduction
+                                                            />
+                                                        </div>
                                                     )}
                                                     <Draggable
                                                         index={index}
