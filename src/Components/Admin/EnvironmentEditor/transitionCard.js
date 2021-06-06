@@ -29,7 +29,11 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-export default function TransitionCard({ scene, handleEditClick }) {
+export default function TransitionCard({
+    scene,
+    handleEditClick,
+    isIntroduction,
+}) {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -44,7 +48,9 @@ export default function TransitionCard({ scene, handleEditClick }) {
 
     return (
         <div className={classes.transitionItem}>
-            <div className={classes.transitionTopRow}>Transition</div>
+            <div className={classes.transitionTopRow}>
+                {isIntroduction ? "Introduction" : "Transition"}
+            </div>
             <div className={classes.transitionBottomRow}>
                 <IconButton onClick={handleMenuClick}>
                     <MoreVertIcon />
@@ -67,7 +73,9 @@ export default function TransitionCard({ scene, handleEditClick }) {
                 <MenuItem
                     onClick={() => {
                         setAnchorEl(null);
-                        handleEditClick(scene.id);
+                        isIntroduction
+                            ? handleEditClick(-1)
+                            : handleEditClick(scene.id);
                     }}
                 >
                     Edit Transitions
