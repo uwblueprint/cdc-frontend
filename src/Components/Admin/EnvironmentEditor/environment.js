@@ -28,6 +28,10 @@ const useStyles = makeStyles((theme) => ({
     sceneAndTransitionContainer: {
         minWidth: 600,
     },
+    introContainer: {
+        minWidth: 850,
+        display: "flex",
+    },
     container: {
         paddingTop: theme.spacing(12),
     },
@@ -273,45 +277,73 @@ export default function EnvironmentEditor({
                                     >
                                         {scenes.map(function (scene, index) {
                                             return (
-                                                <Draggable
+                                                <div
                                                     key={scene.id}
-                                                    index={index}
-                                                    draggableId={scene.id.toString()}
+                                                    className={
+                                                        index === 0
+                                                            ? classes.introContainer
+                                                            : classes.sceneAndTransitionContainer
+                                                    }
                                                 >
-                                                    {(provided) => (
+                                                    {index === 0 && (
                                                         <div
-                                                            ref={
-                                                                provided.innerRef
-                                                            }
-                                                            className={
-                                                                classes.sceneAndTransitionContainer
-                                                            }
-                                                            style={
-                                                                provided
-                                                                    .draggableProps
-                                                                    .style
-                                                            }
-                                                            {...provided.draggableProps}
-                                                            {...provided.dragHandleProps}
+                                                            style={{
+                                                                display:
+                                                                    "block",
+                                                                maxHeight: 300,
+                                                                padding: 16,
+                                                                marginTop: 65,
+                                                            }}
                                                         >
-                                                            <SceneCard
-                                                                scene={scene}
-                                                                handleEditClick={
-                                                                    onEditButtonClick
-                                                                }
-                                                                handleDeleteClick={
-                                                                    onDeleteButtonClick
-                                                                }
-                                                            />
                                                             <TransitionCard
-                                                                scene={scene}
+                                                                scene={null}
                                                                 handleEditClick={
                                                                     onTransitionEditClick
                                                                 }
+                                                                isIntroduction
                                                             />
                                                         </div>
                                                     )}
-                                                </Draggable>
+                                                    <Draggable
+                                                        index={index}
+                                                        draggableId={scene.id.toString()}
+                                                    >
+                                                        {(provided) => (
+                                                            <div
+                                                                ref={
+                                                                    provided.innerRef
+                                                                }
+                                                                style={
+                                                                    provided
+                                                                        .draggableProps
+                                                                        .style
+                                                                }
+                                                                {...provided.draggableProps}
+                                                                {...provided.dragHandleProps}
+                                                            >
+                                                                <SceneCard
+                                                                    scene={
+                                                                        scene
+                                                                    }
+                                                                    handleEditClick={
+                                                                        onEditButtonClick
+                                                                    }
+                                                                    handleDeleteClick={
+                                                                        onDeleteButtonClick
+                                                                    }
+                                                                />
+                                                                <TransitionCard
+                                                                    scene={
+                                                                        scene
+                                                                    }
+                                                                    handleEditClick={
+                                                                        onTransitionEditClick
+                                                                    }
+                                                                />
+                                                            </div>
+                                                        )}
+                                                    </Draggable>
+                                                </div>
                                             );
                                         })}
                                     </div>
