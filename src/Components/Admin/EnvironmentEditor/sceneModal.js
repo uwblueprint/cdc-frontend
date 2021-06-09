@@ -135,9 +135,19 @@ export default function SceneModal({
                         helperText={errors ? errors.name : ""}
                     />
                 </div>
+                <div style={{ paddingBottom: 15 }}>
+                    <Typography>Description: </Typography>
+                    <TextField
+                        value={description}
+                        onChange={handleSceneDescriptionChange}
+                        className={classes.textField}
+                        required
+                        error={Boolean(errors ? errors.description : false)}
+                        helperText={errors ? errors.description : ""}
+                    />
+                </div>
                 {!isEdit && (
                     <div>
-                        <Typography>Scene background ID: </Typography>
                         <Autocomplete
                             id="backgroundIdSelection"
                             style={{ width: 300 }}
@@ -150,28 +160,21 @@ export default function SceneModal({
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
-                                    label="Choose a background"
+                                    label="Choose a background asset"
                                     variant="outlined"
+                                    className={classes.textField}
+                                    helperText={
+                                        errors ? errors.backgroundId : ""
+                                    }
                                     inputProps={{
                                         ...params.inputProps,
-                                        autoComplete: "new-password",
+                                        autoComplete: "background",
                                     }}
                                 />
                             )}
                         />
                     </div>
                 )}
-                <div>
-                    <Typography>Description: </Typography>
-                    <TextField
-                        value={description}
-                        onChange={handleSceneDescriptionChange}
-                        className={classes.textField}
-                        required
-                        error={Boolean(errors ? errors.description : false)}
-                        helperText={errors ? errors.description : ""}
-                    />
-                </div>
             </DialogContent>
             <DialogActions className={classes.buttonContainer}>
                 <Button onClick={handleModalCloseClick}> Cancel </Button>
