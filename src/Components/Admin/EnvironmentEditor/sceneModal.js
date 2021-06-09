@@ -174,7 +174,7 @@ export default function SceneModal({
                 </div>
             </DialogContent>
             <DialogActions className={classes.buttonContainer}>
-                <Button onClick={handleModalClose}> Cancel </Button>
+                <Button onClick={handleModalCloseClick}> Cancel </Button>
                 <Button
                     onClick={handleModalSubmitClick}
                     disabled={!sceneName || !description || !backgroundId}
