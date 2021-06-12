@@ -4,8 +4,11 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/Dialog";
 import { Button, IconButton } from "@material-ui/core";
-import KeyboardArrowUp from "@material-ui/icons/KeyboardArrowUp";
-import KeyboardArrowDown from "@material-ui/icons/KeyboardArrowDown";
+import {
+    DeleteForever,
+    KeyboardArrowDown,
+    KeyboardArrowUp,
+} from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
 
@@ -31,7 +34,7 @@ export default function TransitionModal({
     const [transitions, setTransitions] = React.useState([]);
 
     useEffect(() => {
-        setTransitions(originalTransitions);
+        setTransitions(JSON.parse(JSON.stringify(originalTransitions)));
     }, [originalTransitions]);
 
     const reorder = (transitions, startIndex, endIndex) => {
@@ -75,6 +78,12 @@ export default function TransitionModal({
         reorderTransitions(index, Math.min(transitions.length - 1, index + 1));
     };
 
+    const deleteTransition = (index) => {
+        const tempTransitions = JSON.parse(JSON.stringify(transitions));
+        tempTransitions.splice(index, 1);
+        setTransitions(tempTransitions);
+    };
+
     return (
         <Dialog open={modalOpen} onClose={handleModalClose}>
             <DialogTitle>
@@ -101,12 +110,25 @@ export default function TransitionModal({
                             <IconButton onClick={() => onMoveDownClick(index)}>
                                 <KeyboardArrowDown />
                             </IconButton>
+                            <IconButton
+                                onClick={() => deleteTransition(index)}
+                                disabled={transitions.length === 1}
+                            >
+                                <DeleteForever />
+                            </IconButton>
                         </div>
                     );
                 })}
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleModalClose}>Cancel</Button>
+                <Button
+                    onClick={() => {
+                        setTransitions(originalTransitions);
+                        handleModalClose();
+                    }}
+                >
+                    Cancel
+                </Button>
                 <Button
                     color="primary"
                     onClick={() => handleSubmit(transitions)}
