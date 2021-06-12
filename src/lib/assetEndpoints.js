@@ -22,11 +22,11 @@ export const getAsset = async (id, handleError) => {
     }
 };
 
-export const editAsset = async ({ id, name, obj_typ, s3_key }, handleError) => {
+export const editAsset = async (id, name, obj_type, s3_key, handleError) => {
     try {
         const response = await httpPut(baseEndpoint + `asset/${id}`, {
             name,
-            obj_typ,
+            obj_type,
             s3_key,
         });
         return response;
