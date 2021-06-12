@@ -6,6 +6,20 @@ import Dialog from "@material-ui/core/Dialog";
 import { Button, IconButton } from "@material-ui/core";
 import KeyboardArrowUp from "@material-ui/icons/KeyboardArrowUp";
 import KeyboardArrowDown from "@material-ui/icons/KeyboardArrowDown";
+import { makeStyles } from "@material-ui/core/styles";
+import AddIcon from "@material-ui/icons/Add";
+
+const useStyles = makeStyles((theme) => ({
+    addButton: {
+        marginTop: theme.spacing(0.5),
+        width: "20px",
+        height: "20px",
+        background: "#B9BECE",
+        borderRadius: "100%",
+        color: "white",
+        float: "right",
+    },
+}));
 
 export default function TransitionModal({
     modalOpen,
@@ -13,6 +27,7 @@ export default function TransitionModal({
     handleSubmit,
     originalTransitions,
 }) {
+    const classes = useStyles();
     const [transitions, setTransitions] = React.useState([]);
 
     useEffect(() => {
@@ -44,6 +59,14 @@ export default function TransitionModal({
         setTransitions([...reorderedList]);
     };
 
+    const addTransition = () => {
+        const newTransition = {
+            text: "New Transition.",
+        };
+
+        setTransitions([...transitions, newTransition]);
+    };
+
     const onMoveUpClick = (index) => {
         reorderTransitions(index, Math.max(0, index - 1));
     };
@@ -54,7 +77,16 @@ export default function TransitionModal({
 
     return (
         <Dialog open={modalOpen} onClose={handleModalClose}>
-            <DialogTitle>Edit Transitions Order</DialogTitle>
+            <DialogTitle>
+                Modify Transitions
+                <IconButton
+                    className={classes.addButton}
+                    aria-label="add"
+                    onClick={addTransition}
+                >
+                    <AddIcon />
+                </IconButton>
+            </DialogTitle>
             <DialogContent>
                 {transitions.map((transition, index) => {
                     return (
