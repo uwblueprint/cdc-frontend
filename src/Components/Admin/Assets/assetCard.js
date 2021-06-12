@@ -25,10 +25,12 @@ const useStyles = makeStyles(() => ({
         backgroundColor: "white",
         borderBottomLeftRadius: "12px",
         borderBottomRightRadius: "12px",
+        height: 80,
     },
     dataName: {
         marginLeft: 10,
         fontWeight: "bold",
+        maxWidth: "75%",
     },
 }));
 
@@ -88,7 +90,10 @@ export default function AssetCard({
                 className={classes.metadata}
             >
                 <p className={classes.dataName}>{data.name}</p>
-                <IconButton onClick={handleMenuClick}>
+                <IconButton
+                    onClick={handleMenuClick}
+                    style={{ maxWidth: "20%" }}
+                >
                     <MoreVertIcon />
                 </IconButton>
             </Grid>
