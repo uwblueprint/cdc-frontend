@@ -61,7 +61,7 @@ export default function TransitionModal({
 
     const addTransition = () => {
         const newTransition = {
-            text: "New Transition.",
+            text: prompt("Enter the text for the transition: "),
         };
 
         setTransitions([...transitions, newTransition]);
