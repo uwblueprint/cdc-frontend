@@ -52,6 +52,15 @@ export default function Signup() {
         const errors = {};
 
         try {
+            const reg = new RegExp(
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{10,}$/
+            ).test(password);
+
+            if (!reg) {
+                const error = { code: "auth/weak-password" };
+                throw error;
+            }
+
             const { user } = await auth.createUserWithEmailAndPassword(
                 email,
                 password
