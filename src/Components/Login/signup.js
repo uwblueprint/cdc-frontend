@@ -85,7 +85,8 @@ export default function Signup() {
                         "Email/password accounts are not enabled.";
                     break;
                 case "auth/weak-password":
-                    errors.password = "Please enter a stronger password.";
+                    errors.password =
+                        "Password should contain one lowercase letter, one uppercase letter, one symbol, one number, and be at least 10 characters long.";
                     break;
                 default:
                     errors.password = "An unexpected error has occurred.";
