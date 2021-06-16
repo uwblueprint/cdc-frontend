@@ -10,11 +10,11 @@ import TextField from "@material-ui/core/TextField";
 import { getAsset, editAsset } from "../../../lib/assetEndpoints";
 import { useErrorHandler } from "react-error-boundary";
 import SaveIcon from "@material-ui/icons/Save";
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import { ObjectTypes } from "./objectTypes.ts"
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import { ObjectTypes } from "./objectTypes.ts";
 
 const drawerWidth = 17;
 
@@ -66,7 +66,9 @@ export default function AssetModelViewer({
             const data = await getAsset(assetId, handleError);
             setName(data.name);
             setObjectType(data.obj_type);
-            setAssetLink(process.env.REACT_APP_ADMIN_ASSET_PREFIX + data.s3_key);
+            setAssetLink(
+                process.env.REACT_APP_ADMIN_ASSET_PREFIX + data.s3_key
+            );
             setAsset(data);
         };
 
@@ -122,9 +124,14 @@ export default function AssetModelViewer({
                         onChange={handleNameChange}
                         variant="outlined"
                     />
-                    
-                    <FormControl variant="outlined" className={classes.formControl}>
-                        <InputLabel id="objectTypeLabel">Object Type</InputLabel>
+
+                    <FormControl
+                        variant="outlined"
+                        className={classes.formControl}
+                    >
+                        <InputLabel id="objectTypeLabel">
+                            Object Type
+                        </InputLabel>
                         <Select
                             labelId="objectTypeTextField"
                             label="Object Type"
@@ -132,8 +139,12 @@ export default function AssetModelViewer({
                             value={objectType}
                             onChange={handleObjectTypeChange}
                         >
-                            <MenuItem value="object">{ObjectTypes.OBJECT}</MenuItem>
-                            <MenuItem value="background">{ObjectTypes.BACKGROUND}</MenuItem>
+                            <MenuItem value="object">
+                                {ObjectTypes.OBJECT}
+                            </MenuItem>
+                            <MenuItem value="background">
+                                {ObjectTypes.BACKGROUND}
+                            </MenuItem>
                         </Select>
                     </FormControl>
 
