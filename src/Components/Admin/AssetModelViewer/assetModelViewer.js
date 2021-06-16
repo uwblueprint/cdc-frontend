@@ -9,8 +9,12 @@ import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import { getAsset, editAsset } from "../../../lib/assetEndpoints";
 import { useErrorHandler } from "react-error-boundary";
-import { jsonMock } from "./mockData.js";
 import SaveIcon from "@material-ui/icons/Save";
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import { ObjectTypes } from "./objectTypes.ts"
 
 const drawerWidth = 17;
 
@@ -38,6 +42,10 @@ const useStyles = makeStyles((theme) => ({
             width: "15vw",
         },
     },
+    formControl: {
+        margin: theme.spacing(2),
+        width: "15vw",
+    },
 }));
 
 export default function AssetModelViewer({
@@ -51,15 +59,14 @@ export default function AssetModelViewer({
     const [name, setName] = useState("");
     const [objectType, setObjectType] = useState("");
     const [buttonText, setButtonText] = useState("Save");
-    const [modelGLB, setModelGLB] = useState("");
+    const [assetLink, setAssetLink] = useState("");
 
     useEffect(() => {
         const getObjectAsset = async () => {
             const data = await getAsset(assetId, handleError);
             setName(data.name);
             setObjectType(data.obj_type);
-            // TODO: Replace with asset's s3_link once it contains a legit link
-            setModelGLB(jsonMock.linksGLB[0]);
+            setAssetLink(process.env.REACT_APP_ADMIN_ASSET_PREFIX + data.s3_key);
             setAsset(data);
         };
 
@@ -109,20 +116,26 @@ export default function AssetModelViewer({
                         Asset Model Viewer
                     </Typography>
                     <TextField
-                        id="outlined-helperText"
+                        id="nameTextField"
                         label="Asset Name"
                         value={name}
                         onChange={handleNameChange}
                         variant="outlined"
                     />
-
-                    <TextField
-                        id="outlined-helperText"
-                        label="Object Type"
-                        value={objectType}
-                        onChange={handleObjectTypeChange}
-                        variant="outlined"
-                    />
+                    
+                    <FormControl variant="outlined" className={classes.formControl}>
+                        <InputLabel id="objectTypeLabel">Object Type</InputLabel>
+                        <Select
+                            labelId="objectTypeTextField"
+                            label="Object Type"
+                            id="demo-simple-select-helper"
+                            value={objectType}
+                            onChange={handleObjectTypeChange}
+                        >
+                            <MenuItem value="object">{ObjectTypes.OBJECT}</MenuItem>
+                            <MenuItem value="background">{ObjectTypes.BACKGROUND}</MenuItem>
+                        </Select>
+                    </FormControl>
 
                     <Button
                         type="submit"
@@ -138,7 +151,7 @@ export default function AssetModelViewer({
             <main className={classes.content}>
                 <div className={classes.toolbar} />
                 <model-viewer
-                    src={modelGLB}
+                    src={assetLink}
                     alt="A 3D model of an astronaut"
                     ar
                     ar-modes="webxr scene-viewer quick-look"
