@@ -4,8 +4,25 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/Dialog";
 import { Button, IconButton } from "@material-ui/core";
-import KeyboardArrowUp from "@material-ui/icons/KeyboardArrowUp";
-import KeyboardArrowDown from "@material-ui/icons/KeyboardArrowDown";
+import {
+    DeleteForever,
+    KeyboardArrowDown,
+    KeyboardArrowUp,
+} from "@material-ui/icons";
+import { makeStyles } from "@material-ui/core/styles";
+import AddIcon from "@material-ui/icons/Add";
+
+const useStyles = makeStyles((theme) => ({
+    addButton: {
+        marginTop: theme.spacing(0.5),
+        width: "20px",
+        height: "20px",
+        background: "#B9BECE",
+        borderRadius: "100%",
+        color: "white",
+        float: "right",
+    },
+}));
 
 export default function TransitionModal({
     modalOpen,
@@ -13,10 +30,11 @@ export default function TransitionModal({
     handleSubmit,
     originalTransitions,
 }) {
+    const classes = useStyles();
     const [transitions, setTransitions] = React.useState([]);
 
     useEffect(() => {
-        setTransitions(originalTransitions);
+        setTransitions(JSON.parse(JSON.stringify(originalTransitions)));
     }, [originalTransitions]);
 
     const reorder = (transitions, startIndex, endIndex) => {
@@ -44,6 +62,14 @@ export default function TransitionModal({
         setTransitions([...reorderedList]);
     };
 
+    const addTransition = () => {
+        const newTransition = {
+            text: prompt("Enter the text for the transition: "),
+        };
+
+        setTransitions([...transitions, newTransition]);
+    };
+
     const onMoveUpClick = (index) => {
         reorderTransitions(index, Math.max(0, index - 1));
     };
@@ -52,9 +78,24 @@ export default function TransitionModal({
         reorderTransitions(index, Math.min(transitions.length - 1, index + 1));
     };
 
+    const deleteTransition = (index) => {
+        const tempTransitions = JSON.parse(JSON.stringify(transitions));
+        tempTransitions.splice(index, 1);
+        setTransitions(tempTransitions);
+    };
+
     return (
         <Dialog open={modalOpen} onClose={handleModalClose}>
-            <DialogTitle>Edit Transitions Order</DialogTitle>
+            <DialogTitle>
+                Modify Transitions
+                <IconButton
+                    className={classes.addButton}
+                    aria-label="add"
+                    onClick={addTransition}
+                >
+                    <AddIcon />
+                </IconButton>
+            </DialogTitle>
             <DialogContent>
                 {transitions.map((transition, index) => {
                     return (
@@ -69,12 +110,25 @@ export default function TransitionModal({
                             <IconButton onClick={() => onMoveDownClick(index)}>
                                 <KeyboardArrowDown />
                             </IconButton>
+                            <IconButton
+                                onClick={() => deleteTransition(index)}
+                                disabled={transitions.length === 1}
+                            >
+                                <DeleteForever />
+                            </IconButton>
                         </div>
                     );
                 })}
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleModalClose}>Cancel</Button>
+                <Button
+                    onClick={() => {
+                        setTransitions(originalTransitions);
+                        handleModalClose();
+                    }}
+                >
+                    Cancel
+                </Button>
                 <Button
                     color="primary"
                     onClick={() => handleSubmit(transitions)}

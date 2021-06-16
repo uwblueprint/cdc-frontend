@@ -52,6 +52,15 @@ export default function Signup() {
         const errors = {};
 
         try {
+            const reg = new RegExp(
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{10,}$/
+            ).test(password);
+
+            if (!reg) {
+                const error = { code: "auth/weak-password" };
+                throw error;
+            }
+
             const { user } = await auth.createUserWithEmailAndPassword(
                 email,
                 password
@@ -76,7 +85,8 @@ export default function Signup() {
                         "Email/password accounts are not enabled.";
                     break;
                 case "auth/weak-password":
-                    errors.password = "Please enter a stronger password.";
+                    errors.password =
+                        "Password should contain one lowercase letter, one uppercase letter, one symbol, one number, and be at least 10 characters long.";
                     break;
                 default:
                     errors.password = "An unexpected error has occurred.";
