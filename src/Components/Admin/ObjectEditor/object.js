@@ -217,74 +217,74 @@ export default function ObjectEditor({
                 />
             ) : null}
             {isInteractable && puzzleType === "text-pane" ? (
-                // <Dialog>
-                //     <DialogTitle>
-                //         Modify Transitions
-                //         <IconButton
-                //             className={classes.addButton}
-                //             aria-label="add"
-                //             onClick={addTransition}
-                //         >
-                //             <AddIcon />
-                //         </IconButton>
-                //     </DialogTitle>
-                //     <DialogContent>
-                //         {transitions.map((transition, index) => {
-                //             return (
-                //                 <div key={transition.id}>
-                //                     <h4>
-                //                         Transition {index + 1} of{" "}
-                //                         {transitions.length}
-                //                     </h4>
-                //                     <p>{transition.text}</p>
-                //                     <IconButton
-                //                         onClick={() => onMoveUpClick(index)}
-                //                     >
-                //                         <KeyboardArrowUp />
-                //                     </IconButton>
-                //                     <IconButton
-                //                         onClick={() => onMoveDownClick(index)}
-                //                     >
-                //                         <KeyboardArrowDown />
-                //                     </IconButton>
-                //                     <IconButton
-                //                         onClick={() => deleteTransition(index)}
-                //                         disabled={transitions.length === 1}
-                //                     >
-                //                         <DeleteForever />
-                //                     </IconButton>
-                //                 </div>
-                //             );
-                //         })}
-                //     </DialogContent>
-                //     <DialogActions>
-                //         <Button color="primary" onClick={() => handleSubmit()}>
-                //             Save
-                //         </Button>
-                //     </DialogActions>
-                // </Dialog>
-                <div>
-                    <ul>
-                        {puzzleBody.jsonData.data.map((item) => (
-                            <li key={item.text}>
-                                <span>{item.text}</span>
-                                <button
-                                    type="button"
-                                    onClick={() => handleRemove(item.text)}
-                                >
-                                    Remove
-                                </button>
-                            </li>
-                        ))}
-                    </ul>
-                    <div>
-                        <input type="text" />
-                        <button type="button" onClick={handleAdd}>
-                            Add
-                        </button>
-                    </div>
-                </div>
-            ) : null}
+                <Dialog>
+                    <DialogTitle>
+                        Modify Transitions
+                        <IconButton
+                            className={classes.addButton}
+                            aria-label="add"
+                            onClick={addTransition}
+                        >
+                            <AddIcon />
+                        </IconButton>
+                    </DialogTitle>
+                    <DialogContent>
+                        {transitions.map((transition, index) => {
+                            return (
+                                <div key={transition.id}>
+                                    <h4>
+                                        Transition {index + 1} of{" "}
+                                        {transitions.length}
+                                    </h4>
+                                    <p>{transition.text}</p>
+                                    <IconButton
+                                        onClick={() => onMoveUpClick(index)}
+                                    >
+                                        <KeyboardArrowUp />
+                                    </IconButton>
+                                    <IconButton
+                                        onClick={() => onMoveDownClick(index)}
+                                    >
+                                        <KeyboardArrowDown />
+                                    </IconButton>
+                                    <IconButton
+                                        onClick={() => deleteTransition(index)}
+                                        disabled={transitions.length === 1}
+                                    >
+                                        <DeleteForever />
+                                    </IconButton>
+                                </div>
+                            );
+                        })}
+                    </DialogContent>
+                    <DialogActions>
+                        <Button color="primary" onClick={() => handleSubmit()}>
+                            Save
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            ) : // <div>
+            //     <ul>
+            //         {puzzleBody.jsonData.data.map((item) => (
+            //             <li key={item.text}>
+            //                 <span>{item.text}</span>
+            //                 <button
+            //                     type="button"
+            //                     onClick={() => handleRemove(item.text)}
+            //                 >
+            //                     Remove
+            //                 </button>
+            //             </li>
+            //         ))}
+            //     </ul>
+            //     <div>
+            //         <input type="text" />
+            //         <button type="button" onClick={handleAdd}>
+            //             Add
+            //         </button>
+            //     </div>
+            // </div>
+            null}
         </div>
     );
 }
