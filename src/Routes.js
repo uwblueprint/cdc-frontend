@@ -6,6 +6,7 @@ import Home from "./Components/Home/home";
 import Admin from "./Components/Admin/admin";
 import PasswordReset from "./Components/Login/passwordReset";
 import EnvironmentEditor from "./Components/Admin/EnvironmentEditor/environment";
+import ObjectEditor from "./Components/Admin/ObjectEditor/object";
 import { UserContext } from "./Providers/UserProviders";
 
 export default function Routes() {
@@ -18,6 +19,11 @@ export default function Routes() {
                 exact
                 path="/admin/environment/:environmentId"
                 component={EnvironmentEditor}
+            />
+            <Route
+                exact
+                path="/admin/scene/:sceneId/object/:objectId"
+                component={ObjectEditor}
             />
         </Switch>
     ) : (
