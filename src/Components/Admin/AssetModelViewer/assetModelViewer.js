@@ -57,7 +57,7 @@ export default function AssetModelViewer({
     const handleError = useErrorHandler();
     const [asset, setAsset] = useState({});
     const [name, setName] = useState("");
-    const [objectType, setObjectType] = useState("");
+    const [objectType, setObjectType] = useState(ObjectTypes.NONE);
     const [buttonText, setButtonText] = useState("Save");
     const [assetLink, setAssetLink] = useState("");
 
@@ -65,7 +65,21 @@ export default function AssetModelViewer({
         const getObjectAsset = async () => {
             const data = await getAsset(assetId, handleError);
             setName(data.name);
-            setObjectType(data.obj_type);
+
+            switch (data.obj_type) {
+                case ObjectTypes.OBJECT:
+                    setObjectType(ObjectTypes.OBJECT);
+                    break;
+                case ObjectTypes.BACKGROUND:
+                    setObjectType(ObjectTypes.BACKGROUND);
+                    break;
+                default:
+                    setObjectType(ObjectTypes.NONE);
+                    throw new Error(
+                        "Object type must be either object or background"
+                    );
+            }
+
             setAssetLink(
                 process.env.REACT_APP_ADMIN_ASSET_PREFIX + data.s3_key
             );
@@ -82,7 +96,19 @@ export default function AssetModelViewer({
     };
 
     const handleObjectTypeChange = (event) => {
-        setObjectType(event.target.value);
+        switch (event.target.value) {
+            case ObjectTypes.OBJECT:
+                setObjectType(ObjectTypes.OBJECT);
+                break;
+            case ObjectTypes.BACKGROUND:
+                setObjectType(ObjectTypes.BACKGROUND);
+                break;
+            default:
+                setObjectType(ObjectTypes.NONE);
+                throw new Error(
+                    "Object type must be either object or background"
+                );
+        }
     };
 
     async function updateAsset(event) {
