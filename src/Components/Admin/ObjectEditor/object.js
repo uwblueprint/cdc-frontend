@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 import AddIcon from "@material-ui/icons/Add";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useErrorHandler } from "react-error-boundary";
 import Select from "react-select";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -16,8 +14,6 @@ import {
     KeyboardArrowUp,
 } from "@material-ui/icons";
 
-import Navbar from "../navbar";
-import DeleteModal from "../common/deleteModal";
 import { getPuzzle, editPuzzle } from "../../../lib/puzzleEndpoints";
 
 const useStyles = makeStyles((theme) => ({
@@ -101,11 +97,11 @@ export default function ObjectEditor({
             setPuzzleBody(data.animations_json.blackboardData);
             setPuzzleType(puzzleBody.componentType);
             setIsInteractable(data.is_interactable);
-            console.log(puzzleBody);
+            // console.log(puzzleBody);
         };
 
         getPuzzleBody();
-    }, [sceneId, objectId, handleError]);
+    }, [sceneId, objectId, puzzleBody, handleError]);
 
     const selectPuzzleType = (obj) => {
         if (obj) {
@@ -113,7 +109,7 @@ export default function ObjectEditor({
             data.componentType = obj.value;
             setPuzzleBody(data);
             setPuzzleType(obj.value);
-            console.log(puzzleBody);
+            // console.log(puzzleBody);
         }
     };
 
@@ -164,9 +160,9 @@ export default function ObjectEditor({
         setTransitions(tempTransitions);
     };
 
-    const handleSubmit = (obj) => {
+    const handleSubmit = () => {
         const savePuzzle = async () => {
-            const data = await editPuzzle(
+            await editPuzzle(
                 sceneId,
                 objectId,
                 isInteractable,
@@ -178,25 +174,25 @@ export default function ObjectEditor({
         savePuzzle();
     };
 
-    const handleRemove = (text) => {
-        const newBody = puzzleBody;
-        const newList = newBody.jsonData.data.filter(
-            (item) => item.text !== text
-        );
-        newBody.jsonData.data = newList;
-        setPuzzleBody(newBody);
-    };
+    // const handleRemove = (text) => {
+    //     const newBody = puzzleBody;
+    //     const newList = newBody.jsonData.data.filter(
+    //         (item) => item.text !== text
+    //     );
+    //     newBody.jsonData.data = newList;
+    //     setPuzzleBody(newBody);
+    // };
 
-    const handleAdd = (text) => {
-        const newBody = puzzleBody;
-        if (!newBody.jsonData.data) {
-            newBody.jsonData.data = [{ text: text }];
-        } else {
-            const newList = newBody.jsonData.data.concat({ text: text });
-            newBody.jsonData.data = newList;
-        }
-        setPuzzleBody(newBody);
-    };
+    // const handleAdd = (text) => {
+    //     const newBody = puzzleBody;
+    //     if (!newBody.jsonData.data) {
+    //         newBody.jsonData.data = [{ text: text }];
+    //     } else {
+    //         const newList = newBody.jsonData.data.concat({ text: text });
+    //         newBody.jsonData.data = newList;
+    //     }
+    //     setPuzzleBody(newBody);
+    // };
 
     return (
         <div className={classes.container}>
