@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import AddIcon from "@material-ui/icons/Add";
 import { useErrorHandler } from "react-error-boundary";
 import Select from "react-select";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogActions from "@material-ui/core/DialogActions";
-import Dialog from "@material-ui/core/Dialog";
-import { Button, IconButton } from "@material-ui/core";
-import {
-    DeleteForever,
-    KeyboardArrowDown,
-    KeyboardArrowUp,
-} from "@material-ui/icons";
+// import AddIcon from "@material-ui/icons/Add";
+// import DialogTitle from "@material-ui/core/DialogTitle";
+// import DialogContent from "@material-ui/core/DialogContent";
+// import DialogActions from "@material-ui/core/DialogActions";
+// import Dialog from "@material-ui/core/Dialog";
+// import { Button, IconButton } from "@material-ui/core";
+// import {
+//     DeleteForever,
+//     KeyboardArrowDown,
+//     KeyboardArrowUp,
+// } from "@material-ui/icons";
 
-import { getPuzzle, editPuzzle } from "../../../lib/puzzleEndpoints";
+import { getPuzzle } from "../../../lib/puzzleEndpoints";
+// import { getPuzzle, editPuzzle } from "../../../lib/puzzleEndpoints";
 
 const useStyles = makeStyles((theme) => ({
     page: {
@@ -69,7 +70,7 @@ export default function ObjectEditor({
     const [puzzleBody, setPuzzleBody] = useState({});
     const [puzzleType, setPuzzleType] = useState("ordered-puzzle");
     const [isInteractable, setIsInteractable] = useState(false);
-    const [transitions, setTransitions] = React.useState([]);
+    // const [transitions, setTransitions] = React.useState([]);
     const [newText, setNewText] = React.useState("");
 
     const puzzleTypeList = [
@@ -113,66 +114,66 @@ export default function ObjectEditor({
         }
     };
 
-    const reorder = (transitions, startIndex, endIndex) => {
-        const result = transitions;
-        const [removed] = result.splice(startIndex, 1);
-        result.splice(endIndex, 0, removed);
-        return result;
-    };
+    // const reorder = (transitions, startIndex, endIndex) => {
+    //     const result = transitions;
+    //     const [removed] = result.splice(startIndex, 1);
+    //     result.splice(endIndex, 0, removed);
+    //     return result;
+    // };
 
-    const reorderTransitions = (sourceIndex, destinationIndex) => {
-        if (
-            sourceIndex == null ||
-            destinationIndex == null ||
-            sourceIndex === destinationIndex
-        ) {
-            return;
-        }
+    // const reorderTransitions = (sourceIndex, destinationIndex) => {
+    //     if (
+    //         sourceIndex == null ||
+    //         destinationIndex == null ||
+    //         sourceIndex === destinationIndex
+    //     ) {
+    //         return;
+    //     }
 
-        const reorderedList = reorder(
-            transitions,
-            sourceIndex,
-            destinationIndex
-        );
+    //     const reorderedList = reorder(
+    //         transitions,
+    //         sourceIndex,
+    //         destinationIndex
+    //     );
 
-        setTransitions([...reorderedList]);
-    };
+    //     setTransitions([...reorderedList]);
+    // };
 
-    const addTransition = () => {
-        const newTransition = {
-            text: prompt("Enter the text for the transition: "),
-        };
+    // const addTransition = () => {
+    //     const newTransition = {
+    //         text: prompt("Enter the text for the transition: "),
+    //     };
 
-        setTransitions([...transitions, newTransition]);
-    };
+    //     setTransitions([...transitions, newTransition]);
+    // };
 
-    const onMoveUpClick = (index) => {
-        reorderTransitions(index, Math.max(0, index - 1));
-    };
+    // const onMoveUpClick = (index) => {
+    //     reorderTransitions(index, Math.max(0, index - 1));
+    // };
 
-    const onMoveDownClick = (index) => {
-        reorderTransitions(index, Math.min(transitions.length - 1, index + 1));
-    };
+    // const onMoveDownClick = (index) => {
+    //     reorderTransitions(index, Math.min(transitions.length - 1, index + 1));
+    // };
 
-    const deleteTransition = (index) => {
-        const tempTransitions = JSON.parse(JSON.stringify(transitions));
-        tempTransitions.splice(index, 1);
-        setTransitions(tempTransitions);
-    };
+    // const deleteTransition = (index) => {
+    //     const tempTransitions = JSON.parse(JSON.stringify(transitions));
+    //     tempTransitions.splice(index, 1);
+    //     setTransitions(tempTransitions);
+    // };
 
-    const handleSubmit = () => {
-        const savePuzzle = async () => {
-            await editPuzzle(
-                sceneId,
-                objectId,
-                isInteractable,
-                puzzleBody,
-                handleError
-            );
-        };
+    // const handleSubmit = () => {
+    //     const savePuzzle = async () => {
+    //         await editPuzzle(
+    //             sceneId,
+    //             objectId,
+    //             isInteractable,
+    //             puzzleBody,
+    //             handleError
+    //         );
+    //     };
 
-        savePuzzle();
-    };
+    //     savePuzzle();
+    // };
 
     const handleRemove = (text) => {
         const newBody = puzzleBody;
