@@ -67,11 +67,16 @@ export default function SceneModal({
     }, [scene, handleError]);
 
     const handleSceneNameChange = (event) => {
-        setSceneName(event.target.value);
+        const response = event.target.value;
+        setSceneName(response);
         setErrors({ ...errors, name: "" });
-        const reg = new RegExp(/^[a-zA-Z0-9 _-]{1,50}$/).test(
-            event.target.value
-        );
+        const reg = new RegExp(/^[a-zA-Z0-9 _-]{1,}$/).test(response);
+        if (response.length > 50) {
+            setErrors({
+                ...errors,
+                name: "Name cannot exceed 50 characters",
+            });
+        }
         if (!reg) {
             setErrors({
                 ...errors,
@@ -82,11 +87,16 @@ export default function SceneModal({
     };
 
     const handleSceneDescriptionChange = (event) => {
-        setDescription(event.target.value);
+        const response = event.target.value;
+        setDescription(response);
         setErrors({ ...errors, description: "" });
-        const reg = new RegExp(/^[?!.,a-zA-Z0-9 _-]{1,2000}$/).test(
-            event.target.value
-        );
+        const reg = new RegExp(/^[?!.,a-zA-Z0-9 _-]{1,}$/).test(response);
+        if (response.length > 2000) {
+            setErrors({
+                ...errors,
+                description: "Description cannot exceed 2000 characters",
+            });
+        }
         if (!reg) {
             setErrors({
                 ...errors,
