@@ -70,6 +70,7 @@ export default function ObjectEditor({
     const [puzzleType, setPuzzleType] = useState("ordered-puzzle");
     const [isInteractable, setIsInteractable] = useState(false);
     const [transitions, setTransitions] = React.useState([]);
+    const [newText, setNewText] = React.useState("");
 
     const puzzleTypeList = [
         { value: "text-pane", label: "text-pane" },
@@ -97,10 +98,10 @@ export default function ObjectEditor({
             setPuzzleBody(data.animations_json.blackboardData);
             setPuzzleType(puzzleBody.componentType);
             setIsInteractable(data.is_interactable);
-            // console.log(puzzleBody);
         };
-
-        getPuzzleBody();
+        if (!puzzleBody.componentType) {
+            getPuzzleBody();
+        }
     }, [sceneId, objectId, puzzleBody, handleError]);
 
     const selectPuzzleType = (obj) => {
@@ -109,7 +110,6 @@ export default function ObjectEditor({
             data.componentType = obj.value;
             setPuzzleBody(data);
             setPuzzleType(obj.value);
-            // console.log(puzzleBody);
         }
     };
 
@@ -174,25 +174,31 @@ export default function ObjectEditor({
         savePuzzle();
     };
 
-    // const handleRemove = (text) => {
-    //     const newBody = puzzleBody;
-    //     const newList = newBody.jsonData.data.filter(
-    //         (item) => item.text !== text
-    //     );
-    //     newBody.jsonData.data = newList;
-    //     setPuzzleBody(newBody);
-    // };
+    const handleRemove = (text) => {
+        const newBody = puzzleBody;
+        const newList = newBody.jsonData.data.filter(
+            (item) => item.text !== text
+        );
+        newBody.jsonData.data = newList;
+        setPuzzleBody(newBody);
+    };
 
-    // const handleAdd = (text) => {
-    //     const newBody = puzzleBody;
-    //     if (!newBody.jsonData.data) {
-    //         newBody.jsonData.data = [{ text: text }];
-    //     } else {
-    //         const newList = newBody.jsonData.data.concat({ text: text });
-    //         newBody.jsonData.data = newList;
-    //     }
-    //     setPuzzleBody(newBody);
-    // };
+    const handleChange = (event) => {
+        setNewText(event.target.value);
+    };
+
+    const handleAdd = () => {
+        const newBody = puzzleBody;
+        if (!newBody.jsonData.data) {
+            newBody.jsonData.data = [{ text: newText }];
+        } else {
+            const newList = newBody.jsonData.data.concat({
+                text: newText,
+            });
+            newBody.jsonData.data = newList;
+        }
+        setPuzzleBody(newBody);
+    };
 
     return (
         <div className={classes.container}>
@@ -213,74 +219,74 @@ export default function ObjectEditor({
                 />
             ) : null}
             {isInteractable && puzzleType === "text-pane" ? (
-                <Dialog>
-                    <DialogTitle>
-                        Modify Transitions
-                        <IconButton
-                            className={classes.addButton}
-                            aria-label="add"
-                            onClick={addTransition}
-                        >
-                            <AddIcon />
-                        </IconButton>
-                    </DialogTitle>
-                    <DialogContent>
-                        {transitions.map((transition, index) => {
-                            return (
-                                <div key={transition.id}>
-                                    <h4>
-                                        Transition {index + 1} of{" "}
-                                        {transitions.length}
-                                    </h4>
-                                    <p>{transition.text}</p>
-                                    <IconButton
-                                        onClick={() => onMoveUpClick(index)}
-                                    >
-                                        <KeyboardArrowUp />
-                                    </IconButton>
-                                    <IconButton
-                                        onClick={() => onMoveDownClick(index)}
-                                    >
-                                        <KeyboardArrowDown />
-                                    </IconButton>
-                                    <IconButton
-                                        onClick={() => deleteTransition(index)}
-                                        disabled={transitions.length === 1}
-                                    >
-                                        <DeleteForever />
-                                    </IconButton>
-                                </div>
-                            );
-                        })}
-                    </DialogContent>
-                    <DialogActions>
-                        <Button color="primary" onClick={() => handleSubmit()}>
-                            Save
-                        </Button>
-                    </DialogActions>
-                </Dialog>
-            ) : // <div>
-            //     <ul>
-            //         {puzzleBody.jsonData.data.map((item) => (
-            //             <li key={item.text}>
-            //                 <span>{item.text}</span>
-            //                 <button
-            //                     type="button"
-            //                     onClick={() => handleRemove(item.text)}
-            //                 >
-            //                     Remove
-            //                 </button>
-            //             </li>
-            //         ))}
-            //     </ul>
-            //     <div>
-            //         <input type="text" />
-            //         <button type="button" onClick={handleAdd}>
-            //             Add
-            //         </button>
-            //     </div>
-            // </div>
-            null}
+                // <Dialog>
+                //     <DialogTitle>
+                //         Modify Transitions
+                //         <IconButton
+                //             className={classes.addButton}
+                //             aria-label="add"
+                //             onClick={addTransition}
+                //         >
+                //             <AddIcon />
+                //         </IconButton>
+                //     </DialogTitle>
+                //     <DialogContent>
+                //         {transitions.map((transition, index) => {
+                //             return (
+                //                 <div key={transition.id}>
+                //                     <h4>
+                //                         Transition {index + 1} of{" "}
+                //                         {transitions.length}
+                //                     </h4>
+                //                     <p>{transition.text}</p>
+                //                     <IconButton
+                //                         onClick={() => onMoveUpClick(index)}
+                //                     >
+                //                         <KeyboardArrowUp />
+                //                     </IconButton>
+                //                     <IconButton
+                //                         onClick={() => onMoveDownClick(index)}
+                //                     >
+                //                         <KeyboardArrowDown />
+                //                     </IconButton>
+                //                     <IconButton
+                //                         onClick={() => deleteTransition(index)}
+                //                         disabled={transitions.length === 1}
+                //                     >
+                //                         <DeleteForever />
+                //                     </IconButton>
+                //                 </div>
+                //             );
+                //         })}
+                //     </DialogContent>
+                //     <DialogActions>
+                //         <Button color="primary" onClick={() => handleSubmit()}>
+                //             Save
+                //         </Button>
+                //     </DialogActions>
+                // </Dialog>
+                <div>
+                    <ul>
+                        {puzzleBody.jsonData.data.map((item) => (
+                            <li key={item.text}>
+                                <span>{item.text}</span>
+                                <button
+                                    type="button"
+                                    onClick={() => handleRemove(item.text)}
+                                >
+                                    Remove
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                    <div>
+                        <input type="text" onChange={handleChange} />
+                        <button type="button" onClick={handleAdd}>
+                            Add
+                        </button>
+                    </div>
+                </div>
+            ) : null}
         </div>
     );
 }
