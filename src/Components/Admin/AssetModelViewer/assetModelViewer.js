@@ -165,10 +165,10 @@ export default function AssetModelViewer({
                             value={objectType}
                             onChange={handleObjectTypeChange}
                         >
-                            <MenuItem value="object">
+                            <MenuItem value={ObjectTypes.OBJECT}>
                                 {ObjectTypes.OBJECT}
                             </MenuItem>
-                            <MenuItem value="background">
+                            <MenuItem value={ObjectTypes.BACKGROUND}>
                                 {ObjectTypes.BACKGROUND}
                             </MenuItem>
                         </Select>
