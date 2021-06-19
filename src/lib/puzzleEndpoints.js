@@ -15,7 +15,7 @@ export const getPuzzle = async (sceneId, objectId, handleError) => {
 };
 
 export const editPuzzle = async (
-    { sceneId, objectId, isInteractable, blackboardData },
+    { sceneId, objectId, isInteractable, animationsJson },
     handleError
 ) => {
     try {
@@ -23,17 +23,11 @@ export const editPuzzle = async (
             baseEndpoint + `scene/${sceneId}/object/${objectId}/puzzle`,
             {
                 is_interactable: isInteractable,
-                animations_json: {
-                    blackboardData: blackboardData,
-                },
+                animations_json: animationsJson,
             }
         );
-        // console.log("response");
-        // console.log(response);
         return response;
     } catch (error) {
-        // console.log("error");
-        // console.log(error);
         handleError(error);
         throw error;
     }

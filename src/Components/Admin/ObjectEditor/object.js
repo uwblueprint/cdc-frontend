@@ -69,6 +69,7 @@ export default function ObjectEditor({
     const handleError = useErrorHandler();
     const [puzzleBody, setPuzzleBody] = useState({});
     const [puzzleType, setPuzzleType] = useState("ordered-puzzle");
+    const [animationsJson, setAnimationsJson] = useState({});
     const [isInteractable, setIsInteractable] = useState(false);
     const [texts, setTexts] = React.useState([]);
 
@@ -95,6 +96,7 @@ export default function ObjectEditor({
     useEffect(() => {
         const getPuzzleBody = async () => {
             const data = await getPuzzle(sceneId, objectId, handleError);
+            setAnimationsJson(data.animations_json);
             setPuzzleBody(data.animations_json.blackboardData);
             setPuzzleType(puzzleBody.componentType);
             setIsInteractable(data.is_interactable);
@@ -118,7 +120,6 @@ export default function ObjectEditor({
             data.componentType = obj.value;
             setPuzzleBody(data);
             setPuzzleType(obj.value);
-            // console.log(texts);
         }
     };
 
@@ -167,16 +168,19 @@ export default function ObjectEditor({
     };
 
     const handleSubmit = () => {
-        const puzzleBodyCopy = puzzleBody;
-        const textsCopy = texts;
+        let animCopy = animationsJson;
+        let puzzleBodyCopy = puzzleBody;
+        let textsCopy = texts;
         for (let i = 0; i < textsCopy.length; i++) {
             delete textsCopy["index"];
         }
         puzzleBodyCopy.jsonData.data = textsCopy;
-        // console.log(puzzleBodyCopy);
+        animCopy.blackboardData = puzzleBodyCopy;
+        setAnimationsJson(animCopy);
+
         const savePuzzle = async () => {
             await editPuzzle(
-                { sceneId, objectId, isInteractable, puzzleBodyCopy },
+                { sceneId, objectId, isInteractable, animationsJson },
                 handleError
             );
         };
