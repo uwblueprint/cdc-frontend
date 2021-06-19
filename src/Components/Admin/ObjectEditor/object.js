@@ -68,7 +68,7 @@ export default function ObjectEditor({
     const classes = useStyles();
     const handleError = useErrorHandler();
     const [puzzleBody, setPuzzleBody] = useState({});
-    const [puzzleType, setPuzzleType] = useState("ordered-puzzle");
+    const [puzzleType, setPuzzleType] = useState("");
     const [animationsJson, setAnimationsJson] = useState({});
     const [isInteractable, setIsInteractable] = useState(false);
     const [texts, setTexts] = React.useState([]);
@@ -98,7 +98,7 @@ export default function ObjectEditor({
             const data = await getPuzzle(sceneId, objectId, handleError);
             setAnimationsJson(data.animations_json);
             setPuzzleBody(data.animations_json.blackboardData);
-            setPuzzleType(puzzleBody.componentType);
+            setPuzzleType(data.animations_json.blackboardData.componentType);
             setIsInteractable(data.is_interactable);
             const puzBody = data.animations_json.blackboardData;
             if (puzBody.componentType === "text-pane") {
@@ -168,9 +168,9 @@ export default function ObjectEditor({
     };
 
     const handleSubmit = () => {
-        let animCopy = animationsJson;
-        let puzzleBodyCopy = puzzleBody;
-        let textsCopy = texts;
+        const animCopy = animationsJson;
+        const puzzleBodyCopy = puzzleBody;
+        const textsCopy = texts;
         for (let i = 0; i < textsCopy.length; i++) {
             delete textsCopy["index"];
         }
@@ -190,10 +190,6 @@ export default function ObjectEditor({
 
     return (
         <div className={classes.container}>
-            <p>
-                Hello World! scene: {sceneId}, object: {objectId}{" "}
-                {puzzleBody.componentType}
-            </p>
             {isInteractable ? (
                 <Select
                     value={puzzleTypeList.filter(
