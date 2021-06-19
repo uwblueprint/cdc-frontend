@@ -7,6 +7,7 @@ import Admin from "./Components/Admin/admin";
 import PasswordReset from "./Components/Login/passwordReset";
 import EnvironmentEditor from "./Components/Admin/EnvironmentEditor/environment";
 import ObjectEditor from "./Components/Admin/ObjectEditor/object";
+import AssetModelViewer from "./Components/Admin/AssetModelViewer/assetModelViewer";
 import { UserContext } from "./Providers/UserProviders";
 
 export default function Routes() {
@@ -24,6 +25,11 @@ export default function Routes() {
                 exact
                 path="/admin/scene/:sceneId/object/:objectId"
                 component={ObjectEditor}
+            />
+            <Route
+                exact
+                path="/admin/asset/:assetId"
+                component={AssetModelViewer}
             />
         </Switch>
     ) : (

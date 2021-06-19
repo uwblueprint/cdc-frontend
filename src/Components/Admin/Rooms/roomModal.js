@@ -61,13 +61,19 @@ export default function RoomModal({
     }, [room]);
 
     const handleRoomNameChange = (event) => {
-        setRoomName(event.target.value);
-        setErrors({ name: "" });
-        const reg = new RegExp(/^[a-zA-Z0-9 _-]{1,50}$/).test(
-            event.target.value
-        );
+        const response = event.target.value;
+        setRoomName(response);
+        setErrors({ ...errors, name: "" });
+        const reg = new RegExp(/^[a-zA-Z0-9 _-]{1,}$/).test(response);
+        if (response.length > 50) {
+            setErrors({
+                ...errors,
+                name: "Name cannot exceed 50 characters",
+            });
+        }
         if (!reg) {
             setErrors({
+                ...errors,
                 name:
                     "Only characters allowed are alphanumeric (a-z, A-Z, 0-9), dashes (- and _), and spaces",
             });
@@ -75,13 +81,19 @@ export default function RoomModal({
     };
 
     const handleFriendlyNameChange = (event) => {
-        setFriendlyName(event.target.value);
-        setErrors({ friendlyName: "" });
-        const reg = new RegExp(/^[a-zA-Z0-9_-]{1,50}$/).test(
-            event.target.value
-        );
+        const response = event.target.value;
+        setFriendlyName(response);
+        setErrors({ ...errors, friendlyName: "" });
+        const reg = new RegExp(/^[a-zA-Z0-9_-]{1,}$/).test(response);
+        if (response.length > 50) {
+            setErrors({
+                ...errors,
+                friendlyName: "Friendly name cannot exceed 50 characters",
+            });
+        }
         if (!reg) {
             setErrors({
+                ...errors,
                 friendlyName:
                     "Only characters allowed are alphanumeric (a-z, A-Z, 0-9) and dashes (- and _)",
             });
@@ -89,13 +101,19 @@ export default function RoomModal({
     };
 
     const handleRoomDescriptionChange = (event) => {
-        setRoomDescription(event.target.value);
-        setErrors({ description: "" });
-        const reg = new RegExp(/^[?!.,a-zA-Z0-9 _-]{1,2000}$/).test(
-            event.target.value
-        );
+        const response = event.target.value;
+        setRoomDescription(response);
+        setErrors({ ...errors, description: "" });
+        const reg = new RegExp(/^[?!.,a-zA-Z0-9 _-]{1,}$/).test(response);
+        if (response.length > 2000) {
+            setErrors({
+                ...errors,
+                description: "Description cannot exceed 2000 characters",
+            });
+        }
         if (!reg) {
             setErrors({
+                ...errors,
                 description:
                     "Only characters allowed are alphanumeric (a-z, A-Z, 0-9), dashes (- and _), punctuation (?!.,), and spaces",
             });
@@ -104,12 +122,13 @@ export default function RoomModal({
 
     const handleRoomSolveTimeChange = (event) => {
         setRoomSolveTime(event.target.value);
-        setErrors({ solveTime: "" });
+        setErrors({ ...errors, solveTime: "" });
         const reg = new RegExp(/^[a-zA-Z0-9 _-]{1,50}$/).test(
             event.target.value
         );
         if (!reg) {
             setErrors({
+                ...errors,
                 solveTime:
                     "Only characters allowed are alphanumeric (a-z, A-Z, 0-9), dashes (- and _), and spaces",
             });
