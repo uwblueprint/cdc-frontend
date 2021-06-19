@@ -164,6 +164,9 @@ export default function ObjectEditor({
     const deleteTransition = (index) => {
         const tempTexts = JSON.parse(JSON.stringify(texts));
         tempTexts.splice(index, 1);
+        for (var i = 0; i < tempTexts.length; i++) {
+            tempTexts[i].index = i;
+        }
         setTexts(tempTexts);
     };
 

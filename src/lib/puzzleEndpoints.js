@@ -26,6 +26,7 @@ export const editPuzzle = async (
                 animations_json: animationsJson,
             }
         );
+        alert("Saved puzzle CRUD changes for object with id: " + objectId);
         return response;
     } catch (error) {
         handleError(error);
