@@ -2,20 +2,20 @@ import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useErrorHandler } from "react-error-boundary";
 import Select from "react-select";
-// import AddIcon from "@material-ui/icons/Add";
+import AddIcon from "@material-ui/icons/Add";
 // import DialogTitle from "@material-ui/core/DialogTitle";
 // import DialogContent from "@material-ui/core/DialogContent";
 // import DialogActions from "@material-ui/core/DialogActions";
 // import Dialog from "@material-ui/core/Dialog";
-// import { Button, IconButton } from "@material-ui/core";
-// import {
-//     DeleteForever,
-//     KeyboardArrowDown,
-//     KeyboardArrowUp,
-// } from "@material-ui/icons";
+import { Button, IconButton } from "@material-ui/core";
+import {
+    DeleteForever,
+    KeyboardArrowDown,
+    KeyboardArrowUp,
+} from "@material-ui/icons";
 
-import { getPuzzle } from "../../../lib/puzzleEndpoints";
-// import { getPuzzle, editPuzzle } from "../../../lib/puzzleEndpoints";
+// import { getPuzzle } from "../../../lib/puzzleEndpoints";
+import { getPuzzle, editPuzzle } from "../../../lib/puzzleEndpoints";
 
 const useStyles = makeStyles((theme) => ({
     page: {
@@ -70,8 +70,7 @@ export default function ObjectEditor({
     const [puzzleBody, setPuzzleBody] = useState({});
     const [puzzleType, setPuzzleType] = useState("ordered-puzzle");
     const [isInteractable, setIsInteractable] = useState(false);
-    // const [transitions, setTransitions] = React.useState([]);
-    const [newText, setNewText] = React.useState("");
+    const [texts, setTexts] = React.useState([]);
 
     const puzzleTypeList = [
         { value: "text-pane", label: "text-pane" },
@@ -99,6 +98,14 @@ export default function ObjectEditor({
             setPuzzleBody(data.animations_json.blackboardData);
             setPuzzleType(puzzleBody.componentType);
             setIsInteractable(data.is_interactable);
+            const puzBody = data.animations_json.blackboardData;
+            if (puzBody.componentType === "text-pane") {
+                const tempTexts = puzBody.jsonData.data;
+                for (let i = 0; i < puzBody.jsonData.data.length; i++) {
+                    tempTexts[i]["index"] = i;
+                }
+                setTexts(tempTexts);
+            }
         };
         if (!puzzleBody.componentType) {
             getPuzzleBody();
@@ -111,94 +118,70 @@ export default function ObjectEditor({
             data.componentType = obj.value;
             setPuzzleBody(data);
             setPuzzleType(obj.value);
+            // console.log(texts);
         }
     };
 
-    // const reorder = (transitions, startIndex, endIndex) => {
-    //     const result = transitions;
-    //     const [removed] = result.splice(startIndex, 1);
-    //     result.splice(endIndex, 0, removed);
-    //     return result;
-    // };
-
-    // const reorderTransitions = (sourceIndex, destinationIndex) => {
-    //     if (
-    //         sourceIndex == null ||
-    //         destinationIndex == null ||
-    //         sourceIndex === destinationIndex
-    //     ) {
-    //         return;
-    //     }
-
-    //     const reorderedList = reorder(
-    //         transitions,
-    //         sourceIndex,
-    //         destinationIndex
-    //     );
-
-    //     setTransitions([...reorderedList]);
-    // };
-
-    // const addTransition = () => {
-    //     const newTransition = {
-    //         text: prompt("Enter the text for the transition: "),
-    //     };
-
-    //     setTransitions([...transitions, newTransition]);
-    // };
-
-    // const onMoveUpClick = (index) => {
-    //     reorderTransitions(index, Math.max(0, index - 1));
-    // };
-
-    // const onMoveDownClick = (index) => {
-    //     reorderTransitions(index, Math.min(transitions.length - 1, index + 1));
-    // };
-
-    // const deleteTransition = (index) => {
-    //     const tempTransitions = JSON.parse(JSON.stringify(transitions));
-    //     tempTransitions.splice(index, 1);
-    //     setTransitions(tempTransitions);
-    // };
-
-    // const handleSubmit = () => {
-    //     const savePuzzle = async () => {
-    //         await editPuzzle(
-    //             sceneId,
-    //             objectId,
-    //             isInteractable,
-    //             puzzleBody,
-    //             handleError
-    //         );
-    //     };
-
-    //     savePuzzle();
-    // };
-
-    const handleRemove = (text) => {
-        const newBody = puzzleBody;
-        const newList = newBody.jsonData.data.filter(
-            (item) => item.text !== text
-        );
-        newBody.jsonData.data = newList;
-        setPuzzleBody(newBody);
+    const reorder = (texts, startIndex, endIndex) => {
+        const result = texts;
+        const [removed] = result.splice(startIndex, 1);
+        result.splice(endIndex, 0, removed);
+        return result;
     };
 
-    const handleChange = (event) => {
-        setNewText(event.target.value);
-    };
-
-    const handleAdd = () => {
-        const newBody = puzzleBody;
-        if (!newBody.jsonData.data) {
-            newBody.jsonData.data = [{ text: newText }];
-        } else {
-            const newList = newBody.jsonData.data.concat({
-                text: newText,
-            });
-            newBody.jsonData.data = newList;
+    const reorderTransitions = (sourceIndex, destinationIndex) => {
+        if (
+            sourceIndex == null ||
+            destinationIndex == null ||
+            sourceIndex === destinationIndex
+        ) {
+            return;
         }
-        setPuzzleBody(newBody);
+
+        const reorderedList = reorder(texts, sourceIndex, destinationIndex);
+
+        setTexts([...reorderedList]);
+    };
+
+    const addTransition = () => {
+        const newTransition = {
+            text: prompt("Enter the text for the transition: "),
+            index: texts.length,
+        };
+
+        setTexts([...texts, newTransition]);
+    };
+
+    const onMoveUpClick = (index) => {
+        reorderTransitions(index, Math.max(0, index - 1));
+    };
+
+    const onMoveDownClick = (index) => {
+        reorderTransitions(index, Math.min(texts.length - 1, index + 1));
+    };
+
+    const deleteTransition = (index) => {
+        const tempTexts = JSON.parse(JSON.stringify(texts));
+        tempTexts.splice(index, 1);
+        setTexts(tempTexts);
+    };
+
+    const handleSubmit = () => {
+        const puzzleBodyCopy = puzzleBody;
+        const textsCopy = texts;
+        for (let i = 0; i < textsCopy.length; i++) {
+            delete textsCopy["index"];
+        }
+        puzzleBodyCopy.jsonData.data = textsCopy;
+        // console.log(puzzleBodyCopy);
+        const savePuzzle = async () => {
+            await editPuzzle(
+                { sceneId, objectId, isInteractable, puzzleBodyCopy },
+                handleError
+            );
+        };
+
+        savePuzzle();
     };
 
     return (
@@ -220,71 +203,55 @@ export default function ObjectEditor({
                 />
             ) : null}
             {isInteractable && puzzleType === "text-pane" ? (
-                // <Dialog>
-                //     <DialogTitle>
-                //         Modify Transitions
-                //         <IconButton
-                //             className={classes.addButton}
-                //             aria-label="add"
-                //             onClick={addTransition}
-                //         >
-                //             <AddIcon />
-                //         </IconButton>
-                //     </DialogTitle>
-                //     <DialogContent>
-                //         {transitions.map((transition, index) => {
-                //             return (
-                //                 <div key={transition.id}>
-                //                     <h4>
-                //                         Transition {index + 1} of{" "}
-                //                         {transitions.length}
-                //                     </h4>
-                //                     <p>{transition.text}</p>
-                //                     <IconButton
-                //                         onClick={() => onMoveUpClick(index)}
-                //                     >
-                //                         <KeyboardArrowUp />
-                //                     </IconButton>
-                //                     <IconButton
-                //                         onClick={() => onMoveDownClick(index)}
-                //                     >
-                //                         <KeyboardArrowDown />
-                //                     </IconButton>
-                //                     <IconButton
-                //                         onClick={() => deleteTransition(index)}
-                //                         disabled={transitions.length === 1}
-                //                     >
-                //                         <DeleteForever />
-                //                     </IconButton>
-                //                 </div>
-                //             );
-                //         })}
-                //     </DialogContent>
-                //     <DialogActions>
-                //         <Button color="primary" onClick={() => handleSubmit()}>
-                //             Save
-                //         </Button>
-                //     </DialogActions>
-                // </Dialog>
                 <div>
-                    <ul>
-                        {puzzleBody.jsonData.data.map((item) => (
-                            <li key={item.text}>
-                                <span>{item.text}</span>
-                                <button
-                                    type="button"
-                                    onClick={() => handleRemove(item.text)}
-                                >
-                                    Remove
-                                </button>
-                            </li>
-                        ))}
-                    </ul>
                     <div>
-                        <input type="text" onChange={handleChange} />
-                        <button type="button" onClick={handleAdd}>
-                            Add
-                        </button>
+                        Modify Texts
+                        <IconButton
+                            className={classes.addButton}
+                            aria-label="add"
+                            onClick={addTransition}
+                        >
+                            <AddIcon />
+                        </IconButton>
+                    </div>
+                    <div>
+                        {texts.map((item) => {
+                            return (
+                                <div key={item.index}>
+                                    <h4>
+                                        Text {item.index + 1} of {texts.length}
+                                    </h4>
+                                    <p>{item.text}</p>
+                                    <IconButton
+                                        onClick={() =>
+                                            onMoveUpClick(item.index)
+                                        }
+                                    >
+                                        <KeyboardArrowUp />
+                                    </IconButton>
+                                    <IconButton
+                                        onClick={() =>
+                                            onMoveDownClick(item.index)
+                                        }
+                                    >
+                                        <KeyboardArrowDown />
+                                    </IconButton>
+                                    <IconButton
+                                        onClick={() =>
+                                            deleteTransition(item.index)
+                                        }
+                                        disabled={texts.length === 1}
+                                    >
+                                        <DeleteForever />
+                                    </IconButton>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <div>
+                        <Button color="primary" onClick={() => handleSubmit()}>
+                            Save
+                        </Button>
                     </div>
                 </div>
             ) : null}

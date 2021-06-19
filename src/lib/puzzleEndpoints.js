@@ -28,8 +28,12 @@ export const editPuzzle = async (
                 },
             }
         );
+        // console.log("response");
+        // console.log(response);
         return response;
     } catch (error) {
+        // console.log("error");
+        // console.log(error);
         handleError(error);
         throw error;
     }
