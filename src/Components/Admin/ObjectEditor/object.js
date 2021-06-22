@@ -98,7 +98,7 @@ export default function ObjectEditor({
             const data = await getPuzzle(sceneId, objectId, handleError);
             setAnimationsJson(data.animations_json);
             if (JSON.stringify(data.animations_json) === JSON.stringify({})) {
-                setPuzzleBody({});
+                setPuzzleBody({ jsonData: {} });
                 setIsInteractable(false);
             } else {
                 setPuzzleBody(data.animations_json.blackboardData);
@@ -116,7 +116,7 @@ export default function ObjectEditor({
                 }
             }
         };
-        if (!puzzleType) {
+        if (JSON.stringify(puzzleBody) === JSON.stringify({})) {
             getPuzzleBody();
         }
     }, [sceneId, objectId, puzzleBody, handleError]);
