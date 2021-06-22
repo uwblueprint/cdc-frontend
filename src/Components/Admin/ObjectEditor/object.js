@@ -279,8 +279,21 @@ export default function ObjectEditor({
         savePuzzle();
     };
 
+    const toggleButton = () => {
+        setIsInteractable(!isInteractable);
+    };
+
     return (
         <div className={classes.container}>
+            <div>
+                <label htmlFor="subscribeNews">Interactable?</label>
+                <input
+                    type="checkbox"
+                    value={isInteractable}
+                    checked={isInteractable}
+                    onChange={toggleButton}
+                ></input>
+            </div>
             {isInteractable ? (
                 <Select
                     value={puzzleTypeList.filter(
