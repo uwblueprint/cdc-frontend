@@ -55,6 +55,143 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+class TextPaneView extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            texts: this.props.texts,
+        };
+        const tempTexts = this.props.texts;
+        for (let i = 0; i < tempTexts.length; i++) {
+            tempTexts[i]["index"] = i;
+        }
+        this.initTexts(this, tempTexts);
+    }
+
+    initTexts(self, newTexts) {
+        self.setState({ texts: newTexts });
+    }
+
+    setTexts(newTexts) {
+        this.setState({ texts: newTexts });
+    }
+
+    reorder = (startIndex, endIndex) => {
+        const result = this.state.texts;
+        const [removed] = result.splice(startIndex, 1);
+        result.splice(endIndex, 0, removed);
+        return result;
+    };
+
+    reorderTexts = (sourceIndex, destinationIndex) => {
+        if (
+            sourceIndex == null ||
+            destinationIndex == null ||
+            sourceIndex === destinationIndex
+        ) {
+            return;
+        }
+
+        const reorderedList = this.reorder(sourceIndex, destinationIndex);
+
+        this.setTexts([...reorderedList]);
+    };
+
+    addText = () => {
+        const newText = {
+            text: prompt("Enter the text for the puzzle: "),
+            index: this.state.texts.length,
+        };
+
+        if (newText.text) {
+            this.setTexts([...this.state.texts, newText]);
+        }
+    };
+
+    onMoveUpClick = (index) => {
+        this.reorderTexts(index, Math.max(0, index - 1));
+    };
+
+    onMoveDownClick = (index) => {
+        this.reorderTexts(
+            index,
+            Math.min(this.state.texts.length - 1, index + 1)
+        );
+    };
+
+    deleteText = (index) => {
+        const tempTexts = JSON.parse(JSON.stringify(this.state.texts));
+        tempTexts.splice(index, 1);
+        for (let i = 0; i < tempTexts.length; i++) {
+            tempTexts[i].index = i;
+        }
+        this.setTexts(tempTexts);
+    };
+
+    handleSubmit() {
+        this.props.saveTexts(this.state.texts);
+    }
+
+    componentDidMount() {
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    render() {
+        return (
+            <div>
+                <div>
+                    Modify Texts
+                    <IconButton
+                        className={this.props.classes.addButton}
+                        aria-label="add"
+                        onClick={this.addText}
+                    >
+                        <AddIcon />
+                    </IconButton>
+                </div>
+                <div>
+                    {this.state.texts.map((item) => {
+                        return (
+                            <div key={item.index}>
+                                <h4>
+                                    Text {item.index + 1} of{" "}
+                                    {this.state.texts.length}
+                                </h4>
+                                <p>{item.text}</p>
+                                <IconButton
+                                    onClick={() =>
+                                        this.onMoveUpClick(item.index)
+                                    }
+                                >
+                                    <KeyboardArrowUp />
+                                </IconButton>
+                                <IconButton
+                                    onClick={() =>
+                                        this.onMoveDownClick(item.index)
+                                    }
+                                >
+                                    <KeyboardArrowDown />
+                                </IconButton>
+                                <IconButton
+                                    onClick={() => this.deleteText(item.index)}
+                                    disabled={this.state.texts.length === 1}
+                                >
+                                    <DeleteForever />
+                                </IconButton>
+                            </div>
+                        );
+                    })}
+                </div>
+                <div>
+                    <Button color="primary" onClick={() => this.handleSubmit()}>
+                        Save
+                    </Button>
+                </div>
+            </div>
+        );
+    }
+}
+
 export default function ObjectEditor({
     match: {
         params: { sceneId, objectId },
@@ -66,7 +203,6 @@ export default function ObjectEditor({
     const [puzzleType, setPuzzleType] = useState("");
     const [animationsJson, setAnimationsJson] = useState({});
     const [isInteractable, setIsInteractable] = useState(false);
-    const [texts, setTexts] = React.useState([]);
 
     const puzzleTypeList = [
         { value: "text-pane", label: "Text Puzzle" },
@@ -96,7 +232,8 @@ export default function ObjectEditor({
                     for (let i = 0; i < puzBody.jsonData.data.length; i++) {
                         tempTexts[i]["index"] = i;
                     }
-                    setTexts(tempTexts);
+                    puzBody.jsonData.data = tempTexts;
+                    setPuzzleBody(puzBody);
                 }
             }
         };
@@ -109,61 +246,17 @@ export default function ObjectEditor({
         if (obj) {
             const data = puzzleBody;
             data.componentType = obj.value;
+            if (obj.value === "text-pane") {
+                if (!data.jsonData.data) {
+                    data.jsonData.data = [];
+                }
+            }
             setPuzzleBody(data);
             setPuzzleType(obj.value);
         }
     };
 
-    const reorder = (texts, startIndex, endIndex) => {
-        const result = texts;
-        const [removed] = result.splice(startIndex, 1);
-        result.splice(endIndex, 0, removed);
-        return result;
-    };
-
-    const reorderTexts = (sourceIndex, destinationIndex) => {
-        if (
-            sourceIndex == null ||
-            destinationIndex == null ||
-            sourceIndex === destinationIndex
-        ) {
-            return;
-        }
-
-        const reorderedList = reorder(texts, sourceIndex, destinationIndex);
-
-        setTexts([...reorderedList]);
-    };
-
-    const addText = () => {
-        const newText = {
-            text: prompt("Enter the text for the puzzle: "),
-            index: texts.length,
-        };
-
-        if (newText.text) {
-            setTexts([...texts, newText]);
-        }
-    };
-
-    const onMoveUpClick = (index) => {
-        reorderTexts(index, Math.max(0, index - 1));
-    };
-
-    const onMoveDownClick = (index) => {
-        reorderTexts(index, Math.min(texts.length - 1, index + 1));
-    };
-
-    const deleteText = (index) => {
-        const tempTexts = JSON.parse(JSON.stringify(texts));
-        tempTexts.splice(index, 1);
-        for (let i = 0; i < tempTexts.length; i++) {
-            tempTexts[i].index = i;
-        }
-        setTexts(tempTexts);
-    };
-
-    const handleSubmit = () => {
+    const saveTexts = (texts) => {
         const animCopy = animationsJson;
         const puzzleBodyCopy = puzzleBody;
         const textsCopy = texts;
@@ -173,14 +266,16 @@ export default function ObjectEditor({
         puzzleBodyCopy.jsonData.data = textsCopy;
         animCopy.blackboardData = puzzleBodyCopy;
         setAnimationsJson(animCopy);
+        handleSave();
+    };
 
+    const handleSave = () => {
         const savePuzzle = async () => {
             await editPuzzle(
                 { sceneId, objectId, isInteractable, animationsJson },
                 handleError
             );
         };
-
         savePuzzle();
     };
 
@@ -199,55 +294,11 @@ export default function ObjectEditor({
                 />
             ) : null}
             {isInteractable && puzzleType === "text-pane" ? (
-                <div>
-                    <div>
-                        Modify Texts
-                        <IconButton
-                            className={classes.addButton}
-                            aria-label="add"
-                            onClick={addText}
-                        >
-                            <AddIcon />
-                        </IconButton>
-                    </div>
-                    <div>
-                        {texts.map((item) => {
-                            return (
-                                <div key={item.index}>
-                                    <h4>
-                                        Text {item.index + 1} of {texts.length}
-                                    </h4>
-                                    <p>{item.text}</p>
-                                    <IconButton
-                                        onClick={() =>
-                                            onMoveUpClick(item.index)
-                                        }
-                                    >
-                                        <KeyboardArrowUp />
-                                    </IconButton>
-                                    <IconButton
-                                        onClick={() =>
-                                            onMoveDownClick(item.index)
-                                        }
-                                    >
-                                        <KeyboardArrowDown />
-                                    </IconButton>
-                                    <IconButton
-                                        onClick={() => deleteText(item.index)}
-                                        disabled={texts.length === 1}
-                                    >
-                                        <DeleteForever />
-                                    </IconButton>
-                                </div>
-                            );
-                        })}
-                    </div>
-                    <div>
-                        <Button color="primary" onClick={() => handleSubmit()}>
-                            Save
-                        </Button>
-                    </div>
-                </div>
+                <TextPaneView
+                    saveTexts={saveTexts}
+                    texts={puzzleBody.jsonData.data}
+                    classes={classes}
+                />
             ) : null}
         </div>
     );
