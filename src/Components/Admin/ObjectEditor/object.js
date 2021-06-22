@@ -97,19 +97,26 @@ export default function ObjectEditor({
         const getPuzzleBody = async () => {
             const data = await getPuzzle(sceneId, objectId, handleError);
             setAnimationsJson(data.animations_json);
-            setPuzzleBody(data.animations_json.blackboardData);
-            setPuzzleType(data.animations_json.blackboardData.componentType);
-            setIsInteractable(data.is_interactable);
-            const puzBody = data.animations_json.blackboardData;
-            if (puzBody.componentType === "text-pane") {
-                const tempTexts = puzBody.jsonData.data;
-                for (let i = 0; i < puzBody.jsonData.data.length; i++) {
-                    tempTexts[i]["index"] = i;
+            if (JSON.stringify(data.animations_json) === JSON.stringify({})) {
+                setPuzzleBody({});
+                setIsInteractable(false);
+            } else {
+                setPuzzleBody(data.animations_json.blackboardData);
+                setPuzzleType(
+                    data.animations_json.blackboardData.componentType
+                );
+                setIsInteractable(data.is_interactable);
+                const puzBody = data.animations_json.blackboardData;
+                if (puzBody.componentType === "text-pane") {
+                    const tempTexts = puzBody.jsonData.data;
+                    for (let i = 0; i < puzBody.jsonData.data.length; i++) {
+                        tempTexts[i]["index"] = i;
+                    }
+                    setTexts(tempTexts);
                 }
-                setTexts(tempTexts);
             }
         };
-        if (!puzzleBody.componentType) {
+        if (!puzzleType) {
             getPuzzleBody();
         }
     }, [sceneId, objectId, puzzleBody, handleError]);
