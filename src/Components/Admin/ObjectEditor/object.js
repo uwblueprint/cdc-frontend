@@ -3,10 +3,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useErrorHandler } from "react-error-boundary";
 import Select from "react-select";
 import AddIcon from "@material-ui/icons/Add";
-// import DialogTitle from "@material-ui/core/DialogTitle";
-// import DialogContent from "@material-ui/core/DialogContent";
-// import DialogActions from "@material-ui/core/DialogActions";
-// import Dialog from "@material-ui/core/Dialog";
 import { Button, IconButton } from "@material-ui/core";
 import {
     DeleteForever,
@@ -14,7 +10,6 @@ import {
     KeyboardArrowUp,
 } from "@material-ui/icons";
 
-// import { getPuzzle } from "../../../lib/puzzleEndpoints";
 import { getPuzzle, editPuzzle } from "../../../lib/puzzleEndpoints";
 
 const useStyles = makeStyles((theme) => ({
@@ -74,24 +69,13 @@ export default function ObjectEditor({
     const [texts, setTexts] = React.useState([]);
 
     const puzzleTypeList = [
-        { value: "text-pane", label: "text-pane" },
-        { value: "rotation-controls", label: "rotation-controls" },
-        { value: "keypad", label: "keypad" },
-        { value: "visual-pane", label: "visual-pane" },
-        { value: "jigsaw-puzzle", label: "jigsaw-puzzle" },
-        { value: "ordered-puzzle", label: "ordered-puzzle" },
+        { value: "text-pane", label: "Text Puzzle" },
+        { value: "rotation-controls", label: "Rotation Puzzle" },
+        { value: "keypad", label: "Keypad Puzzle" },
+        { value: "visual-pane", label: "Visual Puzzle" },
+        { value: "jigsaw-puzzle", label: "Jigsaw Puzzle" },
+        { value: "ordered-puzzle", label: "Ordered Puzzle" },
     ];
-    // const [scenes, setScenes] = useState([]);
-    // const [createModalOpen, setCreateModalOpen] = useState(false);
-    // const [editModalOpen, setEditModalOpen] = useState(false);
-    // const [editSceneInfo, setEditSceneInfo] = useState({});
-    // const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-    // const [deleteSceneId, setDeleteSceneId] = React.useState(null);
-    // const [editTransitionInfo, setEditTransitionInfo] = useState([]);
-    // const [editTransitionModalOpen, setEditTransitionModalOpen] = useState(
-    //     false
-    // );
-    // const [selectedTransitionId, setSelectedTransitionId] = useState(0);
 
     useEffect(() => {
         const getPuzzleBody = async () => {
@@ -137,7 +121,7 @@ export default function ObjectEditor({
         return result;
     };
 
-    const reorderTransitions = (sourceIndex, destinationIndex) => {
+    const reorderTexts = (sourceIndex, destinationIndex) => {
         if (
             sourceIndex == null ||
             destinationIndex == null ||
@@ -151,24 +135,26 @@ export default function ObjectEditor({
         setTexts([...reorderedList]);
     };
 
-    const addTransition = () => {
-        const newTransition = {
-            text: prompt("Enter the text for the transition: "),
+    const addText = () => {
+        const newText = {
+            text: prompt("Enter the text for the puzzle: "),
             index: texts.length,
         };
 
-        setTexts([...texts, newTransition]);
+        if (newText.text) {
+            setTexts([...texts, newText]);
+        }
     };
 
     const onMoveUpClick = (index) => {
-        reorderTransitions(index, Math.max(0, index - 1));
+        reorderTexts(index, Math.max(0, index - 1));
     };
 
     const onMoveDownClick = (index) => {
-        reorderTransitions(index, Math.min(texts.length - 1, index + 1));
+        reorderTexts(index, Math.min(texts.length - 1, index + 1));
     };
 
-    const deleteTransition = (index) => {
+    const deleteText = (index) => {
         const tempTexts = JSON.parse(JSON.stringify(texts));
         tempTexts.splice(index, 1);
         for (let i = 0; i < tempTexts.length; i++) {
@@ -219,7 +205,7 @@ export default function ObjectEditor({
                         <IconButton
                             className={classes.addButton}
                             aria-label="add"
-                            onClick={addTransition}
+                            onClick={addText}
                         >
                             <AddIcon />
                         </IconButton>
@@ -247,9 +233,7 @@ export default function ObjectEditor({
                                         <KeyboardArrowDown />
                                     </IconButton>
                                     <IconButton
-                                        onClick={() =>
-                                            deleteTransition(item.index)
-                                        }
+                                        onClick={() => deleteText(item.index)}
                                         disabled={texts.length === 1}
                                     >
                                         <DeleteForever />
