@@ -61,15 +61,6 @@ class TextPaneView extends React.Component {
         this.state = {
             texts: this.props.texts,
         };
-        const tempTexts = this.props.texts;
-        for (let i = 0; i < tempTexts.length; i++) {
-            tempTexts[i]["index"] = i;
-        }
-        this.initTexts(this, tempTexts);
-    }
-
-    initTexts(self, newTexts) {
-        self.setState({ texts: newTexts });
     }
 
     setTexts(newTexts) {
@@ -122,9 +113,6 @@ class TextPaneView extends React.Component {
     deleteText = (index) => {
         const tempTexts = JSON.parse(JSON.stringify(this.state.texts));
         tempTexts.splice(index, 1);
-        for (let i = 0; i < tempTexts.length; i++) {
-            tempTexts[i].index = i;
-        }
         this.setTexts(tempTexts);
     };
 
@@ -150,30 +138,26 @@ class TextPaneView extends React.Component {
                     </IconButton>
                 </div>
                 <div>
-                    {this.state.texts.map((item) => {
+                    {this.state.texts.map((item, index) => {
                         return (
-                            <div key={item.index}>
+                            <div key={index}>
                                 <h4>
-                                    Text {item.index + 1} of{" "}
+                                    Text {index + 1} of{" "}
                                     {this.state.texts.length}
                                 </h4>
                                 <p>{item.text}</p>
                                 <IconButton
-                                    onClick={() =>
-                                        this.onMoveUpClick(item.index)
-                                    }
+                                    onClick={() => this.onMoveUpClick(index)}
                                 >
                                     <KeyboardArrowUp />
                                 </IconButton>
                                 <IconButton
-                                    onClick={() =>
-                                        this.onMoveDownClick(item.index)
-                                    }
+                                    onClick={() => this.onMoveDownClick(index)}
                                 >
                                     <KeyboardArrowDown />
                                 </IconButton>
                                 <IconButton
-                                    onClick={() => this.deleteText(item.index)}
+                                    onClick={() => this.deleteText(index)}
                                     disabled={this.state.texts.length === 1}
                                 >
                                     <DeleteForever />
@@ -217,7 +201,7 @@ export default function ObjectEditor({
         const getPuzzleBody = async () => {
             const data = await getPuzzle(sceneId, objectId, handleError);
             setAnimationsJson(data.animations_json);
-            if (JSON.stringify(data.animations_json) === JSON.stringify({})) {
+            if (Object.keys(data.animations_json).length === 0) {
                 setPuzzleBody({ jsonData: {} });
                 setIsInteractable(false);
             } else {
@@ -226,18 +210,9 @@ export default function ObjectEditor({
                     data.animations_json.blackboardData.componentType
                 );
                 setIsInteractable(data.is_interactable);
-                const puzBody = data.animations_json.blackboardData;
-                if (puzBody.componentType === "text-pane") {
-                    const tempTexts = puzBody.jsonData.data;
-                    for (let i = 0; i < puzBody.jsonData.data.length; i++) {
-                        tempTexts[i]["index"] = i;
-                    }
-                    puzBody.jsonData.data = tempTexts;
-                    setPuzzleBody(puzBody);
-                }
             }
         };
-        if (JSON.stringify(puzzleBody) === JSON.stringify({})) {
+        if (Object.keys(puzzleBody).length === 0) {
             getPuzzleBody();
         }
     }, [sceneId, objectId, puzzleBody, handleError]);
@@ -259,11 +234,7 @@ export default function ObjectEditor({
     const saveTexts = (texts) => {
         const animCopy = animationsJson;
         const puzzleBodyCopy = puzzleBody;
-        const textsCopy = texts;
-        for (let i = 0; i < textsCopy.length; i++) {
-            delete textsCopy["index"];
-        }
-        puzzleBodyCopy.jsonData.data = textsCopy;
+        puzzleBodyCopy.jsonData.data = texts;
         animCopy.blackboardData = puzzleBodyCopy;
         setAnimationsJson(animCopy);
         handleSave();
