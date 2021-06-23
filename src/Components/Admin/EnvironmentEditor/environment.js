@@ -282,12 +282,7 @@ export default function EnvironmentEditor({
                             handleEditClick={onTransitionEditClick}
                             isIntroduction
                         />
-                        <DragDropContext
-                            onDragEnd={onDragEnd}
-                            style={{
-                                maxWidth: "80vw",
-                            }}
-                        >
+                        <DragDropContext onDragEnd={onDragEnd}>
                             <Droppable
                                 droppableId="droppable"
                                 direction="horizontal"
@@ -420,23 +415,24 @@ export default function EnvironmentEditor({
 }
 
 /*
+Ahmed: Keeping around as we may want to reuse these buttons later.
 <div className={classes.emptyButtonsContainer}>
-                        <div className={classes.buttonContainer}>
-                            <Button
-                                startIcon={<AddIcon />}
-                                className={classes.button}
-                                onClick={onCreateButtonClick}
-                            >
-                                New Scene from Scratch
-                            </Button>
-                        </div>
-                        <div className={classes.buttonContainer}>
-                            <Button
-                                startIcon={<AccountBalanceIcon />}
-                                className={classes.button}
-                            >
-                                New Scene from Template
-                            </Button>
-                        </div>
-                    </div>
+    <div className={classes.buttonContainer}>
+        <Button
+            startIcon={<AddIcon />}
+            className={classes.button}
+            onClick={onCreateButtonClick}
+        >
+            New Scene from Scratch
+        </Button>
+    </div>
+    <div className={classes.buttonContainer}>
+        <Button
+            startIcon={<AccountBalanceIcon />}
+            className={classes.button}
+        >
+            New Scene from Template
+        </Button>
+    </div>
+</div>
 */
