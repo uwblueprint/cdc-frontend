@@ -273,6 +273,12 @@ export default function EnvironmentEditor({
                         <TransitionCard
                             className={classes.introContainer}
                             scene={null}
+                            handleEditClick={() => {}}
+                            isTutorial
+                        />
+                        <TransitionCard
+                            className={classes.introContainer}
+                            scene={null}
                             handleEditClick={onTransitionEditClick}
                             isIntroduction
                         />
@@ -356,7 +362,7 @@ export default function EnvironmentEditor({
                             <TransitionCard
                                 className={classes.introContainer}
                                 scene={null}
-                                handleEditClick={onTransitionEditClick}
+                                handleEditClick={() => {}}
                                 isConclusion
                             />
                         </DragDropContext>
@@ -366,13 +372,19 @@ export default function EnvironmentEditor({
                         <TransitionCard
                             className={classes.introContainer}
                             scene={null}
+                            handleEditClick={() => {}}
+                            isTutorial
+                        />
+                        <TransitionCard
+                            className={classes.introContainer}
+                            scene={null}
                             handleEditClick={onTransitionEditClick}
                             isIntroduction
                         />
                         <TransitionCard
                             className={classes.introContainer}
                             scene={null}
-                            handleEditClick={onTransitionEditClick}
+                            handleEditClick={() => {}}
                             isConclusion
                         />
                     </div>

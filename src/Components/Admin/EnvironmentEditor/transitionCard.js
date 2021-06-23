@@ -34,6 +34,7 @@ export default function TransitionCard({
     handleEditClick,
     isIntroduction,
     isConclusion,
+    isTutorial,
 }) {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -54,13 +55,17 @@ export default function TransitionCard({
                     ? "Introduction"
                     : isConclusion
                     ? "Conclusion"
+                    : isTutorial
+                    ? "Tutorial"
                     : "Transition"}
             </div>
-            <div className={classes.transitionBottomRow}>
-                <IconButton onClick={handleMenuClick}>
-                    <MoreVertIcon />
-                </IconButton>
-            </div>
+            {!isConclusion && !isTutorial && (
+                <div className={classes.transitionBottomRow}>
+                    <IconButton onClick={handleMenuClick}>
+                        <MoreVertIcon />
+                    </IconButton>
+                </div>
+            )}
             <Menu
                 anchorEl={anchorEl}
                 anchorOrigin={{
