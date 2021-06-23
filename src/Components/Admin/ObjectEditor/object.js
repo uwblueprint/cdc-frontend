@@ -129,7 +129,10 @@ export default function ObjectEditor({
     };
 
     return (
-        <div className={classes.container}>
+        <div
+            className={classes.container}
+            style={{ paddingLeft: "30px", paddingRight: "30px" }}
+        >
             <div>
                 <label htmlFor="subscribeNews">Interactable?</label>
                 <input
