@@ -168,6 +168,19 @@ export default function EnvironmentEditor({
 
         const newEnvData = environment;
         newEnvData.scene_ids = [...environment.scene_ids, newScene.id];
+        newEnvData.transitions = [
+            ...newEnvData.transitions,
+            {
+                data: [
+                    {
+                        text:
+                            "You completed the room! Click done to go to the next one.",
+                    },
+                ],
+                currPosition: 0,
+            },
+        ];
+
         const newEnv = await editScenario(newEnvData, handleError);
         setEnvironment(newEnv.data);
     };
