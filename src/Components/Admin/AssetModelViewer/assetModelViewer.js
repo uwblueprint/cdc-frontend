@@ -133,7 +133,7 @@ export default function AssetModelViewer({
     }
 
     const isEmpty = (error) => {
-        return error == "";
+        return error === "";
     };
 
     return (
