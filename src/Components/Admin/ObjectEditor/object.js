@@ -96,8 +96,14 @@ export default function ObjectEditor({
             const data = puzzleBody;
             data.componentType = obj.value;
             const animCopy = animationsJson;
-            animCopy.blackboardData = {};
-            animCopy.blackboardData.componentType = obj.value;
+            if (animCopy.blackboardData){
+                if (animCopy.blackboardData.componentType !== obj.value) {
+                    animCopy.blackboardData = {};
+                    animCopy.blackboardData.componentType = obj.value;
+                }
+            } else {
+                animCopy.blackboardData = {};
+            }
             if (!animCopy.blackboardData.jsonData) {
                 animCopy.blackboardData.jsonData = {};
             }
