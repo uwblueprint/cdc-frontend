@@ -145,7 +145,7 @@ export default function UploadAssetModal({
                 resolve(event.target.result);
             };
             reader.readAsDataURL(file);
-    });
+        });
 
     const handleModalSubmitClick = () => {
         const error = Boolean(
