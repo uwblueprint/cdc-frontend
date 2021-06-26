@@ -116,14 +116,6 @@ export default function AssetCard({
                 <MenuItem
                     onClick={() => {
                         setAnchorEl(null);
-                        handleEditClick(data.id);
-                    }}
-                >
-                    Edit Asset
-                </MenuItem>
-                <MenuItem
-                    onClick={() => {
-                        setAnchorEl(null);
                         handleDeleteClick(data.id);
                     }}
                 >
