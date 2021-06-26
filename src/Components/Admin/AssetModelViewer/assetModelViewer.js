@@ -94,18 +94,18 @@ export default function AssetModelViewer({
     }, [assetId, handleError]);
 
     const handleNameChange = (event) => {
-
         const reg = new RegExp(/^[a-zA-Z0-9 _-]{1,50}$/).test(
             event.target.value
         );
         if (!reg) {
-            setNameError("Maximum of 50 characters allowed (alphanumeric, dashes, or spaces)");
+            setNameError(
+                "Maximum of 50 characters allowed (alphanumeric, dashes, or spaces)"
+            );
         } else {
             setNameError("");
         }
 
         setName(event.target.value);
-
     };
 
     const handleObjectTypeChange = (event) => {
