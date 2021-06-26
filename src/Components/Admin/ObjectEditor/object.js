@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useErrorHandler } from "react-error-boundary";
 import Select from "react-select";
 import TextPaneView from "../ObjectEditor/textpaneview";
+import { Button } from "@material-ui/core";
 
 import { getPuzzle, editPuzzle } from "../../../lib/puzzleEndpoints";
 
@@ -110,10 +111,18 @@ export default function ObjectEditor({
         puzzleBodyCopy.jsonData.data = texts;
         animCopy.blackboardData = puzzleBodyCopy;
         setAnimationsJson(animCopy);
-        handleSave();
     };
 
     const handleSave = () => {
+        if (puzzleType !== "") {
+            const animCopy = animationsJson;
+            if (!animCopy.blackboardData) {
+                animCopy.blackboardData = {};
+            }
+            animCopy.blackboardData.componentType = puzzleType;
+            setAnimationsJson(animCopy);
+        }
+
         const savePuzzle = async () => {
             await editPuzzle(
                 { sceneId, objectId, isInteractable, animationsJson },
@@ -160,6 +169,13 @@ export default function ObjectEditor({
                     texts={puzzleBody.jsonData.data}
                     classes={classes}
                 />
+            ) : null}
+            {!isInteractable || puzzleType !== "" ? (
+                <div>
+                    <Button color="primary" onClick={() => handleSave()}>
+                        Save
+                    </Button>
+                </div>
             ) : null}
         </div>
     );
