@@ -35,11 +35,7 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-export default function AssetCard({
-    data,
-    handleEditClick,
-    handleDeleteClick,
-}) {
+export default function AssetCard({ data, handleDeleteClick }) {
     const classes = useStyles();
     const history = useHistory();
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -113,14 +109,6 @@ export default function AssetCard({
                 open={open}
                 onClose={handleMenuClose}
             >
-                <MenuItem
-                    onClick={() => {
-                        setAnchorEl(null);
-                        handleEditClick(data.id);
-                    }}
-                >
-                    Edit Asset
-                </MenuItem>
                 <MenuItem
                     onClick={() => {
                         setAnchorEl(null);

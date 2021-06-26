@@ -38,7 +38,6 @@ export default function Assets({ assets }) {
                             <AssetCard
                                 key={assets.id}
                                 data={assets}
-                                handleEditClick={() => {}}
                                 handleDeleteClick={() => {}}
                             />
                         );
