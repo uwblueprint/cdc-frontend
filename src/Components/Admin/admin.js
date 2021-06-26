@@ -286,7 +286,7 @@ export default function Admin() {
         const endpoint = response.data.url;
 
         // Upload the asset blob file to S3
-        const responseUploadS3 = await uploadAssetS3(
+        await uploadAssetS3(
             {
                 endpoint,
                 formData,

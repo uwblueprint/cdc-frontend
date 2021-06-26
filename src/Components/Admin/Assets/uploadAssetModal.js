@@ -121,10 +121,10 @@ export default function UploadAssetModal({
 
     const handleUploadFileChange = (event) => {
         if (event.target.files && event.target.files[0]) {
-            let file = event.target.files[0];
+            const file = event.target.files[0];
 
             fileToDataUri(file).then((dataUri) => {
-                let dataUriSplit = dataUri.split(",")[1];
+                const dataUriSplit = dataUri.split(",")[1];
                 const byteCharacters = atob(dataUriSplit);
 
                 // From: https://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
@@ -145,7 +145,7 @@ export default function UploadAssetModal({
                 resolve(event.target.result);
             };
             reader.readAsDataURL(file);
-        });
+    });
 
     const handleModalSubmitClick = () => {
         const error = Boolean(
