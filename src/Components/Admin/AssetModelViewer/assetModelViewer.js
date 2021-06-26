@@ -15,7 +15,6 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import { ObjectTypes } from "./objectTypes.ts";
-import empty from "is-empty";
 
 const drawerWidth = 17;
 
