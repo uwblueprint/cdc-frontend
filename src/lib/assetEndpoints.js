@@ -37,7 +37,7 @@ export const editAsset = async (id, name, obj_type, s3_key, handleError) => {
     }
 };
 
-export const uploadAsset = async ({type, extension, s3_key}, handleError) => {
+export const uploadAsset = async ({ type, extension, s3_key }, handleError) => {
     try {
         const response = await httpPost(baseEndpoint + `upload`, {
             type,
@@ -51,7 +51,7 @@ export const uploadAsset = async ({type, extension, s3_key}, handleError) => {
     }
 };
 
-export const createAsset = async ({name, obj_type, s3_key}, handleError) => {
+export const createAsset = async ({ name, obj_type, s3_key }, handleError) => {
     try {
         const response = await httpPost(baseEndpoint + `asset`, {
             name,
@@ -65,7 +65,7 @@ export const createAsset = async ({name, obj_type, s3_key}, handleError) => {
     }
 };
 
-export const uploadAssetS3 = async ({endpoint, formData}, handleError) => {
+export const uploadAssetS3 = async ({ endpoint, formData }, handleError) => {
     try {
         const response = await httpPostS3(endpoint, formData);
         return response;

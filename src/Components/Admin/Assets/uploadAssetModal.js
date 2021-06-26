@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(1),
     },
     input: {
-        display: 'none',
+        display: "none",
     },
 }));
 
@@ -114,23 +114,19 @@ export default function UploadAssetModal({
             default:
                 setFileType(FileTypes.NONE);
                 setErrors({
-                    fileType:
-                        "File type must be either GLTF or GLB",
+                    fileType: "File type must be either GLTF or GLB",
                 });
         }
     };
-
 
     const handleUploadFileChange = (event) => {
         if (event.target.files && event.target.files[0]) {
             let file = event.target.files[0];
 
-            fileToDataUri(file)
-            .then(dataUri => {
-
-                let dataUriSplit = dataUri.split(',')[1];
+            fileToDataUri(file).then((dataUri) => {
+                let dataUriSplit = dataUri.split(",")[1];
                 const byteCharacters = atob(dataUriSplit);
-                
+
                 // From: https://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
                 const byteNumbers = new Array(byteCharacters.length);
                 for (let i = 0; i < byteCharacters.length; i++) {
@@ -138,18 +134,18 @@ export default function UploadAssetModal({
                 }
                 const byteArray = new Uint8Array(byteNumbers);
                 setAssetBlob(byteArray);
-            })
+            });
         }
     };
 
-    const fileToDataUri = (file) => new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          resolve(event.target.result)
-        };
-        reader.readAsDataURL(file);
-    })
-    
+    const fileToDataUri = (file) =>
+        new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                resolve(event.target.result);
+            };
+            reader.readAsDataURL(file);
+        });
 
     const handleModalSubmitClick = () => {
         const error = Boolean(
@@ -161,29 +157,21 @@ export default function UploadAssetModal({
                 : false
         );
 
-        if (isEdit && !error) { // TODO: Update this to handle appropriate edit capabilities
-            handleSubmit(
-                assetName,
-                fileType,
-                objectType,
-                assetBlob,
-            );
+        if (isEdit && !error) {
+            // TODO: Update this to handle appropriate edit capabilities
+            handleSubmit(assetName, fileType, objectType, assetBlob);
         } else if (!isEdit && !error) {
-
-            handleSubmit(
-                assetName,
-                fileType,
-                objectType,
-                assetBlob,
-            );
+            handleSubmit(assetName, fileType, objectType, assetBlob);
         }
     };
 
     return (
-        <Dialog open={modalOpen} onClose={handleModalClose} className={classes.dialog}>
-            <DialogTitle>
-                {isEdit ? "Edit Asset" : "New Asset"}
-            </DialogTitle>
+        <Dialog
+            open={modalOpen}
+            onClose={handleModalClose}
+            className={classes.dialog}
+        >
+            <DialogTitle>{isEdit ? "Edit Asset" : "New Asset"}</DialogTitle>
             <DialogContent>
                 <div>
                     <Typography component="div" variant="h5">
@@ -245,7 +233,11 @@ export default function UploadAssetModal({
                     </FormControl>
                 </div>
                 <div>
-                    <Typography component="div" variant="h5" className={classes.text}>
+                    <Typography
+                        component="div"
+                        variant="h5"
+                        className={classes.text}
+                    >
                         Upload Asset
                     </Typography>
                     <input
@@ -256,8 +248,13 @@ export default function UploadAssetModal({
                         onChange={handleUploadFileChange}
                     />
                     <label htmlFor="contained-button-file">
-                        <Button className={classes.uploadButton} variant="contained" color="primary" component="span">
-                        Upload
+                        <Button
+                            className={classes.uploadButton}
+                            variant="contained"
+                            color="primary"
+                            component="span"
+                        >
+                            Upload
                         </Button>
                     </label>
                 </div>
