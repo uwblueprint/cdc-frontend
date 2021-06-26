@@ -119,6 +119,12 @@ export default function ObjectEditor({
             if (!animCopy.blackboardData) {
                 animCopy.blackboardData = {};
             }
+            if (!animCopy.blackboardData.jsonData) {
+                animCopy.blackboardData.jsonData = {};
+            }
+            if (puzzleType === "rotation-controls") {
+                animCopy.blackboardData.jsonData.position = [0, 0, 5];
+            }
             animCopy.blackboardData.componentType = puzzleType;
             setAnimationsJson(animCopy);
         }
