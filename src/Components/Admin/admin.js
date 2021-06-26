@@ -27,7 +27,7 @@ import {
 } from "../../lib/scenarioEndpoints";
 import { UserContext } from "../../Providers/UserProviders";
 import { getAllScenes } from "../../lib/sceneEndpoints";
-import { getAllAssets } from "../../lib/assetEndpoints";
+import { getAllAssets, uploadAsset, createAsset, uploadAssetS3 } from "../../lib/assetEndpoints";
 import { useErrorHandler } from "react-error-boundary";
 
 function TabPanel(props) {
@@ -247,7 +247,51 @@ export default function Admin() {
         setDeleteModalOpen(false);
     };
 
-    const handleUploadAssetSubmit = async() => {
+    const handleUploadAssetClose = () => {
+        setUploadAssetModalOpen(false);
+    };
+
+    const handleUploadAssetSubmit = async(name, file_type, object_type, asset) => {
+
+        // First, send a request to backend to get presigned link
+        const response = await uploadAsset(
+        {
+            type: "asset",
+            extension: file_type,
+            s3_key: ""
+        },
+        handleError);
+
+        const formData = new FormData();
+
+        Object.keys(response.data.fields).forEach(key => {
+            formData.append(key, response.data.fields[key]);
+        });
+
+        const blob = new Blob([asset], {type: file_type}); // remove and put this stuff in admin
+        formData.append("file", blob);
+
+        const endpoint = response.data.url;
+
+        // Upload the asset blob file to S3
+        const responseUploadS3 = await uploadAssetS3(
+            {
+                endpoint,
+                formData
+            },
+            handleError
+        );
+
+        // Add new asset to Postgres
+        const responseAssetCreation = await createAsset(
+        {
+            name: name,
+            obj_type: object_type,
+            s3_key: response.data.s3_key
+        },
+        handleError);
+
+        setAssets([...assets, responseAssetCreation.data]);
         setUploadAssetModalOpen(false);
     }
 
@@ -323,9 +367,7 @@ export default function Admin() {
                     />
                     <UploadAssetModal
                         modalOpen={uploadAssetModalOpen}
-                        handleModalClose={() => {
-                            setUploadAssetModalOpen(false);
-                        }}
+                        handleModalClose={handleUploadAssetClose}
                         handleSubmit={handleUploadAssetSubmit}
                     />
                     <Tabs

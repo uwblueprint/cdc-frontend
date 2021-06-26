@@ -43,7 +43,7 @@ export default function UploadAssetModal({
     const [assetName, setAssetName] = React.useState("");
     const [objectType, setObjectType] = React.useState(ObjectTypes.NONE);
     const [fileType, setFileType] = React.useState(FileTypes.NONE);
-    const [assetBlob, setAssetBlob] = React.useState("");
+    const [assetBlob, setAssetBlob] = React.useState(null);
     const [errors, setErrors] = React.useState({
         name: "",
         objectType: "Object type must be either object or background",
@@ -120,9 +120,36 @@ export default function UploadAssetModal({
         }
     };
 
+
     const handleUploadFileChange = (event) => {
-        // TODO: handle user uploading file
+        if (event.target.files && event.target.files[0]) {
+            let file = event.target.files[0];
+
+            fileToDataUri(file)
+            .then(dataUri => {
+
+                let dataUriSplit = dataUri.split(',')[1];
+                const byteCharacters = atob(dataUriSplit);
+                
+                // From: https://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
+                const byteNumbers = new Array(byteCharacters.length);
+                for (let i = 0; i < byteCharacters.length; i++) {
+                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                }
+                const byteArray = new Uint8Array(byteNumbers);
+                setAssetBlob(byteArray);
+            })
+        }
     };
+
+    const fileToDataUri = (file) => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          resolve(event.target.result)
+        };
+        reader.readAsDataURL(file);
+    })
+    
 
     const handleModalSubmitClick = () => {
         const error = Boolean(
@@ -135,19 +162,20 @@ export default function UploadAssetModal({
         );
 
         if (isEdit && !error) { // TODO: Update this to handle appropriate edit capabilities
-            handleSubmit({
-                name: assetName,
-                file_type: fileType,
-                object_type: objectType,
-                asset_blob: assetBlob,
-            });
+            handleSubmit(
+                assetName,
+                fileType,
+                objectType,
+                assetBlob,
+            );
         } else if (!isEdit && !error) {
-            handleSubmit({
-                name: assetName,
-                file_type: fileType,
-                object_type: objectType,
-                asset_blob: assetBlob,
-            });
+
+            handleSubmit(
+                assetName,
+                fileType,
+                objectType,
+                assetBlob,
+            );
         }
     };
 
@@ -221,11 +249,11 @@ export default function UploadAssetModal({
                         Upload Asset
                     </Typography>
                     <input
-                        accept="image/*"
+                        accept=".glb,.gltf"
                         className={classes.input}
                         id="contained-button-file"
-                        multiple
                         type="file"
+                        onChange={handleUploadFileChange}
                     />
                     <label htmlFor="contained-button-file">
                         <Button className={classes.uploadButton} variant="contained" color="primary" component="span">
