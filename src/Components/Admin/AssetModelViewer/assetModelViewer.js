@@ -133,6 +133,10 @@ export default function AssetModelViewer({
         editAsset(assetId, name, objectType, asset.s3_key, handleError);
     }
 
+    const isEmpty = (error) => {
+        return error == "";
+    };
+
     return (
         <div className={classes.root}>
             <CssBaseline />
@@ -162,7 +166,7 @@ export default function AssetModelViewer({
                         value={name}
                         onChange={handleNameChange}
                         variant="outlined"
-                        error={!empty(nameError)}
+                        error={!isEmpty(nameError)}
                         helperText={nameError}
                     />
 
@@ -195,7 +199,7 @@ export default function AssetModelViewer({
                         variant="contained"
                         color="primary"
                         startIcon={<SaveIcon />}
-                        disabled={!empty(nameError)}
+                        disabled={!isEmpty(nameError)}
                     >
                         {buttonText}
                     </Button>
