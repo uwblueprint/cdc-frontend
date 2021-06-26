@@ -95,13 +95,22 @@ export default function ObjectEditor({
         if (obj) {
             const data = puzzleBody;
             data.componentType = obj.value;
+            const animCopy = animationsJson;
+            animCopy.blackboardData = {};
+            animCopy.blackboardData.componentType = obj.value;
+            if (!animCopy.blackboardData.jsonData) {
+                animCopy.blackboardData.jsonData = {};
+            }
             if (obj.value === "text-pane") {
                 if (!data.jsonData.data) {
                     data.jsonData.data = [];
                 }
+            } else if (obj.value === "rotation-controls") {
+                animCopy.blackboardData.jsonData.position = [0, 0, 5];
             }
             setPuzzleBody(data);
             setPuzzleType(obj.value);
+            setAnimationsJson(animCopy);
         }
     };
 
@@ -122,10 +131,6 @@ export default function ObjectEditor({
             if (!animCopy.blackboardData.jsonData) {
                 animCopy.blackboardData.jsonData = {};
             }
-            if (puzzleType === "rotation-controls") {
-                animCopy.blackboardData.jsonData.position = [0, 0, 5];
-            }
-            animCopy.blackboardData.componentType = puzzleType;
             setAnimationsJson(animCopy);
         }
 
