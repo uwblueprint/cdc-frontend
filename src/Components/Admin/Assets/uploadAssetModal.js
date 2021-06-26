@@ -139,7 +139,7 @@ export default function UploadAssetModal({
     };
 
     const fileToDataUri = (file) =>
-        new Promise((resolve, reject) => {
+        new Promise((resolve) => {
             const reader = new FileReader();
             reader.onload = (event) => {
                 resolve(event.target.result);
