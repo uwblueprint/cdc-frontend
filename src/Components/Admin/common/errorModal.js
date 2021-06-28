@@ -13,10 +13,6 @@ const useStyles = makeStyles(() => ({
         display: "flex",
         justifyContent: "space-between",
     },
-    closeButton: {
-        backgroundColor: "#6AADD6",
-        color: "#ffffff",
-    },
 }));
 
 export default function ErrorModal({ error, resetErrorBoundary }) {
@@ -50,18 +46,18 @@ export default function ErrorModal({ error, resetErrorBoundary }) {
                     onClick={() => {
                         // TODO: send email to us
                     }}
-                    className={classes.deleteButton}
                 >
                     Report
                 </Button>
                 <Button
                     onClick={() => {
-                        // signout, go to /login route
-                        auth.signOut();
-                        history.push("/login");
+                        // 403, signout, go to /login route
+                        if (error?.response?.data?.status === 403) {
+                            auth.signOut();
+                            history.push("/login");
+                        }
                         resetErrorBoundary();
                     }}
-                    className={classes.deleteButton}
                 >
                     Okay
                 </Button>
