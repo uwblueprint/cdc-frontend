@@ -5,6 +5,8 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { makeStyles } from "@material-ui/core/styles";
+import { auth } from "../../../firebaseCredentials";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles(() => ({
     buttonContainer: {
@@ -19,6 +21,8 @@ const useStyles = makeStyles(() => ({
 
 export default function ErrorModal({ error, resetErrorBoundary }) {
     const classes = useStyles();
+    const history = useHistory();
+
     let code,
         message = null;
 
@@ -43,10 +47,23 @@ export default function ErrorModal({ error, resetErrorBoundary }) {
             <DialogContent>{message}</DialogContent>
             <DialogActions className={classes.buttonContainer}>
                 <Button
-                    onClick={resetErrorBoundary}
+                    onClick={() => {
+                        // TODO: send email to us
+                    }}
                     className={classes.deleteButton}
                 >
-                    Close
+                    Report
+                </Button>
+                <Button
+                    onClick={() => {
+                        // signout, go to /login route
+                        auth.signOut();
+                        history.push("/login");
+                        resetErrorBoundary();
+                    }}
+                    className={classes.deleteButton}
+                >
+                    Okay
                 </Button>
             </DialogActions>
         </Dialog>
