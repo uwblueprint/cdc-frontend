@@ -27,12 +27,7 @@ import {
 } from "../../lib/scenarioEndpoints";
 import { UserContext } from "../../Providers/UserProviders";
 import { getAllScenes } from "../../lib/sceneEndpoints";
-import {
-    getAllAssets,
-    uploadAsset,
-    createAsset,
-    uploadAssetS3,
-} from "../../lib/assetEndpoints";
+import { getAllAssets, createAsset } from "../../lib/assetEndpoints";
 import { useErrorHandler } from "react-error-boundary";
 import { createPresignedLinkAndUploadS3 } from "../../lib/s3Utility";
 

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
@@ -107,15 +107,6 @@ export default function UploadAssetModal({
             fileToByteArray(file, setAssetByteArray);
         }
     };
-
-    const fileToDataUri = (file) =>
-        new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                resolve(event.target.result);
-            };
-            reader.readAsDataURL(file);
-        });
 
     const handleModalSubmitClick = () => {
         const error = Boolean(

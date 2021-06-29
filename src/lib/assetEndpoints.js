@@ -1,5 +1,4 @@
 import { httpGet, httpPut, httpPost } from "./dataAccess";
-import { httpPostS3 } from "./dataAccessS3";
 
 const baseEndpoint = process.env.REACT_APP_ADMIN_BASE_ENDPOINT;
 
