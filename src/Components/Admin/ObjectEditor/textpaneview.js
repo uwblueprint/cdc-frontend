@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import AddIcon from "@material-ui/icons/Add";
-import { Button, IconButton } from "@material-ui/core";
+import { IconButton } from "@material-ui/core";
 import {
     DeleteForever,
     KeyboardArrowDown,
@@ -28,6 +28,7 @@ export default function TextPaneView(props) {
 
         const reorderedList = reorder(sourceIndex, destinationIndex);
 
+        props.saveTexts([...reorderedList]);
         setTexts([...reorderedList]);
     };
 
@@ -38,6 +39,7 @@ export default function TextPaneView(props) {
         };
 
         if (newText.text) {
+            props.saveTexts([...texts, newText]);
             setTexts([...texts, newText]);
         }
     };
@@ -54,10 +56,7 @@ export default function TextPaneView(props) {
         const tempTexts = JSON.parse(JSON.stringify(texts));
         tempTexts.splice(index, 1);
         setTexts(tempTexts);
-    };
-
-    const handleSubmit = () => {
-        props.saveTexts(texts);
+        props.saveTexts(tempTexts);
     };
 
     return (
@@ -95,11 +94,6 @@ export default function TextPaneView(props) {
                         </div>
                     );
                 })}
-            </div>
-            <div>
-                <Button color="primary" onClick={() => handleSubmit()}>
-                    Save
-                </Button>
             </div>
         </div>
     );
