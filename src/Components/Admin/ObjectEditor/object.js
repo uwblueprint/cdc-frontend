@@ -88,7 +88,7 @@ export default function ObjectEditor({
         if (isInteractable && Object.keys(origAnimJson).length === 0) {
             getPuzzleBody();
         }
-    }, [sceneId, objectId, handleError]);
+    }, [sceneId, objectId, isInteractable, origAnimJson, handleError]);
 
     const selectPuzzleType = (obj) => {
         if (obj) {
@@ -116,9 +116,6 @@ export default function ObjectEditor({
     };
 
     const handleSave = () => {
-        console.log(isInteractable);
-        console.log(animationsJson);
-
         const savePuzzle = async () => {
             await editPuzzle(
                 { sceneId, objectId, isInteractable, animationsJson },
