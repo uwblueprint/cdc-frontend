@@ -34,6 +34,7 @@ import {
     uploadAssetS3,
 } from "../../lib/assetEndpoints";
 import { useErrorHandler } from "react-error-boundary";
+import { createPresignedLinkAndUploadS3 } from "../../lib/s3Utility";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -264,33 +265,8 @@ export default function Admin() {
         object_type,
         asset
     ) => {
-        // First, send a request to backend to get presigned link
-        const response = await uploadAsset(
-            {
-                type: "asset",
-                extension: file_type,
-                s3_key: "",
-            },
-            handleError
-        );
-
-        const formData = new FormData();
-
-        Object.keys(response.data.fields).forEach((key) => {
-            formData.append(key, response.data.fields[key]);
-        });
-
-        const blob = new Blob([asset], { type: file_type }); // remove and put this stuff in admin
-        formData.append("file", blob);
-
-        const endpoint = response.data.url;
-
-        // Upload the asset blob file to S3
-        await uploadAssetS3(
-            {
-                endpoint,
-                formData,
-            },
+        const response = await createPresignedLinkAndUploadS3(
+            { file_type: file_type, type: "asset", file_content: asset },
             handleError
         );
 

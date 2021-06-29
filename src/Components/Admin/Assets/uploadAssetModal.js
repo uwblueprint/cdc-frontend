@@ -12,6 +12,7 @@ import { FileTypes } from "./fileTypes.ts";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
+import { fileToByteArray } from "../../../lib/s3Utility";
 
 const useStyles = makeStyles((theme) => ({
     textField: {
@@ -36,37 +37,18 @@ export default function UploadAssetModal({
     modalOpen,
     handleModalClose,
     handleSubmit,
-    asset,
-    isEdit,
 }) {
     const classes = useStyles();
     const [assetName, setAssetName] = React.useState("");
     const [objectType, setObjectType] = React.useState(ObjectTypes.NONE);
     const [fileType, setFileType] = React.useState(FileTypes.NONE);
-    const [assetBlob, setAssetBlob] = React.useState(null);
+    const [assetByteArray, setAssetByteArray] = React.useState(null);
     const [errors, setErrors] = React.useState({
         name: "",
         objectType: "Object type must be either object or background",
         fileType: "File type must be either GLTF or GLB",
         assetBlob: "",
     });
-
-    useEffect(() => {
-        setAssetName(asset ? asset.name : "");
-        setObjectType(asset ? asset.object_type : "");
-        setFileType(asset ? asset.file_type : "");
-        setAssetBlob(asset ? asset.asset_blob : "");
-        setErrors(
-            asset
-                ? asset.errors
-                : {
-                      name: "",
-                      objectType: "",
-                      fileType: "",
-                      assetBlob: "",
-                  }
-        );
-    }, [asset]);
 
     const handleAssetNameChange = (event) => {
         setAssetName(event.target.value);
@@ -122,19 +104,7 @@ export default function UploadAssetModal({
     const handleUploadFileChange = (event) => {
         if (event.target.files && event.target.files[0]) {
             const file = event.target.files[0];
-
-            fileToDataUri(file).then((dataUri) => {
-                const dataUriSplit = dataUri.split(",")[1];
-                const byteCharacters = atob(dataUriSplit);
-
-                // From: https://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
-                const byteNumbers = new Array(byteCharacters.length);
-                for (let i = 0; i < byteCharacters.length; i++) {
-                    byteNumbers[i] = byteCharacters.charCodeAt(i);
-                }
-                const byteArray = new Uint8Array(byteNumbers);
-                setAssetBlob(byteArray);
-            });
+            fileToByteArray(file, setAssetByteArray);
         }
     };
 
@@ -157,11 +127,8 @@ export default function UploadAssetModal({
                 : false
         );
 
-        if (isEdit && !error) {
-            // TODO: Update this to handle appropriate edit capabilities
-            handleSubmit(assetName, fileType, objectType, assetBlob);
-        } else if (!isEdit && !error) {
-            handleSubmit(assetName, fileType, objectType, assetBlob);
+        if (!error) {
+            handleSubmit(assetName, fileType, objectType, assetByteArray);
         }
     };
 
@@ -171,7 +138,7 @@ export default function UploadAssetModal({
             onClose={handleModalClose}
             className={classes.dialog}
         >
-            <DialogTitle>{isEdit ? "Edit Asset" : "New Asset"}</DialogTitle>
+            <DialogTitle>{"New Asset"}</DialogTitle>
             <DialogContent>
                 <div>
                     <Typography component="div" variant="h5">
@@ -261,9 +228,7 @@ export default function UploadAssetModal({
             </DialogContent>
             <DialogActions className={classes.buttonContainer}>
                 <Button onClick={handleModalClose}> Cancel </Button>
-                <Button onClick={handleModalSubmitClick}>
-                    {isEdit ? "Edit" : "Create"}
-                </Button>
+                <Button onClick={handleModalSubmitClick}>{"Create"}</Button>
             </DialogActions>
         </Dialog>
     );
