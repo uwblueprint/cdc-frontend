@@ -57,10 +57,10 @@ export default function ObjectEditor({
 }) {
     const classes = useStyles();
     const handleError = useErrorHandler();
-    const [puzzleBody, setPuzzleBody] = useState({});
     const [puzzleType, setPuzzleType] = useState("");
     const [animationsJson, setAnimationsJson] = useState({});
-    const [isInteractable, setIsInteractable] = useState(false);
+    const [origAnimJson, setOrigAnimJson] = useState({});
+    const [isInteractable, setIsInteractable] = useState(true);
 
     const puzzleTypeList = [
         { value: "text-pane", label: "Text Puzzle" },
@@ -74,71 +74,50 @@ export default function ObjectEditor({
     useEffect(() => {
         const getPuzzleBody = async () => {
             const data = await getPuzzle(sceneId, objectId, handleError);
+            setOrigAnimJson(data.animations_json);
             setAnimationsJson(data.animations_json);
             if (Object.keys(data.animations_json).length === 0) {
-                setPuzzleBody({ jsonData: {} });
                 setIsInteractable(false);
             } else {
-                setPuzzleBody(data.animations_json.blackboardData);
                 setPuzzleType(
                     data.animations_json.blackboardData.componentType
                 );
                 setIsInteractable(data.is_interactable);
             }
         };
-        if (Object.keys(puzzleBody).length === 0) {
+        if (isInteractable && Object.keys(origAnimJson).length === 0) {
             getPuzzleBody();
         }
-    }, [sceneId, objectId, puzzleBody, handleError]);
+    }, [sceneId, objectId, handleError]);
 
     const selectPuzzleType = (obj) => {
         if (obj) {
-            const data = puzzleBody;
-            data.componentType = obj.value;
-            const animCopy = animationsJson;
-            if (animCopy.blackboardData) {
-                if (animCopy.blackboardData.componentType !== obj.value) {
-                    animCopy.blackboardData = {};
-                    animCopy.blackboardData.componentType = obj.value;
-                }
-            } else {
-                animCopy.blackboardData = {};
-            }
-            if (!animCopy.blackboardData.jsonData) {
-                animCopy.blackboardData.jsonData = {};
-            }
-            if (obj.value === "text-pane") {
-                if (!data.jsonData.data) {
-                    data.jsonData.data = [];
-                }
-            } else if (obj.value === "rotation-controls") {
-                animCopy.blackboardData.jsonData.position = [0, 0, 5];
-            }
-            setPuzzleBody(data);
             setPuzzleType(obj.value);
-            setAnimationsJson(animCopy);
+            if (origAnimJson.blackboardData?.componentType === obj.value) {
+                setAnimationsJson(origAnimJson);
+            } else {
+                const animCopy = {
+                    blackboardData: { componentType: obj.value, jsonData: {} },
+                };
+                if (obj.value === "text-pane") {
+                    animCopy.blackboardData.jsonData.data = [];
+                } else if (obj.value === "rotation-controls") {
+                    animCopy.blackboardData.jsonData.position = [0, 0, 5];
+                }
+                setAnimationsJson(animCopy);
+            }
         }
     };
 
     const saveTexts = (texts) => {
         const animCopy = animationsJson;
-        const puzzleBodyCopy = puzzleBody;
-        puzzleBodyCopy.jsonData.data = texts;
-        animCopy.blackboardData = puzzleBodyCopy;
+        animCopy.blackboardData.jsonData.data = texts;
         setAnimationsJson(animCopy);
     };
 
     const handleSave = () => {
-        if (puzzleType !== "") {
-            const animCopy = animationsJson;
-            if (!animCopy.blackboardData) {
-                animCopy.blackboardData = {};
-            }
-            if (!animCopy.blackboardData.jsonData) {
-                animCopy.blackboardData.jsonData = {};
-            }
-            setAnimationsJson(animCopy);
-        }
+        console.log(isInteractable);
+        console.log(animationsJson);
 
         const savePuzzle = async () => {
             await editPuzzle(
@@ -151,6 +130,11 @@ export default function ObjectEditor({
     };
 
     const toggleButton = () => {
+        if (isInteractable) {
+            setAnimationsJson({});
+        } else {
+            setAnimationsJson(origAnimJson);
+        }
         setIsInteractable(!isInteractable);
     };
 
@@ -183,7 +167,7 @@ export default function ObjectEditor({
             {isInteractable && puzzleType === "text-pane" ? (
                 <TextPaneView
                     saveTexts={saveTexts}
-                    texts={puzzleBody.jsonData.data}
+                    texts={animationsJson.blackboardData.jsonData.data}
                     classes={classes}
                 />
             ) : null}
