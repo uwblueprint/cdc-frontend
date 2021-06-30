@@ -60,7 +60,7 @@ export default function ObjectEditor({
     const [puzzleType, setPuzzleType] = useState("");
     const [animationsJson, setAnimationsJson] = useState({});
     const [origAnimJson, setOrigAnimJson] = useState({});
-    const [isInteractable, setIsInteractable] = useState(true);
+    const [isInteractable, setIsInteractable] = useState(null);
 
     const puzzleTypeList = [
         { value: "text-pane", label: "Text Puzzle" },
@@ -85,7 +85,7 @@ export default function ObjectEditor({
                 setIsInteractable(data.is_interactable);
             }
         };
-        if (isInteractable && Object.keys(origAnimJson).length === 0) {
+        if (isInteractable === null && Object.keys(origAnimJson).length === 0) {
             getPuzzleBody();
         }
     }, [sceneId, objectId, isInteractable, origAnimJson, handleError]);
