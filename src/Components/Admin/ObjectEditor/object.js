@@ -101,6 +101,7 @@ export default function ObjectEditor({
                 };
                 if (obj.value === "text-pane") {
                     animCopy.blackboardData.jsonData.data = [];
+                    animCopy.blackboardData.jsonData.currPosition = 0;
                 } else if (obj.value === "rotation-controls") {
                     animCopy.blackboardData.jsonData.position = [0, 0, 5];
                 }
@@ -122,6 +123,10 @@ export default function ObjectEditor({
                 handleError
             );
         };
+        if (puzzleType === "text-pane" && animationsJson.blackboardData.jsonData.data.length === 0) {
+            alert("Error: Need at least one text to save text-pane");
+            return;
+        }
         savePuzzle();
         alert("Saved puzzle CRUD changes for object with id: " + objectId);
     };
