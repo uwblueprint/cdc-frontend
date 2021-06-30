@@ -18,6 +18,7 @@ import Assets from "./Assets/assets.js";
 import Statistics from "./Stats/stats.js";
 import RoomModal from "./Rooms/roomModal";
 import DeleteModal from "./common/deleteModal";
+import UploadAssetModal from "./Assets/uploadAssetModal";
 import {
     getAllScenarios,
     postScenario,
@@ -26,8 +27,9 @@ import {
 } from "../../lib/scenarioEndpoints";
 import { UserContext } from "../../Providers/UserProviders";
 import { getAllScenes } from "../../lib/sceneEndpoints";
-import { getAllAssets } from "../../lib/assetEndpoints";
+import { getAllAssets, createAsset } from "../../lib/assetEndpoints";
 import { useErrorHandler } from "react-error-boundary";
+import { createPresignedLinkAndUploadS3 } from "../../lib/s3Utility";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -66,7 +68,7 @@ function TabHelper(index) {
 
 const useStyles = makeStyles((theme) => ({
     paper: {
-        marginTop: theme.spacing(8),
+        marginTop: theme.spacing(12),
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -120,6 +122,9 @@ export default function Admin() {
     const [createModalOpen, setCreateModalOpen] = React.useState(false);
     const [editModalOpen, setEditModalOpen] = React.useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
+    const [uploadAssetModalOpen, setUploadAssetModalOpen] = React.useState(
+        false
+    );
     const [environments, setEnvironments] = React.useState([]);
     const [scenes, setScenes] = React.useState([]);
     const [assets, setAssets] = React.useState([]);
@@ -245,6 +250,35 @@ export default function Admin() {
         setDeleteModalOpen(false);
     };
 
+    const handleUploadAssetClose = () => {
+        setUploadAssetModalOpen(false);
+    };
+
+    const handleUploadAssetSubmit = async (
+        name,
+        file_type,
+        object_type,
+        asset
+    ) => {
+        const response = await createPresignedLinkAndUploadS3(
+            { file_type: file_type, type: "asset", file_content: asset },
+            handleError
+        );
+
+        // Add new asset to Postgres
+        const responseAssetCreation = await createAsset(
+            {
+                name: name,
+                obj_type: object_type,
+                s3_key: response.data.s3_key,
+            },
+            handleError
+        );
+
+        setAssets([...assets, responseAssetCreation.data]);
+        setUploadAssetModalOpen(false);
+    };
+
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
@@ -278,7 +312,14 @@ export default function Admin() {
                         open={open}
                         onClose={handleAddButtonClose}
                     >
-                        <MenuItem>Object Upload</MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setAnchorEl(null);
+                                setUploadAssetModalOpen(true);
+                            }}
+                        >
+                            New Object Asset
+                        </MenuItem>
                         <MenuItem
                             onClick={() => {
                                 setAnchorEl(null);
@@ -307,6 +348,11 @@ export default function Admin() {
                         confirmMessage="Are you sure you want to delete this room?"
                         handleClose={handleDeleteRoomCancel}
                         handleSubmit={handleDeleteRoomSubmit}
+                    />
+                    <UploadAssetModal
+                        modalOpen={uploadAssetModalOpen}
+                        handleModalClose={handleUploadAssetClose}
+                        handleSubmit={handleUploadAssetSubmit}
                     />
                     <Tabs
                         value={value}
