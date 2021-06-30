@@ -29,7 +29,6 @@ const useStyles = makeStyles(() => ({
 export default function Navbar({ home }) {
     const classes = useStyles();
     const history = useHistory();
-    const user = useContext(UserContext);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
 
@@ -47,12 +46,14 @@ export default function Navbar({ home }) {
 
     async function handleLogout() {
         handleClose();
-        history.push("/login");
         auth.signOut();
         await httpGet(
             process.env.REACT_APP_ADMIN_BASE_ENDPOINT + "admin_logout"
         );
+        history.push("/login");
     }
+
+    const { isAdmin } = useContext(UserContext);
 
     return (
         <div className={classes.root}>
@@ -63,7 +64,7 @@ export default function Navbar({ home }) {
                             <HomeIcon />
                         </IconButton>
                     )}
-                    {user && (
+                    {isAdmin && (
                         <div className={classes.profileEnd}>
                             <IconButton
                                 aria-label="account of current user"
