@@ -27,7 +27,11 @@ import {
 } from "../../lib/scenarioEndpoints";
 import { UserContext } from "../../Providers/UserProviders";
 import { getAllScenes } from "../../lib/sceneEndpoints";
-import { getAllAssets, createAsset, deleteAsset } from "../../lib/assetEndpoints";
+import {
+    getAllAssets,
+    createAsset,
+    deleteAsset,
+} from "../../lib/assetEndpoints";
 import { useErrorHandler } from "react-error-boundary";
 import { createPresignedLinkAndUploadS3 } from "../../lib/s3Utility";
 
@@ -125,7 +129,9 @@ export default function Admin() {
     const [uploadAssetModalOpen, setUploadAssetModalOpen] = React.useState(
         false
     );
-    const [deleteAssetModalOpen, setDeleteAssetModalOpen] = React.useState(false);
+    const [deleteAssetModalOpen, setDeleteAssetModalOpen] = React.useState(
+        false
+    );
     const [environments, setEnvironments] = React.useState([]);
     const [scenes, setScenes] = React.useState([]);
     const [assets, setAssets] = React.useState([]);
@@ -294,9 +300,7 @@ export default function Admin() {
     const handleDeleteAssetSubmit = async () => {
         await deleteAsset(deleteAssetId, handleError);
 
-        const modifiedAssets = assets.filter(
-            (env) => env.id !== deleteAssetId
-        );
+        const modifiedAssets = assets.filter((env) => env.id !== deleteAssetId);
         setAssets(modifiedAssets);
         setDeleteAssetId(null);
         setDeleteAssetModalOpen(false);
@@ -436,8 +440,10 @@ export default function Admin() {
                         value={value}
                         index="assets"
                     >
-                        <Assets assets={assets}
-                            handleDeleteAssetClick={handleDeleteAssetClick} />
+                        <Assets
+                            assets={assets}
+                            handleDeleteAssetClick={handleDeleteAssetClick}
+                        />
                     </TabPanel>
                     <TabPanel
                         className={classes.tabBackground}
