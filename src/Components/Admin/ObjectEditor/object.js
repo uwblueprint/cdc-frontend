@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useErrorHandler } from "react-error-boundary";
 import Select from "react-select";
 import TextPaneView from "../ObjectEditor/textpaneview";
+import VisualPaneView from "../ObjectEditor/visualpaneview";
 import { Button } from "@material-ui/core";
 
 import { getPuzzle, editPuzzle } from "../../../lib/puzzleEndpoints";
@@ -176,6 +177,9 @@ export default function ObjectEditor({
                     texts={animationsJson.blackboardData.jsonData.data}
                     classes={classes}
                 />
+            ) : null}
+            {isInteractable && puzzleType === "visual-pane" ? (
+                <VisualPaneView></VisualPaneView>
             ) : null}
             {!isInteractable || puzzleType !== "" ? (
                 <div>
