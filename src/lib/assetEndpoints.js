@@ -1,4 +1,4 @@
-import { httpGet, httpPut } from "./dataAccess";
+import { httpGet, httpPut, httpPost } from "./dataAccess";
 
 const baseEndpoint = process.env.REACT_APP_ADMIN_BASE_ENDPOINT;
 
@@ -25,6 +25,20 @@ export const getAsset = async (id, handleError) => {
 export const editAsset = async (id, name, obj_type, s3_key, handleError) => {
     try {
         const response = await httpPut(baseEndpoint + `asset/${id}`, {
+            name,
+            obj_type,
+            s3_key,
+        });
+        return response;
+    } catch (error) {
+        handleError(error);
+        throw error;
+    }
+};
+
+export const createAsset = async ({ name, obj_type, s3_key }, handleError) => {
+    try {
+        const response = await httpPost(baseEndpoint + `asset`, {
             name,
             obj_type,
             s3_key,
