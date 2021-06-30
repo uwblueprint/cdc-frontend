@@ -123,7 +123,11 @@ export default function ObjectEditor({
                 handleError
             );
         };
-        if (puzzleType === "text-pane" && animationsJson.blackboardData.jsonData.data.length === 0) {
+        if (
+            isInteractable &&
+            puzzleType === "text-pane" &&
+            animationsJson?.blackboardData?.jsonData?.data?.length === 0
+        ) {
             alert("Error: Need at least one text to save text-pane");
             return;
         }
