@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Assets({ assets }) {
+export default function Assets({ assets, handleDeleteAssetClick }) {
     const classes = useStyles();
 
     return (
@@ -38,7 +38,7 @@ export default function Assets({ assets }) {
                             <AssetCard
                                 key={assets.id}
                                 data={assets}
-                                handleDeleteClick={() => {}}
+                                handleDeleteClick={handleDeleteAssetClick}
                             />
                         );
                     })}
