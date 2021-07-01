@@ -57,6 +57,7 @@ export default function AssetModelViewer({
     const handleError = useErrorHandler();
     const [asset, setAsset] = useState({});
     const [name, setName] = useState("");
+    const [nameError, setNameError] = useState("");
     const [objectType, setObjectType] = useState(ObjectTypes.NONE);
     const [buttonText, setButtonText] = useState("Save");
     const [assetLink, setAssetLink] = useState("");
@@ -92,6 +93,17 @@ export default function AssetModelViewer({
     }, [assetId, handleError]);
 
     const handleNameChange = (event) => {
+        const reg = new RegExp(/^[a-zA-Z0-9 _-]{1,50}$/).test(
+            event.target.value
+        );
+        if (!reg) {
+            setNameError(
+                "Maximum of 50 characters allowed (alphanumeric, dashes, or spaces)"
+            );
+        } else {
+            setNameError("");
+        }
+
         setName(event.target.value);
     };
 
@@ -119,6 +131,10 @@ export default function AssetModelViewer({
         }, 2000);
         editAsset(assetId, name, objectType, asset.s3_key, handleError);
     }
+
+    const isEmpty = (error) => {
+        return error === "";
+    };
 
     return (
         <div className={classes.root}>
@@ -149,6 +165,8 @@ export default function AssetModelViewer({
                         value={name}
                         onChange={handleNameChange}
                         variant="outlined"
+                        error={!isEmpty(nameError)}
+                        helperText={nameError}
                     />
 
                     <FormControl
@@ -180,6 +198,7 @@ export default function AssetModelViewer({
                         variant="contained"
                         color="primary"
                         startIcon={<SaveIcon />}
+                        disabled={!isEmpty(nameError)}
                     >
                         {buttonText}
                     </Button>
