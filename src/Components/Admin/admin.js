@@ -300,7 +300,9 @@ export default function Admin() {
     const handleDeleteAssetSubmit = async () => {
         await deleteAsset(deleteAssetId, handleError);
 
-        const modifiedAssets = assets.filter((env) => env.id !== deleteAssetId);
+        const modifiedAssets = assets.filter(
+            (asset) => asset.id !== deleteAssetId
+        );
         setAssets(modifiedAssets);
         setDeleteAssetId(null);
         setDeleteAssetModalOpen(false);
