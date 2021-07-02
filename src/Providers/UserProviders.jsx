@@ -20,10 +20,11 @@ class UserProvider extends Component {
                 const user = await generateUserDocument(userAuth);
                 this.setState({ user });
             }
-            // TODO: in the future do an authentication route that returns name and email of user?
+
+            // validate cookies are set appropriately on this user instance
             try {
-                const isValidUser = await httpGet(baseEndpoint + "scenarios");
-                this.setState({ isAdmin: isValidUser !== undefined });
+                const response = await httpGet(baseEndpoint + "user_profile");
+                this.setState({ isAdmin: response.status === 200 });
             } catch {
                 this.setState({ isAdmin: false });
             }
