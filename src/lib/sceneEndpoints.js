@@ -85,7 +85,7 @@ export const deleteScene = async (id, handleError) => {
 export const duplicateScene = async (id, handleError) => {
     try {
         const response = await httpPost(
-            baseEndpoint + `scene\\${id}\\duplicate`,
+            baseEndpoint + `scene/${id}/duplicate`,
             {
                 id,
             }
