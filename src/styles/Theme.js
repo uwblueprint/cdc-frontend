@@ -4,17 +4,17 @@ import { Colours } from "./Constants.ts";
 export const Theme = createMuiTheme({
     palette: {
         primary: {
-            main: Colours.OliveGreen,
+            main: Colours.MainRed9,
         },
         secondary: {
-            main: Colours.Secondary,
+            main: Colours.SkyBlue9,
         },
         error: {
-            main: Colours.Danger,
+            main: Colours.MainRed5,
         },
         text: {
-            primary: Colours.Black,
-            secondary: Colours.SecondaryGray,
+            primary: Colours.Grey9,
+            secondary: Colours.Grey4,
         },
     },
     typography: {
@@ -71,7 +71,7 @@ export const Theme = createMuiTheme({
     overrides: {
         MuiTableCell: {
             root: {
-                borderBottom: `1px solid ${Colours.BorderLightGray}`,
+                borderBottom: `1px solid ${Colours.Grey3}`,
             },
         },
         // Remove bottom border on last row of tables to avoid duplicating borders
@@ -84,7 +84,7 @@ export const Theme = createMuiTheme({
         },
         MuiCard: {
             root: {
-                borderColor: Colours.BorderLightGray,
+                borderColor: Colours.Grey3,
             },
         },
         MuiTab: {
