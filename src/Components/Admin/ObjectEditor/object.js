@@ -105,6 +105,9 @@ export default function ObjectEditor({
                     animCopy.blackboardData.jsonData.currPosition = 0;
                 } else if (obj.value === "rotation-controls") {
                     animCopy.blackboardData.jsonData.position = [0, 0, 5];
+                } else if (obj.value === "visual-pane") {
+                    animCopy.blackboardData.jsonData.position = [0, 0, 0];
+                    animCopy.blackboardData.jsonData.scaleBy = 3;
                 }
                 setAnimationsJson(animCopy);
             }
@@ -114,6 +117,13 @@ export default function ObjectEditor({
     const saveTexts = (texts) => {
         const animCopy = animationsJson;
         animCopy.blackboardData.jsonData.data = texts;
+        setAnimationsJson(animCopy);
+    };
+
+    const saveImage = (caption, s3Key) => {
+        const animCopy = animationsJson;
+        animCopy.blackboardData.jsonData.caption = caption;
+        animCopy.blackboardData.jsonData.imageSrc = s3Key;
         setAnimationsJson(animCopy);
     };
 
@@ -179,7 +189,14 @@ export default function ObjectEditor({
                 />
             ) : null}
             {isInteractable && puzzleType === "visual-pane" ? (
-                <VisualPaneView></VisualPaneView>
+                <VisualPaneView
+                    saveImage={saveImage}
+                    caption={
+                        animationsJson.blackboardData.jsonData.caption
+                            ? animationsJson.blackboardData.jsonData.caption
+                            : ""
+                    }
+                />
             ) : null}
             {!isInteractable || puzzleType !== "" ? (
                 <div>
