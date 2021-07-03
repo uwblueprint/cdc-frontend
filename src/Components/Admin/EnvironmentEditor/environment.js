@@ -7,6 +7,7 @@ import Navbar from "../navbar";
 import EnvironmentBar from "./environmentBar";
 import SceneCard from "./sceneCard";
 import SceneModal from "./sceneModal";
+import TemplateModal from "./templateModal";
 import TransitionCard from "./transitionCard";
 import TransitionModal from "./transitionModal";
 import DeleteModal from "../common/deleteModal";
@@ -16,6 +17,7 @@ import {
     createScene,
     editScene,
     deleteScene,
+    duplicateScene,
 } from "../../../lib/sceneEndpoints";
 
 const useStyles = makeStyles((theme) => ({
@@ -74,6 +76,7 @@ export default function EnvironmentEditor({
     const [environment, setEnvironment] = useState({});
     const [scenes, setScenes] = useState([]);
     const [createModalOpen, setCreateModalOpen] = useState(false);
+    const [templateModalOpen, setTemplateModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [editSceneInfo, setEditSceneInfo] = useState({});
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -156,13 +159,30 @@ export default function EnvironmentEditor({
 
     const onCreateModalSubmit = async (name, background_id, description) => {
         setCreateModalOpen(false);
-
         const newScene = await createScene(
             name,
             background_id,
             description,
             handleError
         );
+        createSceneAndUpdateScenario(newScene);
+    };
+
+    const onTemplateButtonClick = () => {
+        setTemplateModalOpen(true);
+    };
+
+    const onTemplateModalClose = () => {
+        setTemplateModalOpen(false);
+    };
+
+    const onTemplateModalSubmit = async (scene_id) => {
+        setTemplateModalOpen(false);
+        const newScene = await duplicateScene(scene_id, handleError);
+        createSceneAndUpdateScenario(newScene);
+    };
+
+    const createSceneAndUpdateScenario = async (newScene) => {
         const newSceneData = [...scenes, newScene];
         setScenes(newSceneData);
 
@@ -272,7 +292,10 @@ export default function EnvironmentEditor({
         <div>
             <Navbar home />
             <div className={classes.page}>
-                <EnvironmentBar onCreateButtonClick={onCreateButtonClick} />
+                <EnvironmentBar
+                    onCreateButtonClick={onCreateButtonClick}
+                    onTemplateButtonClick={onTemplateButtonClick}
+                />
             </div>
             <div className={classes.container}>
                 {scenes !== undefined && scenes.length !== 0 ? (
@@ -410,6 +433,11 @@ export default function EnvironmentEditor({
                 handleModalClose={onEditModalClose}
                 handleSubmit={onEditModalSubmit}
                 isEdit
+            />
+            <TemplateModal
+                modalOpen={templateModalOpen}
+                handleModalClose={onTemplateModalClose}
+                handleSubmit={onTemplateModalSubmit}
             />
             <TransitionModal
                 originalTransitions={editTransitionInfo}

@@ -43,7 +43,10 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function EnvironmentBar({ onCreateButtonClick }) {
+export default function EnvironmentBar({
+    onCreateButtonClick,
+    onTemplateButtonClick,
+}) {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const addMenuOpen = Boolean(anchorEl);
@@ -59,6 +62,11 @@ export default function EnvironmentBar({ onCreateButtonClick }) {
     const handleCreateButtonClick = () => {
         setAnchorEl(null);
         onCreateButtonClick();
+    };
+
+    const handleTemplateButtonClick = () => {
+        setAnchorEl(null);
+        onTemplateButtonClick();
     };
 
     return (
@@ -97,7 +105,9 @@ export default function EnvironmentBar({ onCreateButtonClick }) {
                             <MenuItem onClick={handleCreateButtonClick}>
                                 From Scratch
                             </MenuItem>
-                            <MenuItem>From Template</MenuItem>
+                            <MenuItem onClick={handleTemplateButtonClick}>
+                                From Template
+                            </MenuItem>
                         </Menu>
                     </div>
                     <div className={classes.buttonWrapperRight}>
