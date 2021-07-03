@@ -13,7 +13,7 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import { fileToByteArray } from "../../../lib/s3Utility";
-import FormHelperText from '@material-ui/core/FormHelperText';
+import FormHelperText from "@material-ui/core/FormHelperText";
 
 const useStyles = makeStyles((theme) => ({
     textField: {
@@ -44,6 +44,7 @@ export default function UploadAssetModal({
     const [objectType, setObjectType] = React.useState(ObjectTypes.NONE);
     const [fileType, setFileType] = React.useState(FileTypes.NONE);
     const [assetByteArray, setAssetByteArray] = React.useState(null);
+    const [fileName, setFileName] = React.useState("");
     const [errors, setErrors] = React.useState({
         name: "",
         objectType: "Select an object type",
@@ -62,20 +63,18 @@ export default function UploadAssetModal({
             fileType: "Select a file type",
             assetBlob: "Upload a file",
         });
-    }
+    };
 
     const handleAssetNameChange = (event) => {
         let response = event.target.value;
         setAssetName(response);
         setErrors({ ...errors, name: "" });
-        const reg = new RegExp(/^[a-zA-Z0-9 _-]{1,50}$/).test(
-            response
-        );
+        const reg = new RegExp(/^[a-zA-Z0-9 _-]{1,50}$/).test(response);
         if (!reg) {
             setErrors({
                 ...errors,
                 name:
-                "Maximum of 50 characters allowed (alphanumeric, dashes, or spaces)",
+                    "1-50 characters allowed (alphanumeric, dashes, or spaces)",
             });
         }
     };
@@ -120,28 +119,32 @@ export default function UploadAssetModal({
     };
 
     const handleUploadFileChange = (event) => {
-        setErrors({ ...errors, assetBlob: ""});
+        setErrors({ ...errors, assetBlob: "" });
         if (event.target.files && event.target.files[0]) {
             const file = event.target.files[0];
             fileToByteArray(file, setAssetByteArray);
+
+            const name = file.name;
+            const lastDot = name.lastIndexOf(".");
+            const fileName = name.substring(0, lastDot);
+            setFileName(fileName);
         }
     };
 
-
     const handleModalSubmitClick = async () => {
-        
         await handleSubmit(assetName, fileType, objectType, assetByteArray);
         clearFields();
     };
 
     const isValidInput = () => {
-
-        return errors.name === "" &&
-               errors.objectType === "" &&
-               errors.fileType === "" &&
-               errors.assetBlob === "" &&
-               assetName.length > 0;
-    }
+        return (
+            errors.name === "" &&
+            errors.objectType === "" &&
+            errors.fileType === "" &&
+            errors.assetBlob === "" &&
+            assetName.length > 0
+        );
+    };
 
     return (
         <Dialog
@@ -186,7 +189,10 @@ export default function UploadAssetModal({
                             </MenuItem>
                         </Select>
                     </FormControl>
-                    <FormHelperText> {errors.objectType ? errors.objectType : ""} </FormHelperText>
+                    <FormHelperText>
+                        {" "}
+                        {errors.objectType ? errors.objectType : ""}{" "}
+                    </FormHelperText>
                 </div>
                 <div>
                     <FormControl
@@ -210,7 +216,10 @@ export default function UploadAssetModal({
                             </MenuItem>
                         </Select>
                     </FormControl>
-                    <FormHelperText> {errors.fileType ? errors.fileType : ""} </FormHelperText>
+                    <FormHelperText>
+                        {" "}
+                        {errors.fileType ? errors.fileType : ""}{" "}
+                    </FormHelperText>
                 </div>
                 <div>
                     <Typography
@@ -237,13 +246,22 @@ export default function UploadAssetModal({
                             Upload
                         </Button>
                     </label>
-                    <FormHelperText> {errors.assetBlob ? errors.assetBlob : "File uploaded"} </FormHelperText>
+                    <FormHelperText>
+                        {" "}
+                        {errors.assetBlob
+                            ? errors.assetBlob
+                            : "File uploaded: " + fileName}{" "}
+                    </FormHelperText>
                 </div>
             </DialogContent>
             <DialogActions className={classes.buttonContainer}>
                 <Button onClick={handleModalClose}> Cancel </Button>
-                <Button onClick={handleModalSubmitClick}
-                disabled={!isValidInput()}>{"Create"}</Button>
+                <Button
+                    onClick={handleModalSubmitClick}
+                    disabled={!isValidInput()}
+                >
+                    {"Create"}
+                </Button>
             </DialogActions>
         </Dialog>
     );
