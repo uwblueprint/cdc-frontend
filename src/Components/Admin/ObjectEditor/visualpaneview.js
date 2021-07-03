@@ -127,15 +127,14 @@ export default function VisualPaneView(props) {
                         <AddIcon />
                     </IconButton>
                 </div>
-            ) : null}
-            {caption !== "" ? (
+            ) : (
                 <div>
                     Caption: {caption}
                     <IconButton onClick={() => deleteCaption()}>
                         <DeleteForever />
                     </IconButton>
                 </div>
-            ) : null}
+            )}
         </div>
     );
 }
