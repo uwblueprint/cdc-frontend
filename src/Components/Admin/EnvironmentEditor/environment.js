@@ -17,6 +17,7 @@ import {
     createScene,
     editScene,
     deleteScene,
+    duplicateScene,
 } from "../../../lib/sceneEndpoints";
 
 const useStyles = makeStyles((theme) => ({
@@ -158,13 +159,30 @@ export default function EnvironmentEditor({
 
     const onCreateModalSubmit = async (name, background_id, description) => {
         setCreateModalOpen(false);
-
         const newScene = await createScene(
             name,
             background_id,
             description,
             handleError
         );
+        createSceneAndUpdateScenario(newScene);
+    };
+
+    const onTemplateButtonClick = () => {
+        setTemplateModalOpen(true);
+    };
+
+    const onTemplateModalClose = () => {
+        setTemplateModalOpen(false);
+    };
+
+    const onTemplateModalSubmit = async (scene_id) => {
+        setTemplateModalOpen(false);
+        const newScene = await duplicateScene(scene_id, handleError);
+        createSceneAndUpdateScenario(newScene);
+    };
+
+    const createSceneAndUpdateScenario = async (newScene) => {
         const newSceneData = [...scenes, newScene];
         setScenes(newSceneData);
 
@@ -185,19 +203,6 @@ export default function EnvironmentEditor({
 
         const newEnv = await editScenario(newEnvData, handleError);
         setEnvironment(newEnv.data);
-    };
-
-    const onTemplateButtonClick = () => {
-        setTemplateModalOpen(true);
-    };
-
-    const onTemplateModalClose = () => {
-        setTemplateModalOpen(false);
-    };
-
-    const onTemplateModalSubmit = async (scene_id) => {
-        setTemplateModalOpen(false);
-        console.log(scene_id);
     };
 
     const onEditButtonClick = (sceneId) => {
