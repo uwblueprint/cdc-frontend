@@ -66,7 +66,7 @@ export default function UploadAssetModal({
     };
 
     const handleAssetNameChange = (event) => {
-        let response = event.target.value;
+        const response = event.target.value;
         setAssetName(response);
         setErrors({ ...errors, name: "" });
         const reg = new RegExp(/^[a-zA-Z0-9 _-]{1,50}$/).test(response);
