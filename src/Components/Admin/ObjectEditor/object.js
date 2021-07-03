@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useErrorHandler } from "react-error-boundary";
 import Select from "react-select";
 import TextPaneView from "../ObjectEditor/textpaneview";
+import { Button } from "@material-ui/core";
 
 import { getPuzzle, editPuzzle } from "../../../lib/puzzleEndpoints";
 
@@ -56,10 +57,10 @@ export default function ObjectEditor({
 }) {
     const classes = useStyles();
     const handleError = useErrorHandler();
-    const [puzzleBody, setPuzzleBody] = useState({});
     const [puzzleType, setPuzzleType] = useState("");
     const [animationsJson, setAnimationsJson] = useState({});
-    const [isInteractable, setIsInteractable] = useState(false);
+    const [origAnimJson, setOrigAnimJson] = useState({});
+    const [isInteractable, setIsInteractable] = useState(null);
 
     const puzzleTypeList = [
         { value: "text-pane", label: "Text Puzzle" },
@@ -73,44 +74,46 @@ export default function ObjectEditor({
     useEffect(() => {
         const getPuzzleBody = async () => {
             const data = await getPuzzle(sceneId, objectId, handleError);
+            setOrigAnimJson(data.animations_json);
             setAnimationsJson(data.animations_json);
             if (Object.keys(data.animations_json).length === 0) {
-                setPuzzleBody({ jsonData: {} });
                 setIsInteractable(false);
             } else {
-                setPuzzleBody(data.animations_json.blackboardData);
                 setPuzzleType(
                     data.animations_json.blackboardData.componentType
                 );
                 setIsInteractable(data.is_interactable);
             }
         };
-        if (Object.keys(puzzleBody).length === 0) {
+        if (isInteractable === null && Object.keys(origAnimJson).length === 0) {
             getPuzzleBody();
         }
-    }, [sceneId, objectId, puzzleBody, handleError]);
+    }, [sceneId, objectId, isInteractable, origAnimJson, handleError]);
 
     const selectPuzzleType = (obj) => {
         if (obj) {
-            const data = puzzleBody;
-            data.componentType = obj.value;
-            if (obj.value === "text-pane") {
-                if (!data.jsonData.data) {
-                    data.jsonData.data = [];
-                }
-            }
-            setPuzzleBody(data);
             setPuzzleType(obj.value);
+            if (origAnimJson.blackboardData?.componentType === obj.value) {
+                setAnimationsJson(origAnimJson);
+            } else {
+                const animCopy = {
+                    blackboardData: { componentType: obj.value, jsonData: {} },
+                };
+                if (obj.value === "text-pane") {
+                    animCopy.blackboardData.jsonData.data = [];
+                    animCopy.blackboardData.jsonData.currPosition = 0;
+                } else if (obj.value === "rotation-controls") {
+                    animCopy.blackboardData.jsonData.position = [0, 0, 5];
+                }
+                setAnimationsJson(animCopy);
+            }
         }
     };
 
     const saveTexts = (texts) => {
         const animCopy = animationsJson;
-        const puzzleBodyCopy = puzzleBody;
-        puzzleBodyCopy.jsonData.data = texts;
-        animCopy.blackboardData = puzzleBodyCopy;
+        animCopy.blackboardData.jsonData.data = texts;
         setAnimationsJson(animCopy);
-        handleSave();
     };
 
     const handleSave = () => {
@@ -120,11 +123,24 @@ export default function ObjectEditor({
                 handleError
             );
         };
+        if (
+            isInteractable &&
+            puzzleType === "text-pane" &&
+            animationsJson?.blackboardData?.jsonData?.data?.length === 0
+        ) {
+            alert("Error: Need at least one text to save text-pane");
+            return;
+        }
         savePuzzle();
         alert("Saved puzzle CRUD changes for object with id: " + objectId);
     };
 
     const toggleButton = () => {
+        if (isInteractable) {
+            setAnimationsJson({});
+        } else {
+            setAnimationsJson(origAnimJson);
+        }
         setIsInteractable(!isInteractable);
     };
 
@@ -157,9 +173,16 @@ export default function ObjectEditor({
             {isInteractable && puzzleType === "text-pane" ? (
                 <TextPaneView
                     saveTexts={saveTexts}
-                    texts={puzzleBody.jsonData.data}
+                    texts={animationsJson.blackboardData.jsonData.data}
                     classes={classes}
                 />
+            ) : null}
+            {!isInteractable || puzzleType !== "" ? (
+                <div>
+                    <Button color="primary" onClick={() => handleSave()}>
+                        Save
+                    </Button>
+                </div>
             ) : null}
         </div>
     );
