@@ -7,6 +7,7 @@ import Navbar from "../navbar";
 import EnvironmentBar from "./environmentBar";
 import SceneCard from "./sceneCard";
 import SceneModal from "./sceneModal";
+import TemplateModal from "./templateModal";
 import TransitionCard from "./transitionCard";
 import TransitionModal from "./transitionModal";
 import DeleteModal from "../common/deleteModal";
@@ -74,6 +75,7 @@ export default function EnvironmentEditor({
     const [environment, setEnvironment] = useState({});
     const [scenes, setScenes] = useState([]);
     const [createModalOpen, setCreateModalOpen] = useState(false);
+    const [templateModalOpen, setTemplateModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [editSceneInfo, setEditSceneInfo] = useState({});
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -185,6 +187,19 @@ export default function EnvironmentEditor({
         setEnvironment(newEnv.data);
     };
 
+    const onTemplateButtonClick = () => {
+        setTemplateModalOpen(true);
+    };
+
+    const onTemplateModalClose = () => {
+        setTemplateModalOpen(false);
+    };
+
+    const onTemplateModalSubmit = async (scene_id) => {
+        setTemplateModalOpen(false);
+        console.log(scene_id);
+    };
+
     const onEditButtonClick = (sceneId) => {
         const scene = scenes.find((scene) => scene.id === sceneId);
         setEditSceneInfo(scene);
@@ -272,7 +287,10 @@ export default function EnvironmentEditor({
         <div>
             <Navbar home />
             <div className={classes.page}>
-                <EnvironmentBar onCreateButtonClick={onCreateButtonClick} />
+                <EnvironmentBar
+                    onCreateButtonClick={onCreateButtonClick}
+                    onTemplateButtonClick={onTemplateButtonClick}
+                />
             </div>
             <div className={classes.container}>
                 {scenes !== undefined && scenes.length !== 0 ? (
@@ -410,6 +428,11 @@ export default function EnvironmentEditor({
                 handleModalClose={onEditModalClose}
                 handleSubmit={onEditModalSubmit}
                 isEdit
+            />
+            <TemplateModal
+                modalOpen={templateModalOpen}
+                handleModalClose={onTemplateModalClose}
+                handleSubmit={onTemplateModalSubmit}
             />
             <TransitionModal
                 originalTransitions={editTransitionInfo}
