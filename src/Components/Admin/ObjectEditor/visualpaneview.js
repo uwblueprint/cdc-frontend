@@ -44,10 +44,14 @@ export default function VisualPaneView(props) {
             name,
             file_type,
             object_type,
-            asset
+            imageByteArray
         ) => {
             const response = await createPresignedLinkAndUploadS3(
-                { file_type: file_type, type: "image", file_content: asset },
+                {
+                    file_type: file_type,
+                    type: "image",
+                    file_content: imageByteArray,
+                },
                 handleError
             );
 
