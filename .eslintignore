@@ -1,5 +1,5 @@
 build/
 node_modules/
-public/Aframe/
+legacy/Aframe/
 *.md
 *.config
