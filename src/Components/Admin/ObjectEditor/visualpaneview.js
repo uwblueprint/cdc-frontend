@@ -38,6 +38,7 @@ export default function VisualPaneView(props) {
     const [imageByteArray, setImageByteArray] = React.useState(null);
     const [caption, setCaption] = React.useState(props.caption);
     const [uploaded, setUploaded] = React.useState(false);
+    const [imageSrc, setImageSrc] = React.useState(props.src);
 
     useEffect(() => {
         const handleUploadImageSubmit = async (
@@ -56,6 +57,7 @@ export default function VisualPaneView(props) {
             );
 
             const imagePrefix = process.env.REACT_APP_ADMIN_ASSET_PREFIX;
+            setImageSrc(imagePrefix + response.data.s3_key);
             props.saveImage(caption, imagePrefix + response.data.s3_key);
         };
 
@@ -86,6 +88,7 @@ export default function VisualPaneView(props) {
 
         if (newText.text) {
             setCaption(newText.text);
+            props.saveCaption(newText.text);
         }
     };
 
@@ -98,6 +101,23 @@ export default function VisualPaneView(props) {
             <Typography component="div" variant="h5" className={classes.text}>
                 Upload Image {imageByteArray?.length}
             </Typography>
+            {imageSrc ? (
+                <div>
+                    <Typography
+                        component="div"
+                        variant="h7"
+                        className={classes.text}
+                    >
+                        Image Preview:
+                    </Typography>
+                    <img
+                        src={imageSrc}
+                        height={250}
+                        max-width={1000}
+                        object-fit={"contain"}
+                    ></img>
+                </div>
+            ) : null}
             <input
                 accept=".jpg,.jpeg,.png"
                 className={classes.input}

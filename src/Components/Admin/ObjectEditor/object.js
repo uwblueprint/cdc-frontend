@@ -107,7 +107,7 @@ export default function ObjectEditor({
                     animCopy.blackboardData.jsonData.position = [0, 0, 5];
                 } else if (obj.value === "visual-pane") {
                     animCopy.blackboardData.jsonData.position = [0, 0, 0];
-                    animCopy.blackboardData.jsonData.scaleBy = 3;
+                    animCopy.blackboardData.jsonData.scaleBy = 10;
                 }
                 setAnimationsJson(animCopy);
             }
@@ -117,6 +117,12 @@ export default function ObjectEditor({
     const saveTexts = (texts) => {
         const animCopy = animationsJson;
         animCopy.blackboardData.jsonData.data = texts;
+        setAnimationsJson(animCopy);
+    };
+
+    const saveCaption = (caption) => {
+        const animCopy = animationsJson;
+        animCopy.blackboardData.jsonData.caption = caption;
         setAnimationsJson(animCopy);
     };
 
@@ -191,11 +197,13 @@ export default function ObjectEditor({
             {isInteractable && puzzleType === "visual-pane" ? (
                 <VisualPaneView
                     saveImage={saveImage}
+                    saveCaption={saveCaption}
                     caption={
                         animationsJson.blackboardData.jsonData.caption
                             ? animationsJson.blackboardData.jsonData.caption
                             : ""
                     }
+                    src={animationsJson.blackboardData.jsonData.imageSrc}
                 />
             ) : null}
             {!isInteractable || puzzleType !== "" ? (
