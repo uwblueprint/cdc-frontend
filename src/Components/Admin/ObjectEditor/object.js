@@ -195,18 +195,6 @@ export default function ObjectEditor({
                 ></input>
             </div>
             {isInteractable ? (
-                <Select
-                    value={puzzleTypeList.filter(
-                        (option) => option.value === puzzleType
-                    )}
-                    options={puzzleTypeList}
-                    placeholder="Select puzzle type..."
-                    noResultsText="No puzzle types found"
-                    searchable={true}
-                    onChange={selectPuzzleType}
-                />
-            ) : null}
-            {isInteractable ? (
                 header === "" ? (
                     <div>
                         Add Header
@@ -226,6 +214,18 @@ export default function ObjectEditor({
                         </IconButton>
                     </div>
                 )
+            ) : null}
+            {isInteractable ? (
+                <Select
+                    value={puzzleTypeList.filter(
+                        (option) => option.value === puzzleType
+                    )}
+                    options={puzzleTypeList}
+                    placeholder="Select puzzle type..."
+                    noResultsText="No puzzle types found"
+                    searchable={true}
+                    onChange={selectPuzzleType}
+                />
             ) : null}
             {isInteractable && puzzleType === "text-pane" ? (
                 <TextPaneView
