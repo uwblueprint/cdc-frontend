@@ -60,11 +60,11 @@ export default function Login() {
 
         await auth
             .signInWithEmailAndPassword(email, password)
-            .then(async () => {
+            .then(() => {
                 // Get the user's ID token as it is needed to exchange for a session cookie.
-                await auth.currentUser.getIdToken().then(async (idToken) => {
+                auth.currentUser.getIdToken().then((idToken) => {
                     try {
-                        const response = await httpPost(
+                        const response = httpPost(
                             "/admin_login",
                             {
                                 idToken: idToken,
