@@ -1,30 +1,25 @@
 import React, { Component, createContext } from "react";
-import { auth, generateUserDocument } from "../firebaseCredentials.js";
+import { auth } from "../firebaseCredentials.js";
 import { httpGet } from "../lib/dataAccess";
 
 const baseEndpoint = process.env.REACT_APP_ADMIN_BASE_ENDPOINT;
 
-export const UserContext = createContext({ user: null });
+export const UserContext = createContext({ isAdmin: false });
 class UserProvider extends Component {
     state = {
-        user: null,
         isAdmin: false,
+        displayName: "",
     };
 
     componentDidMount = async () => {
-        auth.onAuthStateChanged(async (userAuth) => {
-            if (!userAuth) {
-                this.setState({ user: null });
-            }
-            if (userAuth && userAuth.emailVerified) {
-                const user = await generateUserDocument(userAuth);
-                this.setState({ user });
-            }
-
+        auth.onAuthStateChanged(async () => {
             // validate cookies are set appropriately on this user instance
             try {
                 const response = await httpGet(baseEndpoint + "user_profile");
-                this.setState({ isAdmin: response.status === 200 });
+                this.setState({
+                    isAdmin: response.status === 200,
+                    displayName: response.data.display_name,
+                });
             } catch {
                 this.setState({ isAdmin: false });
             }
@@ -34,7 +29,10 @@ class UserProvider extends Component {
     render() {
         return (
             <UserContext.Provider
-                value={{ user: this.state.user, isAdmin: this.state.isAdmin }}
+                value={{
+                    isAdmin: this.state.isAdmin,
+                    displayName: this.state.displayName,
+                }}
             >
                 {this.props.children}
             </UserContext.Provider>
