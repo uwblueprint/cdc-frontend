@@ -58,3 +58,15 @@ export const deleteAsset = async (id, handleError) => {
         throw error;
     }
 };
+
+export const editAssetScreenshot = async (id, screenshot_url, handleError) => {
+    try {
+        const response = await httpPut(baseEndpoint + `asset/${id}/screenshot`, {
+            screenshot_url,
+        });
+        return response;
+    } catch (error) {
+        handleError(error);
+        throw error;
+    }
+};

@@ -79,7 +79,7 @@ export default function AssetCard({ data, handleDeleteClick }) {
             >
                 <img
                     className={classes.cardImage}
-                    src={data.image ? data.image : defaultImage}
+                    src={data.screenshot_url ? process.env.REACT_APP_ADMIN_ASSET_PREFIX + data.screenshot_url : defaultImage}
                     alt="Asset"
                 />
             </Grid>
