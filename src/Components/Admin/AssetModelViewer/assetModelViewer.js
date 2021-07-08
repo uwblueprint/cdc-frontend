@@ -7,7 +7,11 @@ import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-import { getAsset, editAsset, editAssetScreenshot } from "../../../lib/assetEndpoints";
+import {
+    getAsset,
+    editAsset,
+    editAssetScreenshot,
+} from "../../../lib/assetEndpoints";
 import { useErrorHandler } from "react-error-boundary";
 import SaveIcon from "@material-ui/icons/Save";
 import Select from "@material-ui/core/Select";
@@ -66,7 +70,6 @@ export default function AssetModelViewer({
     const modelViewerRef = useRef(null);
 
     useEffect(() => {
-
         console.log(modelViewerRef);
         const getObjectAsset = async () => {
             const data = await getAsset(assetId, handleError);
@@ -92,10 +95,9 @@ export default function AssetModelViewer({
             setAsset(data);
 
             if (data.screenshot_url === "") {
-                modelViewerRef.current.addEventListener('load', e => {
+                modelViewerRef.current.addEventListener("load", (e) => {
                     takeAssetScreenshot();
-                })
-                
+                });
             }
         };
 
@@ -110,20 +112,24 @@ export default function AssetModelViewer({
 
         console.log(blob);
         const response = await createPresignedLinkAndUploadS3(
-            { 
+            {
                 file_type: "png",
                 type: "image",
                 file_content: blob,
             },
             handleError,
-            true);
-            
+            true
+        );
+
         console.log(response);
-        const responseAssetScreenshotUpdate = await editAssetScreenshot(assetId, response.data.s3_key, handleError);
+        const responseAssetScreenshotUpdate = await editAssetScreenshot(
+            assetId,
+            response.data.s3_key,
+            handleError
+        );
         setAssetLink(responseAssetScreenshotUpdate.data.screenshot_url);
         console.log(responseAssetScreenshotUpdate.data.screenshot_url);
         console.log(assetLink);
-
     };
 
     const handleNameChange = (event) => {

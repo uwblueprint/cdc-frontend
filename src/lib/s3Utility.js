@@ -45,7 +45,10 @@ export const createPresignedLinkAndUploadS3 = async (
     return response;
 };
 
-export const getPresignedLink = async ({ type, extension, s3_key }, handleError) => {
+export const getPresignedLink = async (
+    { type, extension, s3_key },
+    handleError
+) => {
     try {
         const response = await httpPost(baseEndpoint + `upload`, {
             type,
