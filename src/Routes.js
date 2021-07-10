@@ -11,9 +11,9 @@ import AssetModelViewer from "./Components/Admin/AssetModelViewer/assetModelView
 import { UserContext } from "./Providers/UserProviders";
 
 export default function Routes() {
-    const user = useContext(UserContext);
+    const { isAdmin } = useContext(UserContext);
 
-    return user ? (
+    return isAdmin ? (
         <Switch>
             <Route exact path="/admin" component={Admin} />
             <Route
@@ -31,6 +31,7 @@ export default function Routes() {
                 path="/admin/asset/:assetId"
                 component={AssetModelViewer}
             />
+            <Route exact path="/*" component={Admin} />
         </Switch>
     ) : (
         <Switch>
@@ -38,6 +39,7 @@ export default function Routes() {
             <Route exact path="/login" component={Login} />
             <Route exact path="/signup" component={Signup} />
             <Route exact path="/passwordReset" component={PasswordReset} />
+            <Route exact path="/*" component={Login} />
         </Switch>
     );
 }

@@ -26,9 +26,12 @@ const useStyles = makeStyles(() => ({
         backgroundColor: "white",
         borderBottomLeftRadius: "12px",
         borderBottomRightRadius: "12px",
-        height: 80,
+        height: 60,
     },
     dataName: {
+        lineHeight: "normal",
+        marginTop: 0,
+        marginBottom: 0,
         marginLeft: 10,
         fontWeight: "bold",
         maxWidth: "75%",

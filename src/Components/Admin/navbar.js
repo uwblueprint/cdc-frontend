@@ -8,6 +8,7 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import HomeIcon from "@material-ui/icons/Home";
+import { useErrorHandler } from "react-error-boundary";
 
 import { httpGet } from "../../lib/dataAccess";
 import { auth } from "../../firebaseCredentials";
@@ -29,7 +30,8 @@ const useStyles = makeStyles(() => ({
 export default function Navbar({ home }) {
     const classes = useStyles();
     const history = useHistory();
-    const user = useContext(UserContext);
+    const handleError = useErrorHandler();
+
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
 
@@ -47,12 +49,19 @@ export default function Navbar({ home }) {
 
     async function handleLogout() {
         handleClose();
-        history.push("/login");
-        auth.signOut();
-        await httpGet(
-            process.env.REACT_APP_ADMIN_BASE_ENDPOINT + "admin_logout"
-        );
+
+        try {
+            await httpGet(
+                process.env.REACT_APP_ADMIN_BASE_ENDPOINT + "admin_logout"
+            );
+            auth.signOut();
+            history.push("/login");
+        } catch (error) {
+            handleError(error);
+        }
     }
+
+    const { isAdmin } = useContext(UserContext);
 
     return (
         <div className={classes.root}>
@@ -63,7 +72,7 @@ export default function Navbar({ home }) {
                             <HomeIcon />
                         </IconButton>
                     )}
-                    {user && (
+                    {isAdmin && (
                         <div className={classes.profileEnd}>
                             <IconButton
                                 aria-label="account of current user"

@@ -26,13 +26,13 @@ env/
 .idea
 
 # Aframe assets
-/public/Aframe/assets/textures
-/public/Aframe/assets/*.gltf
-/public/Aframe/assets/*.bin
-/public/Aframe/assets/*.png
-/public/Aframe/assets/*.jpg
-/public/Aframe/assets/*.mlt
-/public/Aframe/assets/*.obj
+/legacy/Aframe/assets/textures
+/legacy/Aframe/assets/*.gltf
+/legacy/Aframe/assets/*.bin
+/legacy/Aframe/assets/*.png
+/legacy/Aframe/assets/*.jpg
+/legacy/Aframe/assets/*.mlt
+/legacy/Aframe/assets/*.obj
 
 npm-debug.log*
 yarn-debug.log*
