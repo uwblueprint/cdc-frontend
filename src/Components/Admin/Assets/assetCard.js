@@ -14,8 +14,10 @@ const useStyles = makeStyles(() => ({
     },
     cardImage: {
         width: "90%",
+        height: "200px",
         maxWidth: 400,
         marginTop: 16,
+        objectFit: "cover",
     },
     metadata: {
         display: "flex",
@@ -79,7 +81,12 @@ export default function AssetCard({ data, handleDeleteClick }) {
             >
                 <img
                     className={classes.cardImage}
-                    src={data.image ? data.image : defaultImage}
+                    src={
+                        data.screenshot_url
+                            ? process.env.REACT_APP_ADMIN_ASSET_PREFIX +
+                              data.screenshot_url
+                            : defaultImage
+                    }
                     alt="Asset"
                 />
             </Grid>
