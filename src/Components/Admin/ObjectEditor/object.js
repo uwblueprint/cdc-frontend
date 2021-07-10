@@ -3,8 +3,10 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useErrorHandler } from "react-error-boundary";
 import Select from "react-select";
 import TextPaneView from "../ObjectEditor/textpaneview";
+import { Button, IconButton } from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
+import { DeleteForever } from "@material-ui/icons";
 import VisualPaneView from "../ObjectEditor/visualpaneview";
-import { Button } from "@material-ui/core";
 
 import { getPuzzle, editPuzzle } from "../../../lib/puzzleEndpoints";
 
@@ -62,6 +64,7 @@ export default function ObjectEditor({
     const [animationsJson, setAnimationsJson] = useState({});
     const [origAnimJson, setOrigAnimJson] = useState({});
     const [isInteractable, setIsInteractable] = useState(null);
+    const [header, setHeader] = useState("");
 
     const puzzleTypeList = [
         { value: "text-pane", label: "Text Puzzle" },
@@ -84,6 +87,11 @@ export default function ObjectEditor({
                     data.animations_json.blackboardData.componentType
                 );
                 setIsInteractable(data.is_interactable);
+                if (data.animations_json.blackboardData.blackboardText) {
+                    setHeader(
+                        data.animations_json.blackboardData.blackboardText
+                    );
+                }
             }
         };
         if (isInteractable === null && Object.keys(origAnimJson).length === 0) {
@@ -134,6 +142,16 @@ export default function ObjectEditor({
     };
 
     const handleSave = () => {
+        const animCopy = animationsJson;
+        if (header !== "") {
+            animCopy.blackboardData.blackboardText = header;
+        } else {
+            if (animCopy.blackboardData.blackboardText) {
+                delete animCopy.blackboardData.blackboardText;
+            }
+        }
+        setAnimationsJson(animCopy);
+
         const savePuzzle = async () => {
             await editPuzzle(
                 { sceneId, objectId, isInteractable, animationsJson },
@@ -161,6 +179,24 @@ export default function ObjectEditor({
         setIsInteractable(!isInteractable);
     };
 
+    const addHeader = () => {
+        const newText = {
+            text: prompt("Enter the text for the header: "),
+        };
+
+        if (newText.text) {
+            if (newText.text.length <= 100) {
+                setHeader(newText.text);
+            } else {
+                alert("Error: Maximum header text length is 100 characters");
+            }
+        }
+    };
+
+    const deleteHeader = () => {
+        setHeader("");
+    };
+
     return (
         <div
             className={classes.container}
@@ -175,6 +211,27 @@ export default function ObjectEditor({
                     onChange={toggleButton}
                 ></input>
             </div>
+            {isInteractable ? (
+                header === "" ? (
+                    <div>
+                        Add Header
+                        <IconButton
+                            className={classes.addButton}
+                            aria-label="add"
+                            onClick={addHeader}
+                        >
+                            <AddIcon />
+                        </IconButton>
+                    </div>
+                ) : (
+                    <div>
+                        Header: {header}
+                        <IconButton onClick={() => deleteHeader()}>
+                            <DeleteForever />
+                        </IconButton>
+                    </div>
+                )
+            ) : null}
             {isInteractable ? (
                 <Select
                     value={puzzleTypeList.filter(
