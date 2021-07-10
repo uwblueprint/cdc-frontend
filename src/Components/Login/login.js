@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -15,6 +15,7 @@ import empty from "is-empty";
 import { useHistory } from "react-router-dom";
 import { useErrorHandler } from "react-error-boundary";
 
+import { UserContext } from "../../Providers/UserProviders.jsx";
 import { auth, Auth } from "../../firebaseCredentials.js";
 import { httpPost } from "../../lib/dataAccess";
 import { LoginErrors } from "./loginErrors.ts";
@@ -44,6 +45,7 @@ export default function Login() {
     const history = useHistory();
     const handleError = useErrorHandler();
 
+    const { reloadUser } = useContext(UserContext);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [allErrors, setAllErrors] = useState({});
@@ -62,9 +64,9 @@ export default function Login() {
             .signInWithEmailAndPassword(email, password)
             .then(() => {
                 // Get the user's ID token as it is needed to exchange for a session cookie.
-                auth.currentUser.getIdToken().then((idToken) => {
+                auth.currentUser.getIdToken().then(async (idToken) => {
                     try {
-                        const response = httpPost(
+                        const response = await httpPost(
                             "/admin_login",
                             {
                                 idToken: idToken,
@@ -72,6 +74,7 @@ export default function Login() {
                             true
                         );
 
+                        reloadUser();
                         return response;
                     } catch (error) {
                         handleError(error);

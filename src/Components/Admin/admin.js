@@ -118,7 +118,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Admin() {
     const classes = useStyles();
-    const { displayName } = useContext(UserContext);
+    const { user } = useContext(UserContext);
     const handleError = useErrorHandler();
 
     const [value, setValue] = React.useState("rooms");
@@ -316,7 +316,7 @@ export default function Admin() {
                     Admin Dashboard 😎
                 </Typography>
                 <Typography component="div" variant="h6">
-                    Welcome {displayName}
+                    Welcome {user.display_name}
                 </Typography>
 
                 <div className={classes.root}>

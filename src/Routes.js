@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
 import Login from "./Components/Login/login";
 import Signup from "./Components/Login/signup";
@@ -11,9 +11,15 @@ import AssetModelViewer from "./Components/Admin/AssetModelViewer/assetModelView
 import { UserContext } from "./Providers/UserProviders";
 
 export default function Routes() {
-    const { isAdmin } = useContext(UserContext);
+    const { isLoading, user } = useContext(UserContext);
 
-    return isAdmin ? (
+    useEffect(() => {
+        if (isLoading) {
+            return;
+        }
+    }, [isLoading]);
+
+    return user ? (
         <Switch>
             <Route exact path="/admin" component={Admin} />
             <Route
