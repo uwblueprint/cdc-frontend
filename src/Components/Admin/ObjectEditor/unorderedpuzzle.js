@@ -140,7 +140,7 @@ export default function UnorderedPuzzle(props) {
                             variant="h5"
                             className={classes.text}
                         >
-                            Upload Image #{index + 1}, Cur is {curIndex}
+                            Upload Image #{index + 1}
                         </Typography>
                         {item.imageSrc ? (
                             <div>

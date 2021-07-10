@@ -143,6 +143,19 @@ export default function ObjectEditor({
         }
     };
 
+    const selectPuzzleImages = (obj) => {
+        if (obj) {
+            const images = [];
+            for (let i = 0; i < obj.value; i++) {
+                const tempImage = { xTarget: 0, yTarget: 0, imageSrc: "" };
+                images.push(tempImage);
+            }
+            const animCopy = animationsJson;
+            animCopy.blackboardData.jsonData.images = images;
+            setAnimationsJson(animCopy);
+        }
+    };
+
     const saveTexts = (texts) => {
         const animCopy = animationsJson;
         animCopy.blackboardData.jsonData.data = texts;
@@ -290,7 +303,24 @@ export default function ObjectEditor({
                     src={animationsJson.blackboardData.jsonData.imageSrc}
                 />
             ) : null}
-            {isInteractable && puzzleType === "unordered-puzzle" ? (
+            {isInteractable &&
+            puzzleType === "unordered-puzzle" &&
+            !animationsJson.blackboardData.jsonData.images ? (
+                <Select
+                    options={[
+                        { value: 2, label: "2" },
+                        { value: 3, label: "3" },
+                        { value: 4, label: "4" },
+                        { value: 5, label: "5" },
+                    ]}
+                    placeholder="Select number of images..."
+                    searchable={false}
+                    onChange={selectPuzzleImages}
+                />
+            ) : null}
+            {isInteractable &&
+            puzzleType === "unordered-puzzle" &&
+            animationsJson.blackboardData.jsonData.images ? (
                 <UnorderedPuzzle
                     saveImageN={saveImageN}
                     images={animationsJson.blackboardData.jsonData.images}
