@@ -13,6 +13,7 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import { fileToByteArray } from "../../../lib/s3Utility";
+import FormHelperText from "@material-ui/core/FormHelperText";
 
 const useStyles = makeStyles((theme) => ({
     textField: {
@@ -43,29 +44,43 @@ export default function UploadAssetModal({
     const [objectType, setObjectType] = React.useState(ObjectTypes.NONE);
     const [fileType, setFileType] = React.useState(FileTypes.NONE);
     const [assetByteArray, setAssetByteArray] = React.useState(null);
+    const [fileName, setFileName] = React.useState("");
     const [errors, setErrors] = React.useState({
         name: "",
-        objectType: "Object type must be either object or background",
-        fileType: "File type must be either GLTF or GLB",
-        assetBlob: "",
+        objectType: "Select an object type",
+        fileType: "Select a file type",
+        assetBlob: "Upload a file",
     });
 
+    const clearFields = () => {
+        setAssetName("");
+        setObjectType(ObjectTypes.NONE);
+        setFileType(FileTypes.NONE);
+        setAssetByteArray(null);
+        setErrors({
+            name: "",
+            objectType: "Select an object type",
+            fileType: "Select a file type",
+            assetBlob: "Upload a file",
+        });
+    };
+
     const handleAssetNameChange = (event) => {
-        setAssetName(event.target.value);
-        setErrors({ name: "" });
-        const reg = new RegExp(/^[a-zA-Z0-9 _-]{1,50}$/).test(
-            event.target.value
-        );
+        const response = event.target.value;
+        setAssetName(response);
+        setErrors({ ...errors, name: "" });
+        const reg = new RegExp(/^[a-zA-Z0-9 _-]{1,50}$/).test(response);
         if (!reg) {
             setErrors({
+                ...errors,
                 name:
-                    "Only characters allowed are alphanumeric (a-z, A-Z, 0-9), dashes (- and _), and spaces",
+                    "1-50 characters allowed (alphanumeric, dashes, or spaces)",
             });
         }
     };
 
     const handleObjectTypeChange = (event) => {
-        setErrors({ objectType: "" });
+        setErrors({ ...errors, objectType: "" });
 
         switch (event.target.value) {
             case ObjectTypes.OBJECT:
@@ -77,6 +92,7 @@ export default function UploadAssetModal({
             default:
                 setObjectType(ObjectTypes.NONE);
                 setErrors({
+                    ...errors,
                     objectType:
                         "Object type must be either object or background",
                 });
@@ -84,7 +100,7 @@ export default function UploadAssetModal({
     };
 
     const handleFileTypeChange = (event) => {
-        setErrors({ fileType: "" });
+        setErrors({ ...errors, fileType: "" });
 
         switch (event.target.value) {
             case FileTypes.GLTF:
@@ -96,31 +112,38 @@ export default function UploadAssetModal({
             default:
                 setFileType(FileTypes.NONE);
                 setErrors({
+                    ...errors,
                     fileType: "File type must be either GLTF or GLB",
                 });
         }
     };
 
     const handleUploadFileChange = (event) => {
+        setErrors({ ...errors, assetBlob: "" });
         if (event.target.files && event.target.files[0]) {
             const file = event.target.files[0];
             fileToByteArray(file, setAssetByteArray);
+
+            const name = file.name;
+            const lastDot = name.lastIndexOf(".");
+            const fileName = name.substring(0, lastDot);
+            setFileName(fileName);
         }
     };
 
-    const handleModalSubmitClick = () => {
-        const error = Boolean(
-            errors
-                ? errors.assetName ||
-                      errors.objectType ||
-                      errors.fileType ||
-                      errors.assetBlob
-                : false
-        );
+    const handleModalSubmitClick = async () => {
+        await handleSubmit(assetName, fileType, objectType, assetByteArray);
+        clearFields();
+    };
 
-        if (!error) {
-            handleSubmit(assetName, fileType, objectType, assetByteArray);
-        }
+    const isValidInput = () => {
+        return (
+            errors.name === "" &&
+            errors.objectType === "" &&
+            errors.fileType === "" &&
+            errors.assetBlob === "" &&
+            assetName.length > 0
+        );
     };
 
     return (
@@ -166,6 +189,10 @@ export default function UploadAssetModal({
                             </MenuItem>
                         </Select>
                     </FormControl>
+                    <FormHelperText>
+                        {" "}
+                        {errors.objectType ? errors.objectType : ""}{" "}
+                    </FormHelperText>
                 </div>
                 <div>
                     <FormControl
@@ -189,6 +216,10 @@ export default function UploadAssetModal({
                             </MenuItem>
                         </Select>
                     </FormControl>
+                    <FormHelperText>
+                        {" "}
+                        {errors.fileType ? errors.fileType : ""}{" "}
+                    </FormHelperText>
                 </div>
                 <div>
                     <Typography
@@ -215,11 +246,22 @@ export default function UploadAssetModal({
                             Upload
                         </Button>
                     </label>
+                    <FormHelperText>
+                        {" "}
+                        {errors.assetBlob
+                            ? errors.assetBlob
+                            : "File uploaded: " + fileName}{" "}
+                    </FormHelperText>
                 </div>
             </DialogContent>
             <DialogActions className={classes.buttonContainer}>
                 <Button onClick={handleModalClose}> Cancel </Button>
-                <Button onClick={handleModalSubmitClick}>{"Create"}</Button>
+                <Button
+                    onClick={handleModalSubmitClick}
+                    disabled={!isValidInput()}
+                >
+                    {"Create"}
+                </Button>
             </DialogActions>
         </Dialog>
     );

@@ -66,8 +66,11 @@ export default function Signup() {
                 password
             );
             user.sendEmailVerification().then(() => {
-                auth.signOut();
+                user.updateProfile({ displayName }).then(() => {
+                    auth.signOut();
+                });
             });
+            // Don't need the below line any more, will leave it for now, until we refactor out firebase user
             generateUserDocument(user, { displayName });
             history.push("/login");
         } catch (error) {

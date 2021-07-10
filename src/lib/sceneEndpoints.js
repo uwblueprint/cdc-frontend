@@ -81,3 +81,18 @@ export const deleteScene = async (id, handleError) => {
         throw error;
     }
 };
+
+export const duplicateScene = async (id, handleError) => {
+    try {
+        const response = await httpPost(
+            baseEndpoint + `scene/${id}/duplicate`,
+            {
+                id,
+            }
+        );
+        return response.data;
+    } catch (error) {
+        handleError(error);
+        throw error;
+    }
+};
