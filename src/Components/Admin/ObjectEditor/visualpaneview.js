@@ -99,7 +99,7 @@ export default function VisualPaneView(props) {
     return (
         <div>
             <Typography component="div" variant="h5" className={classes.text}>
-                Upload Image {imageByteArray?.length}
+                Upload Image
             </Typography>
             {imageSrc ? (
                 <div>

@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useErrorHandler } from "react-error-boundary";
 import Select from "react-select";
-import TextPaneView from "../ObjectEditor/textpaneview";
 import { Button, IconButton } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import { DeleteForever } from "@material-ui/icons";
+import TextPaneView from "../ObjectEditor/textpaneview";
 import VisualPaneView from "../ObjectEditor/visualpaneview";
+import UnorderedPuzzle from "../ObjectEditor/unorderedpuzzle";
 
 import { getPuzzle, editPuzzle } from "../../../lib/puzzleEndpoints";
 
@@ -73,6 +74,7 @@ export default function ObjectEditor({
         { value: "visual-pane", label: "Visual Puzzle" },
         { value: "jigsaw-puzzle", label: "Jigsaw Puzzle" },
         { value: "ordered-puzzle", label: "Ordered Puzzle" },
+        { value: "unordered-puzzle", label: "Unordered Puzzle" },
     ];
 
     useEffect(() => {
@@ -86,6 +88,16 @@ export default function ObjectEditor({
                 setPuzzleType(
                     data.animations_json.blackboardData.componentType
                 );
+                if (
+                    data.animations_json.blackboardData.componentType ===
+                    "ordered-puzzle"
+                ) {
+                    if (
+                        !data.animations_json.blackboardData.jsonData.useTargets
+                    ) {
+                        setPuzzleType("unordered-puzzle");
+                    }
+                }
                 setIsInteractable(data.is_interactable);
                 if (data.animations_json.blackboardData.blackboardText) {
                     setHeader(
@@ -116,6 +128,15 @@ export default function ObjectEditor({
                 } else if (obj.value === "visual-pane") {
                     animCopy.blackboardData.jsonData.position = [0, 0, 0];
                     animCopy.blackboardData.jsonData.scaleBy = 10;
+                } else if (obj.value === "unordered-puzzle") {
+                    animCopy.blackboardData.componentType = "ordered-puzzle";
+                    animCopy.blackboardData.jsonData.useTargets = false;
+                    animCopy.blackboardData.jsonData.randomizePos = true;
+                    animCopy.blackboardData.draggable = true;
+                } else if (obj.value === "ordered-puzzle") {
+                    animCopy.blackboardData.jsonData.useTargets = true;
+                    animCopy.blackboardData.jsonData.randomizePos = true;
+                    animCopy.blackboardData.draggable = true;
                 }
                 setAnimationsJson(animCopy);
             }
@@ -139,6 +160,14 @@ export default function ObjectEditor({
         animCopy.blackboardData.jsonData.caption = caption;
         animCopy.blackboardData.jsonData.imageSrc = s3Key;
         setAnimationsJson(animCopy);
+    };
+
+    const saveImageN = (index, s3Key) => {
+        const animCopy = animationsJson;
+        animCopy.blackboardData.jsonData.images[index].imageSrc = s3Key;
+        setAnimationsJson(animCopy);
+        console.log(index);
+        console.log(animCopy);
     };
 
     const handleSave = () => {
@@ -261,6 +290,12 @@ export default function ObjectEditor({
                             : ""
                     }
                     src={animationsJson.blackboardData.jsonData.imageSrc}
+                />
+            ) : null}
+            {isInteractable && puzzleType === "unordered-puzzle" ? (
+                <UnorderedPuzzle
+                    saveImageN={saveImageN}
+                    images={animationsJson.blackboardData.jsonData.images}
                 />
             ) : null}
             {!isInteractable || puzzleType !== "" ? (
