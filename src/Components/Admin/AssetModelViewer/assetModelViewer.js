@@ -100,26 +100,26 @@ export default function AssetModelViewer({
             }
         };
 
+        const takeAssetScreenshot = async () => {
+            const blob = await modelViewerRef.current.toBlob();
+
+            const response = await createPresignedLinkAndUploadS3(
+                {
+                    file_type: "png",
+                    type: "image",
+                    file_content: blob,
+                },
+                handleError,
+                true
+            );
+
+            editAssetScreenshot(assetId, response.data.s3_key, handleError);
+        };
+
         if (assetId) {
             getObjectAsset();
         }
-    }, [assetId, handleError, modelViewerRef, takeAssetScreenshot]);
-
-    const takeAssetScreenshot = async () => {
-        const blob = await modelViewerRef.current.toBlob();
-
-        const response = await createPresignedLinkAndUploadS3(
-            {
-                file_type: "png",
-                type: "image",
-                file_content: blob,
-            },
-            handleError,
-            true
-        );
-
-        editAssetScreenshot(assetId, response.data.s3_key, handleError);
-    };
+    }, [assetId, handleError, modelViewerRef]);
 
     const handleNameChange = (event) => {
         const reg = new RegExp(/^[a-zA-Z0-9 _-]{1,50}$/).test(
