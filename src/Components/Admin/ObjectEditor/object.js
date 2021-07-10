@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useErrorHandler } from "react-error-boundary";
 import Select from "react-select";
 import TextPaneView from "../ObjectEditor/textpaneview";
+import VisualPaneView from "../ObjectEditor/visualpaneview";
 import { Button } from "@material-ui/core";
 
 import { getPuzzle, editPuzzle } from "../../../lib/puzzleEndpoints";
@@ -104,6 +105,9 @@ export default function ObjectEditor({
                     animCopy.blackboardData.jsonData.currPosition = 0;
                 } else if (obj.value === "rotation-controls") {
                     animCopy.blackboardData.jsonData.position = [0, 0, 5];
+                } else if (obj.value === "visual-pane") {
+                    animCopy.blackboardData.jsonData.position = [0, 0, 0];
+                    animCopy.blackboardData.jsonData.scaleBy = 10;
                 }
                 setAnimationsJson(animCopy);
             }
@@ -113,6 +117,19 @@ export default function ObjectEditor({
     const saveTexts = (texts) => {
         const animCopy = animationsJson;
         animCopy.blackboardData.jsonData.data = texts;
+        setAnimationsJson(animCopy);
+    };
+
+    const saveCaption = (caption) => {
+        const animCopy = animationsJson;
+        animCopy.blackboardData.jsonData.caption = caption;
+        setAnimationsJson(animCopy);
+    };
+
+    const saveImage = (caption, s3Key) => {
+        const animCopy = animationsJson;
+        animCopy.blackboardData.jsonData.caption = caption;
+        animCopy.blackboardData.jsonData.imageSrc = s3Key;
         setAnimationsJson(animCopy);
     };
 
@@ -175,6 +192,18 @@ export default function ObjectEditor({
                     saveTexts={saveTexts}
                     texts={animationsJson.blackboardData.jsonData.data}
                     classes={classes}
+                />
+            ) : null}
+            {isInteractable && puzzleType === "visual-pane" ? (
+                <VisualPaneView
+                    saveImage={saveImage}
+                    saveCaption={saveCaption}
+                    caption={
+                        animationsJson.blackboardData.jsonData.caption
+                            ? animationsJson.blackboardData.jsonData.caption
+                            : ""
+                    }
+                    src={animationsJson.blackboardData.jsonData.imageSrc}
                 />
             ) : null}
             {!isInteractable || puzzleType !== "" ? (
