@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "@google/model-viewer";
 import { makeStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -7,7 +7,11 @@ import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-import { getAsset, editAsset } from "../../../lib/assetEndpoints";
+import {
+    getAsset,
+    editAsset,
+    editAssetScreenshot,
+} from "../../../lib/assetEndpoints";
 import { useErrorHandler } from "react-error-boundary";
 import SaveIcon from "@material-ui/icons/Save";
 import Select from "@material-ui/core/Select";
@@ -15,6 +19,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import { ObjectTypes } from "./objectTypes.ts";
+import { createPresignedLinkAndUploadS3 } from "../../../lib/s3Utility";
 
 const drawerWidth = 17;
 
@@ -62,6 +67,8 @@ export default function AssetModelViewer({
     const [buttonText, setButtonText] = useState("Save");
     const [assetLink, setAssetLink] = useState("");
 
+    const modelViewerRef = useRef(null);
+
     useEffect(() => {
         const getObjectAsset = async () => {
             const data = await getAsset(assetId, handleError);
@@ -85,12 +92,34 @@ export default function AssetModelViewer({
                 process.env.REACT_APP_ADMIN_ASSET_PREFIX + data.s3_key
             );
             setAsset(data);
+
+            if (data.screenshot_url === "") {
+                modelViewerRef.current.addEventListener("load", () => {
+                    takeAssetScreenshot();
+                });
+            }
+        };
+
+        const takeAssetScreenshot = async () => {
+            const blob = await modelViewerRef.current.toBlob();
+
+            const response = await createPresignedLinkAndUploadS3(
+                {
+                    file_type: "png",
+                    type: "image",
+                    file_content: blob,
+                },
+                handleError,
+                true
+            );
+
+            editAssetScreenshot(assetId, response.data.s3_key, handleError);
         };
 
         if (assetId) {
             getObjectAsset();
         }
-    }, [assetId, handleError]);
+    }, [assetId, handleError, modelViewerRef]);
 
     const handleNameChange = (event) => {
         const reg = new RegExp(/^[a-zA-Z0-9 _-]{1,50}$/).test(
@@ -207,6 +236,7 @@ export default function AssetModelViewer({
             <main className={classes.content}>
                 <div className={classes.toolbar} />
                 <model-viewer
+                    ref={modelViewerRef}
                     src={assetLink}
                     alt="A 3D model of an astronaut"
                     ar
