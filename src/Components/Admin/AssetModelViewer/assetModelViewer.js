@@ -94,7 +94,7 @@ export default function AssetModelViewer({
             setAsset(data);
 
             if (data.screenshot_url === "") {
-                modelViewerRef.current.addEventListener("load", (e) => {
+                modelViewerRef.current.addEventListener("load", () => {
                     takeAssetScreenshot();
                 });
             }
@@ -103,7 +103,7 @@ export default function AssetModelViewer({
         if (assetId) {
             getObjectAsset();
         }
-    }, [assetId, handleError, modelViewerRef]);
+    }, [assetId, handleError, modelViewerRef, takeAssetScreenshot]);
 
     const takeAssetScreenshot = async () => {
         const blob = await modelViewerRef.current.toBlob();
