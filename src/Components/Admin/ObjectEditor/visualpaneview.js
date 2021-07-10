@@ -105,7 +105,7 @@ export default function VisualPaneView(props) {
                 <div>
                     <Typography
                         component="div"
-                        variant="h7"
+                        variant="h6"
                         className={classes.text}
                     >
                         Image Preview:

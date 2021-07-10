@@ -69,12 +69,11 @@ export default function UnorderedPuzzle(props) {
         if (imageByteArray !== null) {
             uploadImage();
         }
-    }, [name, type, imageByteArray, curIndex, props, handleError]);
+    }, [name, type, imageByteArray, images, curIndex, props, handleError]);
 
     const handleUploadFileChange = async (event, index) => {
         if (event.target.files && event.target.files[0]) {
             setCurIndex(index);
-            console.log("index is " + index);
             const file = event.target.files[0];
             await fileToByteArray(file, setImageByteArray);
             setName(file.name);
@@ -147,7 +146,7 @@ export default function UnorderedPuzzle(props) {
                             <div>
                                 <Typography
                                     component="div"
-                                    variant="h7"
+                                    variant="h6"
                                     className={classes.text}
                                 >
                                     Image Preview:
@@ -163,11 +162,11 @@ export default function UnorderedPuzzle(props) {
                         <input
                             accept=".jpg,.jpeg,.png"
                             className={classes.input}
-                            id="contained-button-file"
+                            id={"contained-button-file" + index}
                             type="file"
                             onChange={(e) => handleUploadFileChange(e, index)}
                         />
-                        <label htmlFor="contained-button-file">
+                        <label htmlFor={"contained-button-file" + index}>
                             <Button
                                 className={classes.uploadButton}
                                 variant="contained"

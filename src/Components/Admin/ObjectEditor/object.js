@@ -166,8 +166,6 @@ export default function ObjectEditor({
         const animCopy = animationsJson;
         animCopy.blackboardData.jsonData.images[index].imageSrc = s3Key;
         setAnimationsJson(animCopy);
-        console.log(index);
-        console.log(animCopy);
     };
 
     const handleSave = () => {
