@@ -70,7 +70,6 @@ export default function AssetModelViewer({
     const modelViewerRef = useRef(null);
 
     useEffect(() => {
-        console.log(modelViewerRef);
         const getObjectAsset = async () => {
             const data = await getAsset(assetId, handleError);
             setName(data.name);
@@ -107,10 +106,8 @@ export default function AssetModelViewer({
     }, [assetId, handleError, modelViewerRef]);
 
     const takeAssetScreenshot = async () => {
-        console.log("Model Viewer loaded");
         const blob = await modelViewerRef.current.toBlob();
 
-        console.log(blob);
         const response = await createPresignedLinkAndUploadS3(
             {
                 file_type: "png",
@@ -121,15 +118,7 @@ export default function AssetModelViewer({
             true
         );
 
-        console.log(response);
-        const responseAssetScreenshotUpdate = await editAssetScreenshot(
-            assetId,
-            response.data.s3_key,
-            handleError
-        );
-        setAssetLink(responseAssetScreenshotUpdate.data.screenshot_url);
-        console.log(responseAssetScreenshotUpdate.data.screenshot_url);
-        console.log(assetLink);
+        editAssetScreenshot(assetId, response.data.s3_key, handleError);
     };
 
     const handleNameChange = (event) => {
@@ -144,7 +133,6 @@ export default function AssetModelViewer({
             setNameError("");
         }
 
-        console.log(modelViewerRef.current.toBlob());
         setName(event.target.value);
     };
 
