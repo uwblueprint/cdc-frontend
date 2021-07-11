@@ -12,7 +12,7 @@ import empty from "is-empty";
 import { AccountCircle } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
 
-import { auth, generateUserDocument } from "../../firebaseCredentials.js";
+import { auth } from "../../firebaseCredentials.js";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -70,8 +70,6 @@ export default function Signup() {
                     auth.signOut();
                 });
             });
-            // Don't need the below line any more, will leave it for now, until we refactor out firebase user
-            generateUserDocument(user, { displayName });
             history.push("/login");
         } catch (error) {
             const errorCode = error.code;
