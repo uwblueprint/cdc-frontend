@@ -15,7 +15,6 @@ function App() {
             <ThemeProvider theme={Theme}>
                 <UserProvider>
                     <div className="App container py-3">
-                        <Navbar />
                         <Routes />
                     </div>
                 </UserProvider>

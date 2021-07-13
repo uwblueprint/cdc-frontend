@@ -5,6 +5,7 @@ import { useErrorHandler } from "react-error-boundary";
 
 import Navbar from "../navbar";
 import EnvironmentBar from "./environmentBar";
+import Typography from "@material-ui/core/Typography";
 import SceneCard from "./sceneCard";
 import SceneModal from "./sceneModal";
 import TemplateModal from "./templateModal";
@@ -19,6 +20,14 @@ import {
     deleteScene,
     duplicateScene,
 } from "../../../lib/sceneEndpoints";
+
+import AppBar from "@material-ui/core/AppBar";
+import InputBase from "@material-ui/core/InputBase";
+import SearchIcon from "@material-ui/icons/Search";
+import "../../../styles/index.css";
+import { ThemeProvider } from "@material-ui/core/styles";
+import { Theme } from "../../../styles/Theme";
+import { Colours } from "../../../styles/Constants.ts";
 
 const useStyles = makeStyles((theme) => ({
     page: {
@@ -63,6 +72,38 @@ const useStyles = makeStyles((theme) => ({
         padding: "16px 12px",
         backgroundColor: "#E2E5ED",
         borderRadius: "12px",
+    },
+    search: {
+        position: "absolute",
+        borderRadius: "4px",
+        backgroundColor: Colours.White,
+        marginLeft: "431px",
+        height: "37px",
+        alignItems: "center",
+        [theme.breakpoints.up("sm")]: {
+            marginLeft: theme.spacing(3),
+            width: "auto",
+        },
+    },
+    searchIcon: {
+        padding: theme.spacing(0, 2),
+        height: "100%",
+        position: "absolute",
+        pointerEvents: "none",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        color: Colours.Grey6,
+    },
+    inputRoot: {
+        color: Colours.Grey6,
+    },
+    inputInput: {
+        padding: theme.spacing(1, 1, 1, 0),
+        paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+        [theme.breakpoints.up("md")]: {
+            width: "579px",
+        },
     },
 }));
 
@@ -290,12 +331,27 @@ export default function EnvironmentEditor({
 
     return (
         <div>
-            <Navbar home />
             <div className={classes.page}>
+                <Navbar home color="secondary" />
                 <EnvironmentBar
                     onCreateButtonClick={onCreateButtonClick}
                     onTemplateButtonClick={onTemplateButtonClick}
-                />
+                    isEnvironment
+                >
+                    <div className={classes.search}>
+                        <div className={classes.searchIcon}>
+                            <SearchIcon />
+                        </div>
+                        <InputBase
+                            placeholder="Search for objects and environments"
+                            classes={{
+                                root: classes.inputRoot,
+                                input: classes.inputInput,
+                            }}
+                            inputProps={{ "aria-label": "search" }}
+                        />
+                    </div>
+                </EnvironmentBar>
             </div>
             <div className={classes.container}>
                 {scenes !== undefined && scenes.length !== 0 ? (

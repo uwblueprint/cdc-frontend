@@ -1,7 +1,10 @@
-import React, { useContext } from "react";
+import React, { Fragment, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
+import InputBase from "@material-ui/core/InputBase";
+import Typography from "@material-ui/core/Typography";
+import SearchIcon from "@material-ui/icons/Search";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import AccountCircle from "@material-ui/icons/AccountCircle";
@@ -14,20 +17,70 @@ import { httpGet } from "../../lib/dataAccess";
 import { auth } from "../../firebaseCredentials";
 import { UserContext } from "../../Providers/UserProviders";
 
-const useStyles = makeStyles(() => ({
+import "../../styles/index.css";
+import { ThemeProvider } from "@material-ui/core/styles";
+import { Theme } from "../../styles/Theme";
+import { Colours } from "../../styles/Constants.ts";
+
+const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
+        color: Colours.Grey7,
     },
     profileEnd: {
         marginLeft: "auto",
     },
     menu: {
-        marginTop: "5px",
-        marginRight: "5px",
+        marginTop: "0px",
+        marginRight: "0px",
+    },
+    toolbar: {
+        display: "flex",
+        justifyContent: "center",
+    },
+    roomName: {
+        position: "absolute",
+        alignItems: "center",
+        [theme.breakpoints.up("sm")]: {
+            marginLeft: theme.spacing(3),
+            width: "auto",
+        },
+    },
+    search: {
+        position: "absolute",
+        borderRadius: "4px",
+        backgroundColor: Colours.White,
+        marginLeft: "431px",
+        height: "37px",
+        alignItems: "center",
+        [theme.breakpoints.up("sm")]: {
+            marginLeft: theme.spacing(3),
+            width: "auto",
+        },
+    },
+    searchIcon: {
+        padding: theme.spacing(0, 2),
+        height: "100%",
+        position: "absolute",
+        pointerEvents: "none",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        color: Colours.Grey6,
+    },
+    inputRoot: {
+        color: Colours.Grey6,
+    },
+    inputInput: {
+        padding: theme.spacing(1, 1, 1, 0),
+        paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+        [theme.breakpoints.up("md")]: {
+            width: "579px",
+        },
     },
 }));
 
-export default function Navbar({ home }) {
+export default function Navbar({ home, search, color }) {
     const classes = useStyles();
     const history = useHistory();
     const handleError = useErrorHandler();
@@ -65,12 +118,35 @@ export default function Navbar({ home }) {
 
     return (
         <div className={classes.root}>
-            <AppBar position="fixed">
-                <Toolbar style={{ display: "flex" }}>
+            <AppBar position="fixed" color={color}>
+                <Toolbar className={classes.toolbar}>
                     {home && (
-                        <IconButton onClick={handleHomeClick} color="inherit">
-                            <HomeIcon />
-                        </IconButton>
+                        <Fragment>
+                            <IconButton
+                                onClick={handleHomeClick}
+                                color="inherit"
+                            >
+                                <HomeIcon />
+                            </IconButton>
+                            <Typography className={classes.roomName}>
+                                Escape Room 1
+                            </Typography>
+                        </Fragment>
+                    )}
+                    {search && (
+                        <div className={classes.search}>
+                            <div className={classes.searchIcon}>
+                                <SearchIcon />
+                            </div>
+                            <InputBase
+                                placeholder="Search for objects and environments"
+                                classes={{
+                                    root: classes.inputRoot,
+                                    input: classes.inputInput,
+                                }}
+                                inputProps={{ "aria-label": "search" }}
+                            />
+                        </div>
                     )}
                     {isAdmin && (
                         <div className={classes.profileEnd}>
@@ -99,14 +175,17 @@ export default function Navbar({ home }) {
                                 onClose={handleClose}
                                 className={classes.menu}
                             >
-                                <MenuItem onClick={handleClose}>
-                                    Documentation
+                                <MenuItem
+                                    className={classes.Grey8}
+                                    onClick={handleClose}
+                                >
+                                    [Name]
                                 </MenuItem>
                                 <MenuItem onClick={handleClose}>
-                                    Settings
+                                    Account Settings
                                 </MenuItem>
                                 <MenuItem onClick={handleLogout}>
-                                    Logout
+                                    Log out
                                 </MenuItem>
                             </Menu>
                         </div>
@@ -116,3 +195,20 @@ export default function Navbar({ home }) {
         </div>
     );
 }
+
+//className={classes.profileEnd}
+/*
+<div className={classes.search}>
+                            <div className={classes.searchIcon}>
+                                <SearchIcon />
+                            </div>
+                            <InputBase
+                                placeholder="Search for objects and environments"
+                                classes={{
+                                    root: classes.inputRoot,
+                                    input: classes.inputInput,
+                                }}
+                                inputProps={{ "aria-label": "search" }}
+                            />
+                        </div>
+*/
