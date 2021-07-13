@@ -18,8 +18,6 @@ import { auth } from "../../firebaseCredentials";
 import { UserContext } from "../../Providers/UserProviders";
 
 import "../../styles/index.css";
-import { ThemeProvider } from "@material-ui/core/styles";
-import { Theme } from "../../styles/Theme";
 import { Colours } from "../../styles/Constants.ts";
 
 const useStyles = makeStyles((theme) => ({

@@ -5,7 +5,6 @@ import { useErrorHandler } from "react-error-boundary";
 
 import Navbar from "../navbar";
 import EnvironmentBar from "./environmentBar";
-import Typography from "@material-ui/core/Typography";
 import SceneCard from "./sceneCard";
 import SceneModal from "./sceneModal";
 import TemplateModal from "./templateModal";
@@ -21,12 +20,9 @@ import {
     duplicateScene,
 } from "../../../lib/sceneEndpoints";
 
-import AppBar from "@material-ui/core/AppBar";
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
 import "../../../styles/index.css";
-import { ThemeProvider } from "@material-ui/core/styles";
-import { Theme } from "../../../styles/Theme";
 import { Colours } from "../../../styles/Constants.ts";
 
 const useStyles = makeStyles((theme) => ({
