@@ -165,8 +165,8 @@ export default function Signup() {
                         Create Account
                     </Button>
                     <Grid container>
-                        <Grid item xs>
-                            <Link href="/login" variant="body2">
+                        <Grid item xs style={{ textAlign: "center" }}>
+                            <Link href="/login" style={{ fontSize: 14 }}>
                                 Already have an account? Sign in
                             </Link>
                         </Grid>
