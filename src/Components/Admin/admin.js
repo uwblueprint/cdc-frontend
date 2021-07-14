@@ -12,6 +12,7 @@ import IconButton from "@material-ui/core/IconButton";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 
+import { Colours } from "../../styles/Constants.ts";
 import EscapeRooms from "./Rooms/rooms.js";
 import Scenes from "./Scenes/scenes.js";
 import Assets from "./Assets/assets.js";
@@ -100,12 +101,15 @@ const useStyles = makeStyles((theme) => ({
     addButton: {
         marginTop: theme.spacing(3),
         marginRight: theme.spacing(1),
-        width: "50px",
-        height: "50px",
-        background: "#B9BECE",
+        width: "42px",
+        height: "42px",
+        background: "#EC4E55",
         borderRadius: "24.5px",
         color: "white",
         float: "right",
+        "&:hover": {
+            background: "#FFC2C7",
+        },
     },
     tabBackground: {
         background: "#E4EBFF",
@@ -113,6 +117,23 @@ const useStyles = makeStyles((theme) => ({
         borderBottomRightRadius: "32px",
         borderBottomLeftRadius: "32px",
         borderTopRightRadius: "32px",
+    },
+    menuItemTitle: {
+        marginTop: 6,
+        marginBottom: 6,
+        marginLeft: 16,
+        color: Colours.Grey5,
+        fontWeight: 600,
+    },
+    menuItem: {
+        "&:hover": {
+            background: Colours.MainRed1,
+            color: Colours.MainRed8,
+        },
+        "&:onclick": {
+            background: Colours.MainRed5,
+            color: Colours.White,
+        },
     },
 }));
 
@@ -331,31 +352,35 @@ export default function Admin() {
                         anchorEl={anchorEl}
                         anchorOrigin={{
                             vertical: "top",
-                            horizontal: "center",
+                            horizontal: -30,
                         }}
                         transformOrigin={{
-                            vertical: "top",
+                            vertical: 10,
                             horizontal: "center",
                         }}
+                        MenuListProps={{ disablePadding: true }}
                         keepMounted
                         open={open}
                         onClose={handleAddButtonClose}
                     >
-                        <MenuItem
-                            onClick={() => {
-                                setAnchorEl(null);
-                                setUploadAssetModalOpen(true);
-                            }}
-                        >
-                            New Object Asset
-                        </MenuItem>
+                        <p className={classes.menuItemTitle}>New</p>
                         <MenuItem
                             onClick={() => {
                                 setAnchorEl(null);
                                 setCreateModalOpen(true);
                             }}
+                            className={classes.menuItem}
                         >
-                            New Escape Room
+                            Escape Room
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setAnchorEl(null);
+                                setUploadAssetModalOpen(true);
+                            }}
+                            className={classes.menuItem}
+                        >
+                            Object Asset
                         </MenuItem>
                     </Menu>
                     <RoomModal
