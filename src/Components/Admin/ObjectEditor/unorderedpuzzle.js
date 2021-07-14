@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import Select from "react-select";
 import { useErrorHandler } from "react-error-boundary";
 import { Button } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
@@ -36,6 +37,20 @@ export default function UnorderedPuzzle(props) {
     const [uploaded, setUploaded] = React.useState(false);
     const [images, setImages] = React.useState(props.images);
     const [curIndex, setCurIndex] = React.useState(0);
+    const [imagesLen, setImagesLen] = React.useState(0);
+
+    const imagesLengthList = [
+        { value: 2, label: "2" },
+        { value: 3, label: "3" },
+        { value: 4, label: "4" },
+        { value: 5, label: "5" },
+    ];
+
+    const selectPuzzleImages = (obj) => {
+        if (obj) {
+            setImagesLen(obj.value);
+        }
+    };
 
     useEffect(() => {
         const handleUploadImageSubmit = async (
@@ -69,7 +84,34 @@ export default function UnorderedPuzzle(props) {
         if (imageByteArray !== null) {
             uploadImage();
         }
-    }, [name, type, imageByteArray, images, curIndex, props, handleError]);
+
+        const populateImages = async () => {
+            let newImages = [];
+            newImages = images;
+            while (imagesLen > newImages.length) {
+                const tempImage = { xTarget: 0, yTarget: 0, imageSrc: "" };
+                newImages.push(tempImage);
+            }
+            while (imagesLen < newImages.length) {
+                newImages.pop();
+            }
+            setImages(newImages);
+            setImagesLen(0);
+        };
+
+        if (imagesLen !== 0) {
+            populateImages();
+        }
+    }, [
+        name,
+        type,
+        imageByteArray,
+        images,
+        curIndex,
+        imagesLen,
+        props,
+        handleError,
+    ]);
 
     const handleUploadFileChange = async (event, index) => {
         if (event.target.files && event.target.files[0]) {
@@ -78,60 +120,21 @@ export default function UnorderedPuzzle(props) {
             await fileToByteArray(file, setImageByteArray);
             setName(file.name);
             setType(file.type.replace("image/", ""));
+            setImagesLen(images.length);
         }
     };
 
-    // const uploadImageHtml = (index) => {
-    //     return (
-    //         <div>
-    //             <Typography
-    //                 component="div"
-    //                 variant="h5"
-    //                 className={classes.text}
-    //             >
-    //                 Upload Image #{index + 1}, Cur is {curIndex}
-    //             </Typography>
-    //             {images[index].imageSrc ? (
-    //                 <div>
-    //                     <Typography
-    //                         component="div"
-    //                         variant="h7"
-    //                         className={classes.text}
-    //                     >
-    //                         Image Preview:
-    //                     </Typography>
-    //                     <img
-    //                         src={images[index].imageSrc}
-    //                         height={250}
-    //                         max-width={1000}
-    //                         object-fit={"contain"}
-    //                     ></img>
-    //                 </div>
-    //             ) : null}
-    //             <input
-    //                 accept=".jpg,.jpeg,.png"
-    //                 className={classes.input}
-    //                 id="contained-button-file"
-    //                 type="file"
-    //                 onChange={(e) => handleUploadFileChange(e, index)}
-    //             />
-    //             <label htmlFor="contained-button-file">
-    //                 <Button
-    //                     className={classes.uploadButton}
-    //                     variant="contained"
-    //                     color="primary"
-    //                     component="span"
-    //                 >
-    //                     Upload
-    //                 </Button>
-    //             </label>
-    //             {uploaded ? <div>{name} successfully uploaded</div> : null}
-    //         </div>
-    //     );
-    // };
-
     return (
         <div>
+            <Select
+                value={imagesLengthList.filter(
+                    (option) => option.value === images?.length
+                )}
+                options={imagesLengthList}
+                placeholder="Select number of images..."
+                searchable={false}
+                onChange={selectPuzzleImages}
+            />
             {images.map((item, index) => {
                 return (
                     <div key={index}>
