@@ -301,7 +301,20 @@ export default function ObjectEditor({
                 />
             ) : null}
             {isInteractable && puzzleType === "unordered-puzzle" ? (
-                <UnorderedPuzzle saveImageN={saveImageN} images={images} />
+                <UnorderedPuzzle
+                    saveImageN={saveImageN}
+                    images={images}
+                    isUnordered={true}
+                    imagesLen={0}
+                />
+            ) : null}
+            {isInteractable && puzzleType === "ordered-puzzle" ? (
+                <UnorderedPuzzle
+                    saveImageN={saveImageN}
+                    images={images}
+                    isUnordered={false}
+                    imagesLen={5}
+                />
             ) : null}
             {!isInteractable || puzzleType !== "" ? (
                 <div>

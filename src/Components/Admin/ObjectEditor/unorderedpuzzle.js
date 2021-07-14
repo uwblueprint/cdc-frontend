@@ -37,7 +37,8 @@ export default function UnorderedPuzzle(props) {
     const [uploaded, setUploaded] = React.useState(false);
     const [images, setImages] = React.useState(props.images);
     const [curIndex, setCurIndex] = React.useState(0);
-    const [imagesLen, setImagesLen] = React.useState(0);
+    const [imagesLen, setImagesLen] = React.useState(props.imagesLen);
+    const isUnordered = props.isUnordered;
 
     const imagesLengthList = [
         { value: 2, label: "2" },
@@ -127,15 +128,17 @@ export default function UnorderedPuzzle(props) {
 
     return (
         <div>
-            <Select
-                value={imagesLengthList.filter(
-                    (option) => option.value === images?.length
-                )}
-                options={imagesLengthList}
-                placeholder="Select number of images..."
-                searchable={false}
-                onChange={selectPuzzleImages}
-            />
+            {isUnordered ? (
+                <Select
+                    value={imagesLengthList.filter(
+                        (option) => option.value === images?.length
+                    )}
+                    options={imagesLengthList}
+                    placeholder="Select number of images..."
+                    searchable={false}
+                    onChange={selectPuzzleImages}
+                />
+            ) : null}
             {images.map((item, index) => {
                 return (
                     <div key={index}>
