@@ -38,6 +38,7 @@ export default function UnorderedPuzzle(props) {
     const [images, setImages] = React.useState(props.images);
     const [curIndex, setCurIndex] = React.useState(0);
     const [imagesLen, setImagesLen] = React.useState(0);
+    const [curImageSrc, setCurImageSrc] = React.useState(null);
 
     const imagesLengthList = [
         { value: 2, label: "2" },
@@ -71,6 +72,7 @@ export default function UnorderedPuzzle(props) {
             const imagePrefix = process.env.REACT_APP_ADMIN_ASSET_PREFIX;
             const imagesCopy = images;
             imagesCopy[curIndex].imageSrc = imagePrefix + response.data.s3_key;
+            setCurImageSrc(imagePrefix + response.data.s3_key);
             setImages(imagesCopy);
             props.saveImageN(curIndex, imagePrefix + response.data.s3_key);
         };
@@ -160,6 +162,11 @@ export default function UnorderedPuzzle(props) {
                                     max-width={1000}
                                     object-fit={"contain"}
                                 ></img>
+                            </div>
+                        ) : null}
+                        {index === curIndex ? (
+                            <div style={{ visibility: "hidden" }}>
+                                {curImageSrc}
                             </div>
                         ) : null}
                         <input
