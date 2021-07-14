@@ -5,7 +5,8 @@ const baseEndpoint = process.env.REACT_APP_ADMIN_BASE_ENDPOINT;
 
 export const createPresignedLinkAndUploadS3 = async (
     { file_type, type, file_content, s3Key = "" },
-    handleError
+    handleError,
+    isFileContentBlob = false
 ) => {
     // First, send a request to backend to get presigned link
     const response = await getPresignedLink(
@@ -23,8 +24,12 @@ export const createPresignedLinkAndUploadS3 = async (
         formData.append(key, response.data.fields[key]);
     });
 
-    const blob = new Blob([file_content], { type: file_type });
-    formData.append("file", blob);
+    if (!isFileContentBlob) {
+        const blob = new Blob([file_content], { type: file_type });
+        formData.append("file", blob);
+    } else {
+        formData.append("file", file_content);
+    }
 
     const endpoint = response.data.url;
 
@@ -40,7 +45,10 @@ export const createPresignedLinkAndUploadS3 = async (
     return response;
 };
 
-const getPresignedLink = async ({ type, extension, s3_key }, handleError) => {
+export const getPresignedLink = async (
+    { type, extension, s3_key },
+    handleError
+) => {
     try {
         const response = await httpPost(baseEndpoint + `upload`, {
             type,
@@ -54,7 +62,7 @@ const getPresignedLink = async ({ type, extension, s3_key }, handleError) => {
     }
 };
 
-const uploadAssetS3 = async ({ endpoint, formData }, handleError) => {
+export const uploadAssetS3 = async ({ endpoint, formData }, handleError) => {
     try {
         const response = await httpPostS3(endpoint, formData);
         return response;

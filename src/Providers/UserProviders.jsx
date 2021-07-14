@@ -1,45 +1,99 @@
-import React, { Component, createContext } from "react";
-import { auth, generateUserDocument } from "../firebaseCredentials.js";
+import React, { useEffect, useState, createContext } from "react";
+import { auth } from "../firebaseCredentials.js";
 import { httpGet } from "../lib/dataAccess";
 
 const baseEndpoint = process.env.REACT_APP_ADMIN_BASE_ENDPOINT;
 
-export const UserContext = createContext({ user: null });
-class UserProvider extends Component {
-    state = {
+export const UserContext = createContext();
+
+const isTokenExpired = (user) => {
+    const MILLISECONDS_PER_DAY = 24 * 3600 * 1000;
+    const NOW = new Date().getTime();
+
+    // Force user to relog in every 24 hours
+    return Number(user.toJSON().lastLoginAt) < NOW - MILLISECONDS_PER_DAY;
+};
+
+const AUTH_STATES = {
+    LOADING: "LOADING",
+    NOT_AUTHENTICATED: "NOT_AUTHENTICATED",
+    AUTHENTICATED: "AUTHENTICATED",
+};
+
+export default function UserProvider({ children }) {
+    const [authState, setAuthState] = useState({
         user: null,
-        isAdmin: false,
-    };
+        state: AUTH_STATES.LOADING,
+    });
 
-    componentDidMount = async () => {
-        auth.onAuthStateChanged(async (userAuth) => {
-            if (!userAuth) {
-                this.setState({ user: null });
-            }
-            if (userAuth && userAuth.emailVerified) {
-                const user = await generateUserDocument(userAuth);
-                this.setState({ user });
+    useEffect(() => {
+        async function setUser(user) {
+            //Set the state to loading by default
+            setAuthState({ state: AUTH_STATES.LOADING, user: null });
+
+            if (user == null) {
+                setAuthState({ state: AUTH_STATES.NOT_AUTHENTICATED, user });
+                return;
             }
 
-            // validate cookies are set appropriately on this user instance
-            try {
-                const response = await httpGet(baseEndpoint + "user_profile");
-                this.setState({ isAdmin: response.status === 200 });
-            } catch {
-                this.setState({ isAdmin: false });
+            if (isTokenExpired(user)) {
+                auth.signOut();
+                setAuthState({
+                    state: AUTH_STATES.NOT_AUTHENTICATED,
+                    user: null,
+                });
+                return;
             }
+
+            const response = await httpGet(baseEndpoint + "user_profile");
+
+            if (!response) {
+                setAuthState({
+                    state: AUTH_STATES.NOT_AUTHENTICATED,
+                    user: null,
+                });
+                return;
+            }
+
+            setAuthState({
+                state: AUTH_STATES.AUTHENTICATED,
+                user: response.data,
+            });
+        }
+
+        const unsubscribe = auth.onAuthStateChanged(setUser);
+
+        return () => {
+            unsubscribe();
+        };
+    }, []);
+
+    async function reloadUser() {
+        const response = await httpGet(baseEndpoint + "user_profile");
+
+        if (!response) {
+            setAuthState({
+                state: AUTH_STATES.NOT_AUTHENTICATED,
+                user: null,
+            });
+            return;
+        }
+
+        setAuthState({
+            state: AUTH_STATES.AUTHENTICATED,
+            user: response.data,
         });
-    };
-
-    render() {
-        return (
-            <UserContext.Provider
-                value={{ user: this.state.user, isAdmin: this.state.isAdmin }}
-            >
-                {this.props.children}
-            </UserContext.Provider>
-        );
     }
-}
 
-export default UserProvider;
+    return (
+        <UserContext.Provider
+            value={{
+                isLoading: authState.state === AUTH_STATES.LOADING,
+                user: authState.user ?? null,
+                reloadUser: reloadUser,
+            }}
+        >
+            {children}
+        </UserContext.Provider>
+    );
+}

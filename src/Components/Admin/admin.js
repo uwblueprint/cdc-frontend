@@ -316,7 +316,7 @@ export default function Admin() {
                     Admin Dashboard 😎
                 </Typography>
                 <Typography component="div" variant="h6">
-                    Welcome {user?.displayName}
+                    Welcome {user.display_name}
                 </Typography>
 
                 <div className={classes.root}>
