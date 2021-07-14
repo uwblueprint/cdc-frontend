@@ -97,6 +97,7 @@ export default function UnorderedPuzzle(props) {
             }
             setImages(newImages);
             setImagesLen(0);
+            setUploaded(false);
         };
 
         if (imagesLen !== 0) {
