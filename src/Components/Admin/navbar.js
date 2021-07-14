@@ -193,20 +193,3 @@ export default function Navbar({ home, search, color }) {
         </div>
     );
 }
-
-//className={classes.profileEnd}
-/*
-<div className={classes.search}>
-                            <div className={classes.searchIcon}>
-                                <SearchIcon />
-                            </div>
-                            <InputBase
-                                placeholder="Search for objects and environments"
-                                classes={{
-                                    root: classes.inputRoot,
-                                    input: classes.inputInput,
-                                }}
-                                inputProps={{ "aria-label": "search" }}
-                            />
-                        </div>
-*/
