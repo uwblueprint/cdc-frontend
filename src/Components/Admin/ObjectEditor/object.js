@@ -303,7 +303,12 @@ export default function ObjectEditor({
             {isInteractable && puzzleType === "unordered-puzzle" ? (
                 <UnorderedPuzzle
                     saveImageN={saveImageN}
-                    images={images}
+                    images={
+                        origAnimJson?.blackboardData?.jsonData?.useTargets ===
+                        false
+                            ? images
+                            : []
+                    }
                     isUnordered={true}
                     imagesLen={0}
                 />
@@ -311,7 +316,12 @@ export default function ObjectEditor({
             {isInteractable && puzzleType === "ordered-puzzle" ? (
                 <UnorderedPuzzle
                     saveImageN={saveImageN}
-                    images={images}
+                    images={
+                        origAnimJson?.blackboardData?.jsonData?.useTargets ===
+                        true
+                            ? images
+                            : []
+                    }
                     isUnordered={false}
                     imagesLen={5}
                 />
