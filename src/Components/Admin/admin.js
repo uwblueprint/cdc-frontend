@@ -81,38 +81,54 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
         background: "#fafafa",
     },
-    tab: {
+
+    defaultTab: {
         maxWidth: "182px",
         height: "65px",
-        background: "#E4EBFF",
-        borderTopRightRadius: "32px",
-        borderTopLeftRadius: "32px",
         top: "20px",
         fontFamily: "Arial",
         fontStyle: "normal",
         fontWeight: "600",
         fontSize: "18px",
-        lineHeight: "20px",
-        color: "#737272",
+        lineHeight: "25px",
+        color: "#AAB7C5",
         textTransform: "capitalize",
-        marginBottom: "10px",
+        marginBottom: "17px",
+        borderBottom: "solid",
+        borderColor: "#AAB7C5",
+        borderBottomWidth: "5px",
+    },
+    activeTab: {
+        maxWidth: "182px",
+        height: "65px",
+        top: "20px",
+        fontFamily: "Arial",
+        fontStyle: "normal",
+        fontWeight: "600",
+        fontSize: "18px",
+        lineHeight: "25px",
+        color: "#EC4E55",
+        textTransform: "capitalize",
+        marginBottom: "17px",
+    },
+    tabs: {
+        "& .MuiTabs-indicator": {
+            backgroundColor: "#EC4E55",
+        },
     },
     addButton: {
         marginTop: theme.spacing(3),
         marginRight: theme.spacing(1),
         width: "50px",
         height: "50px",
-        background: "#B9BECE",
+        background: "#EC4E55",
         borderRadius: "24.5px",
         color: "white",
         float: "right",
     },
     tabBackground: {
-        background: "#E4EBFF",
+        // background: "#E4EBFF",
         width: "1000px",
-        borderBottomRightRadius: "32px",
-        borderBottomLeftRadius: "32px",
-        borderTopRightRadius: "32px",
     },
 }));
 
@@ -164,6 +180,10 @@ export default function Admin() {
             getAllAssetsAction(handleError);
         }
     }, [value, handleError]);
+
+    const getTabStyle = (isActive) => {
+        return isActive ? classes.activeTab : classes.defaultTab;
+    };
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -391,29 +411,33 @@ export default function Admin() {
                     />
                     <Tabs
                         value={value}
-                        indicatorColor="primary"
+                        className={classes.tabs}
                         onChange={handleChange}
                     >
                         <Tab
-                            className={classes.tab}
+                            disableRipple
+                            className={getTabStyle(value === "rooms")}
                             value="rooms"
                             label="Escape Rooms"
                             {...TabHelper("rooms")}
                         />
                         <Tab
-                            className={classes.tab}
+                            disableRipple
+                            className={getTabStyle(value === "scenes")}
                             value="scenes"
                             label="Scenes"
                             {...TabHelper("scenes")}
                         />
                         <Tab
-                            className={classes.tab}
+                            disableRipple
+                            className={getTabStyle(value === "assets")}
                             value="assets"
                             label="Object Assets"
                             {...TabHelper("assets")}
                         />
                         <Tab
-                            className={classes.tab}
+                            disableRipple
+                            className={getTabStyle(value === "stats")}
                             value="stats"
                             label="Statistics"
                             {...TabHelper("stats")}

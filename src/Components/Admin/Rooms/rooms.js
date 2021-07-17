@@ -9,10 +9,15 @@ import RoomCard from "./roomCard.js";
 
 const useStyles = makeStyles((theme) => ({
     page: {
-        marginTop: theme.spacing(8),
+        marginTop: theme.spacing(1),
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        marginLeft: "-65px",
+    },
+    title: {
+        marginTop: theme.spacing(4),
+        marginLeft: "-45px",
     },
 }));
 
@@ -26,10 +31,10 @@ export default function EscapeRooms({
     return (
         <Container component={"main"} maxWidth="lg">
             <CssBaseline />
+            <Typography component="div" variant="h5" className={classes.title}>
+                Your Escape Rooms
+            </Typography>
             <div className={classes.page}>
-                <Typography component="div" variant="h5">
-                    Escape Rooms Page
-                </Typography>
                 <Grid
                     container
                     item
