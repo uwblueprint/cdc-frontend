@@ -118,7 +118,25 @@ export default function ObjectEditor({
     const selectPuzzleType = (obj) => {
         if (obj) {
             setPuzzleType(obj.value);
-            if (origAnimJson.blackboardData?.componentType === obj.value) {
+            if (
+                obj.value === "unordered-puzzle" &&
+                origAnimJson.blackboardData?.componentType ===
+                    "ordered-puzzle" &&
+                origAnimJson.blackboardData?.jsonData?.useTargets === false
+            ) {
+                setAnimationsJson(origAnimJson);
+            } else if (
+                obj.value === "ordered-puzzle" &&
+                origAnimJson.blackboardData?.componentType ===
+                    "ordered-puzzle" &&
+                origAnimJson.blackboardData?.jsonData?.useTargets === true
+            ) {
+                setAnimationsJson(origAnimJson);
+            } else if (
+                obj.value !== "unordered-puzzle" &&
+                obj.value !== "ordered-puzzle" &&
+                origAnimJson.blackboardData?.componentType === obj.value
+            ) {
                 setAnimationsJson(origAnimJson);
             } else {
                 const animCopy = {
@@ -141,6 +159,7 @@ export default function ObjectEditor({
                     animCopy.blackboardData.jsonData.useTargets = true;
                     animCopy.blackboardData.jsonData.randomizePos = true;
                     animCopy.blackboardData.draggable = true;
+                    animCopy.blackboardData.jsonData.scaleBy = 3;
                 }
                 setAnimationsJson(animCopy);
             }
@@ -172,6 +191,10 @@ export default function ObjectEditor({
         setImages(imagesCopy);
     };
 
+    const saveImages = (imagesCopy) => {
+        setImages(imagesCopy);
+    };
+
     const handleSave = () => {
         const animCopy = animationsJson;
         if (header !== "") {
@@ -185,6 +208,12 @@ export default function ObjectEditor({
             puzzleType === "ordered-puzzle" ||
             puzzleType === "unordered-puzzle"
         ) {
+            for (let i = 0; i < images.length; i++) {
+                if (images[i].imageSrc === "") {
+                    alert("Error: Not all images have been uploaded yet");
+                    return;
+                }
+            }
             animCopy.blackboardData.jsonData.images = images;
         }
         setAnimationsJson(animCopy);
@@ -303,23 +332,30 @@ export default function ObjectEditor({
             {isInteractable && puzzleType === "unordered-puzzle" ? (
                 <UnorderedPuzzle
                     saveImageN={saveImageN}
+                    saveImages={saveImages}
                     images={
                         origAnimJson?.blackboardData?.jsonData?.useTargets ===
                         false
-                            ? images
+                            ? origAnimJson.blackboardData.jsonData.images
                             : []
                     }
                     isUnordered={true}
-                    imagesLen={0}
+                    imagesLen={
+                        origAnimJson?.blackboardData?.jsonData?.useTargets ===
+                        false
+                            ? origAnimJson.blackboardData.jsonData.images.length
+                            : 0
+                    }
                 />
             ) : null}
             {isInteractable && puzzleType === "ordered-puzzle" ? (
                 <UnorderedPuzzle
                     saveImageN={saveImageN}
+                    saveImages={saveImages}
                     images={
                         origAnimJson?.blackboardData?.jsonData?.useTargets ===
                         true
-                            ? images
+                            ? origAnimJson.blackboardData.jsonData.images
                             : []
                     }
                     isUnordered={false}
