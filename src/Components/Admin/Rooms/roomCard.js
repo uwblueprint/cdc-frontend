@@ -12,9 +12,6 @@ import { Colours } from "../../../styles/Constants.ts";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 
 const useStyles = makeStyles(() => ({
-    card: {
-        fontSize: 16,
-    },
     cardImage: {
         width: "90%",
         height: "180px",
@@ -45,6 +42,7 @@ const useStyles = makeStyles(() => ({
     metadata: {
         display: "flex",
         justifyContent: "space-between",
+        fontSize: 16,
         marginLeft: "6%",
         marginRight: "6%",
         marginTop: -4,
@@ -59,6 +57,7 @@ const useStyles = makeStyles(() => ({
     selectedMetadata: {
         display: "flex",
         justifyContent: "space-between",
+        fontSize: 16,
         marginLeft: "6%",
         marginRight: "6%",
         marginTop: -4,
@@ -107,9 +106,6 @@ const useStyles = makeStyles(() => ({
         color: Colours.MainRed5,
         fontSize: 15,
     },
-    wrapper: {
-        border: "solid",
-    },
 }));
 
 export default function RoomCard({ data, handleEditClick, handleDeleteClick }) {
@@ -126,11 +122,11 @@ export default function RoomCard({ data, handleEditClick, handleDeleteClick }) {
         setAnchorEl(null);
     };
 
-    const doCardDoubleClickAction = () => {
+    const handleDoubleClick = () => {
         history.push(`/admin/environment/${data.id}`);
     };
 
-    const doCardClickAction = () => {
+    const handleCardClick = () => {
         setIsHighlighted(true);
     };
 
@@ -150,8 +146,9 @@ export default function RoomCard({ data, handleEditClick, handleDeleteClick }) {
                 lg={4}
                 spacing={1}
                 alignItems="center"
-                justify="flex-start"
-                className={classes.card}
+                justify="center"
+                onClick={handleCardClick}
+                onDoubleClick={handleDoubleClick}
             >
                 <Grid
                     container
@@ -159,8 +156,6 @@ export default function RoomCard({ data, handleEditClick, handleDeleteClick }) {
                     xs={12}
                     alignItems="center"
                     justify="center"
-                    onClick={doCardClickAction}
-                    onDoubleClick={doCardDoubleClickAction}
                 >
                     <img
                         className={

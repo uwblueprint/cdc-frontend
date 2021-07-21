@@ -34,6 +34,7 @@ import {
 } from "../../lib/assetEndpoints";
 import { useErrorHandler } from "react-error-boundary";
 import { createPresignedLinkAndUploadS3 } from "../../lib/s3Utility";
+import { Colours } from "../../styles/Constants.ts";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -91,11 +92,11 @@ const useStyles = makeStyles((theme) => ({
         fontWeight: "600",
         fontSize: "18px",
         lineHeight: "25px",
-        color: "#AAB7C5",
+        color: Colours.Grey5,
         textTransform: "capitalize",
         marginBottom: "17px",
         borderBottom: "solid",
-        borderColor: "#AAB7C5",
+        borderColor: Colours.Grey5,
         borderBottomWidth: "5px",
     },
     activeTab: {
@@ -107,13 +108,13 @@ const useStyles = makeStyles((theme) => ({
         fontWeight: "600",
         fontSize: "18px",
         lineHeight: "25px",
-        color: "#EC4E55",
+        color: Colours.MainRed5,
         textTransform: "capitalize",
         marginBottom: "17px",
     },
     tabs: {
         "& .MuiTabs-indicator": {
-            backgroundColor: "#EC4E55",
+            backgroundColor: Colours.MainRed5,
         },
     },
     addButton: {
@@ -121,13 +122,12 @@ const useStyles = makeStyles((theme) => ({
         marginRight: theme.spacing(1),
         width: "50px",
         height: "50px",
-        background: "#EC4E55",
+        background: Colours.MainRed5,
         borderRadius: "24.5px",
         color: "white",
         float: "right",
     },
     tabBackground: {
-        // background: "#E4EBFF",
         width: "1000px",
     },
 }));
