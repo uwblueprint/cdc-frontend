@@ -189,7 +189,6 @@ export default function ObjectEditor({
     const saveJigsawImages = (images) => {
         const animCopy = animationsJson;
         animCopy.blackboardData.jsonData.images = images;
-        console.log(images);
         setAnimationsJson(animCopy);
     };
 
