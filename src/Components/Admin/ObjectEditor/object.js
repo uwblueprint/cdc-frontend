@@ -197,16 +197,16 @@ export default function ObjectEditor({
 
     const handleSave = () => {
         const animCopy = animationsJson;
-        if (header !== "") {
+        if (isInteractable && header !== "") {
             animCopy.blackboardData.blackboardText = header;
         } else {
-            if (animCopy.blackboardData.blackboardText) {
+            if (animCopy.blackboardData?.blackboardText) {
                 delete animCopy.blackboardData.blackboardText;
             }
         }
         if (
-            puzzleType === "ordered-puzzle" ||
-            puzzleType === "unordered-puzzle"
+            (isInteractable && puzzleType === "ordered-puzzle") ||
+            (isInteractable && puzzleType === "unordered-puzzle")
         ) {
             for (let i = 0; i < images.length; i++) {
                 if (images[i].imageSrc === "") {
