@@ -60,6 +60,7 @@ export default function RoomModal({
         setIsPublished(room ? room.is_published : false);
         setIsPreviewable(room ? room.is_previewable : false);
         setRoomSolveTime(room ? room.expected_solve_time : "");
+        setPreviewSrc(room ? room.screenshot_url : "");
         setErrors(
             room
                 ? room.errors
