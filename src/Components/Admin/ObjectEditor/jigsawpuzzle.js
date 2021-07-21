@@ -38,7 +38,7 @@ export default function JigsawPuzzle(props) {
                 encoded_image: base64String,
             });
             setImages(response.data.data);
-            props.saveImages(response.data.data);
+            props.saveJigsawImages(response.data.data);
             setBase64String("");
         };
 

@@ -186,8 +186,7 @@ export default function ObjectEditor({
         setAnimationsJson(animCopy);
     };
 
-    const saveImages = (images) => {
-        console.log("here");
+    const saveJigsawImages = (images) => {
         const animCopy = animationsJson;
         animCopy.blackboardData.jsonData.images = images;
         console.log(images);
@@ -340,7 +339,7 @@ export default function ObjectEditor({
             ) : null}
             {isInteractable && puzzleType === "jigsaw-puzzle" ? (
                 <JigsawPuzzle
-                    saveImages={saveImages}
+                    saveJigsawImages={saveJigsawImages}
                     images={animationsJson.blackboardData.jsonData.images}
                 />
             ) : null}
