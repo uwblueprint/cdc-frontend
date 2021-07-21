@@ -23,7 +23,7 @@ export const getScenario = async (id, handleError) => {
 };
 
 export const postScenario = async (
-    { name, description, friendly_name },
+    { name, description, friendly_name, screenshot_url },
     handleError
 ) => {
     try {
@@ -31,6 +31,7 @@ export const postScenario = async (
             name,
             description,
             friendly_name,
+            screenshot_url,
         });
         return response;
     } catch (error) {

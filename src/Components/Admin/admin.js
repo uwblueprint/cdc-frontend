@@ -199,6 +199,7 @@ export default function Admin() {
         name,
         description,
         friendly_name,
+        screenshot_url,
     }) => {
         setCreateModalOpen(false);
         const resp = await postScenario(
@@ -206,6 +207,7 @@ export default function Admin() {
                 name,
                 description,
                 friendly_name,
+                screenshot_url,
             },
             handleError
         );

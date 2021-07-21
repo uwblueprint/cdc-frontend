@@ -171,7 +171,11 @@ export default function RoomCard({ data, handleEditClick, handleDeleteClick }) {
                                 ? classes.selectedCardImage
                                 : classes.cardImage
                         }
-                        src={data.image ? data.image : defaultImage}
+                        src={
+                            data.screenshot_url
+                                ? data.screenshot_url
+                                : defaultImage
+                        }
                         alt="Escape Room"
                     />
                 </Grid>
