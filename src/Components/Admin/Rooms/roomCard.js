@@ -13,18 +13,16 @@ import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 
 const useStyles = makeStyles(() => ({
     cardImage: {
-        width: "90%",
+        width: "280px",
         height: "180px",
-        maxWidth: 400,
         marginTop: 16,
         objectFit: "cover",
         borderTopLeftRadius: "4px",
         borderTopRightRadius: "4px",
     },
     selectedCardImage: {
-        width: "90%",
+        width: "280px",
         height: "180px",
-        maxWidth: 400,
         marginTop: 16,
         objectFit: "cover",
         borderTopLeftRadius: "4px",
@@ -41,6 +39,8 @@ const useStyles = makeStyles(() => ({
     },
     metadata: {
         display: "flex",
+        minWidth: "280px",
+        maxWidth: "280px",
         justifyContent: "space-between",
         fontSize: 16,
         marginLeft: "6%",
@@ -56,6 +56,8 @@ const useStyles = makeStyles(() => ({
     },
     selectedMetadata: {
         display: "flex",
+        minWidth: "280px",
+        maxWidth: "280px",
         justifyContent: "space-between",
         fontSize: 16,
         marginLeft: "6%",
