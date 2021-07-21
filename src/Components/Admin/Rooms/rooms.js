@@ -32,7 +32,7 @@ export default function EscapeRooms({
         <Container component={"main"} maxWidth="lg">
             <CssBaseline />
             <Typography component="div" variant="h5" className={classes.title}>
-                Your Escape Rooms
+                Your escape rooms
             </Typography>
             <div className={classes.page}>
                 <Grid

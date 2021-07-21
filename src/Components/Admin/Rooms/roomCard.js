@@ -45,8 +45,8 @@ const useStyles = makeStyles(() => ({
     metadata: {
         display: "flex",
         justifyContent: "space-between",
-        marginLeft: "6.2%",
-        marginRight: "5.7%",
+        marginLeft: "6%",
+        marginRight: "6%",
         marginTop: -4,
         backgroundColor: "white",
         height: 80,
@@ -59,8 +59,8 @@ const useStyles = makeStyles(() => ({
     selectedMetadata: {
         display: "flex",
         justifyContent: "space-between",
-        marginLeft: "5.7%",
-        marginRight: "5.7%",
+        marginLeft: "6%",
+        marginRight: "6%",
         marginTop: -4,
         backgroundColor: "white",
         height: 80,
@@ -107,6 +107,9 @@ const useStyles = makeStyles(() => ({
         color: Colours.MainRed5,
         fontSize: 15,
     },
+    wrapper: {
+        border: "solid",
+    },
 }));
 
 export default function RoomCard({ data, handleEditClick, handleDeleteClick }) {
@@ -123,32 +126,12 @@ export default function RoomCard({ data, handleEditClick, handleDeleteClick }) {
         setAnchorEl(null);
     };
 
-    let timer = 0;
-    let delay = 200;
-    let prevent = false;
-
     const doCardDoubleClickAction = () => {
         history.push(`/admin/environment/${data.id}`);
     };
 
     const doCardClickAction = () => {
         setIsHighlighted(true);
-        console.log("Click action");
-    };
-
-    const handleCardClick = () => {
-        timer = setTimeout(function () {
-            if (!prevent) {
-                doCardClickAction();
-            }
-            prevent = false;
-        }, delay);
-    };
-
-    const handleDoubleCardClick = () => {
-        clearTimeout(timer);
-        prevent = true;
-        doCardDoubleClickAction();
     };
 
     const handleClickAway = () => {
@@ -208,6 +191,7 @@ export default function RoomCard({ data, handleEditClick, handleDeleteClick }) {
                         <MoreVertIcon />
                     </IconButton>
                 </Grid>
+
                 <Menu
                     anchorEl={anchorEl}
                     anchorOrigin={{
