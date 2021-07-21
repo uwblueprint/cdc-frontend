@@ -14,7 +14,7 @@ import { RotateLeft } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
-        marginTop: theme.spacing(8),
+        marginTop: theme.spacing(12),
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -106,9 +106,9 @@ export default function PasswordReset() {
                         Send Me a Reset Link
                     </Button>
                     <Grid container>
-                        <Grid item xs>
-                            <Link href="/login" variant="body2">
-                                Back to Login page
+                        <Grid item xs style={{ textAlign: "center" }}>
+                            <Link href="/login" style={{ fontSize: 14 }}>
+                                Back to login page
                             </Link>
                         </Grid>
                     </Grid>
