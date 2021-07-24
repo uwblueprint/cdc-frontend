@@ -112,7 +112,7 @@ export default function Navbar({ home, search, color }) {
         }
     }
 
-    const { isAdmin } = useContext(UserContext);
+    const { user } = useContext(UserContext);
 
     return (
         <div className={classes.root}>
@@ -146,7 +146,7 @@ export default function Navbar({ home, search, color }) {
                             />
                         </div>
                     )}
-                    {isAdmin && (
+                    {user && (
                         <div className={classes.profileEnd}>
                             <IconButton
                                 aria-label="account of current user"

@@ -13,8 +13,10 @@ const useStyles = makeStyles(() => ({
     },
     cardImage: {
         width: "90%",
+        height: "200px",
         maxWidth: 400,
         marginTop: 16,
+        objectFit: "cover",
     },
     metadata: {
         display: "flex",
