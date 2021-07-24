@@ -34,7 +34,6 @@ import {
 } from "../../lib/assetEndpoints";
 import { useErrorHandler } from "react-error-boundary";
 import { createPresignedLinkAndUploadS3 } from "../../lib/s3Utility";
-import { Colours } from "../../styles/Constants.ts";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
