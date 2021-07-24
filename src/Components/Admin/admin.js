@@ -331,6 +331,7 @@ export default function Admin() {
         <Container component="main" maxWidth="xs">
             <CssBaseline />
             <div className={classes.paper}>
+                <Navbar search color="primary" />
                 <div className={classes.root}>
                     <IconButton
                         className={classes.addButton}
