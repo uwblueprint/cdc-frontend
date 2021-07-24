@@ -15,7 +15,7 @@ const useStyles = makeStyles(() => ({
     cardImage: {
         width: "90%",
         height: "180px",
-        maxWidth: 400,
+        // maxWidth: 400,
         marginTop: 16,
         objectFit: "cover",
         borderTopLeftRadius: "4px",
@@ -24,7 +24,7 @@ const useStyles = makeStyles(() => ({
     selectedCardImage: {
         width: "90%",
         height: "180px",
-        maxWidth: 400,
+        // maxWidth: 400,
         marginTop: 16,
         objectFit: "cover",
         borderTopLeftRadius: "4px",

@@ -3,3 +3,4 @@ node_modules/
 legacy/Aframe/
 *.md
 *.config
+src/
