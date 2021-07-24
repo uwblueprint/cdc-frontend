@@ -34,7 +34,7 @@ export default function EscapeRooms({
             <CssBaseline />
             <Typography
                 component="div"
-                variant="h5"
+                variant="h4"
                 className={classes.title}
                 style={{ fontWeight: 550, color: Colours.Grey9 }}
             >
