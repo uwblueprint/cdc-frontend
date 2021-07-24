@@ -6,6 +6,7 @@ import { fileToBase64String } from "../../../lib/s3Utility";
 import { makeStyles } from "@material-ui/core/styles";
 import { httpPost } from "../../../lib/dataAccess";
 import Grid from "@material-ui/core/Grid";
+import Box from "@material-ui/core/Box";
 
 const useStyles = makeStyles((theme) => ({
     textField: {
@@ -70,7 +71,7 @@ export default function JigsawPuzzle(props) {
                         Images Preview:
                     </Typography>
                     <Grid container spacing={3}>
-                        <Grid container item xs={12} spacing={3}>
+                        <Grid container item xs={6} spacing={3}>
                             <Grid item xs={4}>
                                 <img
                                     src={images[0]}
@@ -96,7 +97,8 @@ export default function JigsawPuzzle(props) {
                                 ></img>
                             </Grid>
                         </Grid>
-                        <Grid container item xs={12} spacing={3}>
+                        <Box width="100%"></Box>
+                        <Grid container item xs={6} spacing={3}>
                             <Grid item xs={4}>
                                 <img
                                     src={images[3]}
@@ -122,7 +124,8 @@ export default function JigsawPuzzle(props) {
                                 ></img>
                             </Grid>
                         </Grid>
-                        <Grid container item xs={12} spacing={3}>
+                        <Box width="100%"></Box>
+                        <Grid container item xs={6} spacing={3}>
                             <Grid item xs={4}>
                                 <img
                                     src={images[6]}
@@ -148,6 +151,7 @@ export default function JigsawPuzzle(props) {
                                 ></img>
                             </Grid>
                         </Grid>
+                        <Box width="100%"></Box>
                     </Grid>
                 </div>
             ) : null}
