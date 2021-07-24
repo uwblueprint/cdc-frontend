@@ -134,7 +134,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Admin() {
     const classes = useStyles();
-    const { user } = useContext(UserContext);
     const handleError = useErrorHandler();
 
     const [value, setValue] = React.useState("rooms");
@@ -332,13 +331,6 @@ export default function Admin() {
         <Container component="main" maxWidth="xs">
             <CssBaseline />
             <div className={classes.paper}>
-                <Typography component="div" variant="h5">
-                    Admin Dashboard 😎
-                </Typography>
-                <Typography component="div" variant="h6">
-                    Welcome {user.display_name}
-                </Typography>
-
                 <div className={classes.root}>
                     <IconButton
                         className={classes.addButton}

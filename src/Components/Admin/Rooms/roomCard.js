@@ -93,6 +93,10 @@ const useStyles = makeStyles(() => ({
             color: Colours.White,
         },
         fontSize: 15,
+        paddingLeft: 18,
+        paddingRight: 18,
+        paddingTop: 8,
+        paddingBottom: 8,
     },
     menuItemDelete: {
         "&:hover": {
@@ -105,6 +109,10 @@ const useStyles = makeStyles(() => ({
         },
         color: Colours.MainRed5,
         fontSize: 15,
+        paddingLeft: 18,
+        paddingRight: 18,
+        paddingTop: 8,
+        paddingBottom: 10,
     },
 }));
 
@@ -190,17 +198,18 @@ export default function RoomCard({ data, handleEditClick, handleDeleteClick }) {
                 <Menu
                     anchorEl={anchorEl}
                     anchorOrigin={{
-                        vertical: "top",
+                        vertical: "center",
                         horizontal: "center",
                     }}
                     transformOrigin={{
-                        vertical: "top",
-                        horizontal: "center",
+                        vertical: -70,
+                        horizontal: "right",
                     }}
                     MenuListProps={{ disablePadding: true }}
                     keepMounted
                     open={open}
                     onClose={handleMenuClose}
+                    className={classes.menu}
                 >
                     <MenuItem disabled className={classes.menuItem}>
                         Share & Publish
