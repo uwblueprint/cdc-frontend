@@ -25,6 +25,16 @@ const useStyles = makeStyles((theme) => ({
     input: {
         display: "none",
     },
+    grid: {
+        display: "flex",
+        flexWrap: "wrap",
+        justifyContent: "space-around",
+        alignItems: "flex-start",
+    },
+    cell: {
+        flex: "0 0 33.3333%",
+        alignSelf: "flex-start",
+    },
 }));
 
 export default function JigsawPuzzle(props) {
@@ -70,89 +80,88 @@ export default function JigsawPuzzle(props) {
                     >
                         Images Preview:
                     </Typography>
-                    <Grid container spacing={3}>
-                        <Grid container item xs={6} spacing={3}>
-                            <Grid item xs={4}>
-                                <img
-                                    src={images[0]}
-                                    height={125}
-                                    max-width={1000}
-                                    object-fit={"contain"}
-                                ></img>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <img
-                                    src={images[1]}
-                                    height={125}
-                                    max-width={1000}
-                                    object-fit={"contain"}
-                                ></img>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <img
-                                    src={images[2]}
-                                    height={125}
-                                    max-width={1000}
-                                    object-fit={"contain"}
-                                ></img>
-                            </Grid>
-                        </Grid>
-                        <Box width="100%"></Box>
-                        <Grid container item xs={6} spacing={3}>
-                            <Grid item xs={4}>
-                                <img
-                                    src={images[3]}
-                                    height={125}
-                                    max-width={1000}
-                                    object-fit={"contain"}
-                                ></img>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <img
-                                    src={images[4]}
-                                    height={125}
-                                    max-width={1000}
-                                    object-fit={"contain"}
-                                ></img>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <img
-                                    src={images[5]}
-                                    height={125}
-                                    max-width={1000}
-                                    object-fit={"contain"}
-                                ></img>
-                            </Grid>
-                        </Grid>
-                        <Box width="100%"></Box>
-                        <Grid container item xs={6} spacing={3}>
-                            <Grid item xs={4}>
-                                <img
-                                    src={images[6]}
-                                    height={125}
-                                    max-width={1000}
-                                    object-fit={"contain"}
-                                ></img>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <img
-                                    src={images[7]}
-                                    height={125}
-                                    max-width={1000}
-                                    object-fit={"contain"}
-                                ></img>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <img
-                                    src={images[8]}
-                                    height={125}
-                                    max-width={1000}
-                                    object-fit={"contain"}
-                                ></img>
-                            </Grid>
-                        </Grid>
-                        <Box width="100%"></Box>
-                    </Grid>
+                    <div className={classes.grid}>
+                        <div className={classes.cell}>
+                            <img
+                                src={images[0]}
+                                height={125}
+                                max-width={1000}
+                                object-fit={"contain"}
+                            ></img>
+                        </div>
+
+                        <div className={classes.cell}>
+                            <img
+                                src={images[1]}
+                                height={125}
+                                max-width={1000}
+                                object-fit={"contain"}
+                            ></img>
+                        </div>
+
+                        <div className={classes.cell}>
+                            <img
+                                src={images[2]}
+                                height={125}
+                                max-width={1000}
+                                object-fit={"contain"}
+                            ></img>
+                        </div>
+
+                        <div className={classes.cell}>
+                            <img
+                                src={images[3]}
+                                height={125}
+                                max-width={1000}
+                                object-fit={"contain"}
+                            ></img>
+                        </div>
+
+                        <div className={classes.cell}>
+                            <img
+                                src={images[4]}
+                                height={125}
+                                max-width={1000}
+                                object-fit={"contain"}
+                            ></img>
+                        </div>
+
+                        <div className={classes.cell}>
+                            <img
+                                src={images[5]}
+                                height={125}
+                                max-width={1000}
+                                object-fit={"contain"}
+                            ></img>
+                        </div>
+
+                        <div className={classes.cell}>
+                            <img
+                                src={images[6]}
+                                height={125}
+                                max-width={1000}
+                                object-fit={"contain"}
+                            ></img>
+                        </div>
+
+                        <div className={classes.cell}>
+                            <img
+                                src={images[7]}
+                                height={125}
+                                max-width={1000}
+                                object-fit={"contain"}
+                            ></img>
+                        </div>
+
+                        <div className={classes.cell}>
+                            <img
+                                src={images[8]}
+                                height={125}
+                                max-width={1000}
+                                object-fit={"contain"}
+                            ></img>
+                        </div>
+                    </div>
                 </div>
             ) : null}
             <input
