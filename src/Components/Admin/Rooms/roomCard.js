@@ -203,7 +203,7 @@ export default function RoomCard({ data, handleEditClick, handleDeleteClick }) {
                     }}
                     transformOrigin={{
                         vertical: -70,
-                        horizontal: "right",
+                        horizontal: 150,
                     }}
                     MenuListProps={{ disablePadding: true }}
                     keepMounted

@@ -36,7 +36,7 @@ export default function EscapeRooms({
                 component="div"
                 variant="h4"
                 className={classes.title}
-                style={{ fontWeight: 550, color: Colours.Grey9 }}
+                style={{ color: Colours.Grey9 }}
             >
                 Your escape rooms
             </Typography>
