@@ -5,8 +5,6 @@ import Typography from "@material-ui/core/Typography";
 import { fileToBase64String } from "../../../lib/s3Utility";
 import { makeStyles } from "@material-ui/core/styles";
 import { httpPost } from "../../../lib/dataAccess";
-import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
 
 const useStyles = makeStyles((theme) => ({
     textField: {
