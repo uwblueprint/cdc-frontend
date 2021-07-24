@@ -4,6 +4,7 @@ import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
+import { Colours } from "../../../styles/Constants.ts";
 
 import RoomCard from "./roomCard.js";
 
@@ -31,7 +32,12 @@ export default function EscapeRooms({
     return (
         <Container component={"main"} maxWidth="lg">
             <CssBaseline />
-            <Typography component="div" variant="h5" className={classes.title}>
+            <Typography
+                component="div"
+                variant="h5"
+                className={classes.title}
+                style={{ fontWeight: 550, color: Colours.Grey9 }}
+            >
                 Your escape rooms
             </Typography>
             <div className={classes.page}>
