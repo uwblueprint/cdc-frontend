@@ -71,7 +71,8 @@ export default function ObjectEditor({
     const puzzleTypeList = [
         { value: "text-pane", label: "Text Puzzle" },
         { value: "rotation-controls", label: "Rotation Puzzle" },
-        { value: "keypad", label: "Keypad Puzzle" },
+        { value: "numpad-puzzle", label: "Numpad Puzzle" },
+        { value: "keyboard-puzzle", label: "Keyboard Puzzle" },
         { value: "visual-pane", label: "Visual Puzzle" },
         { value: "jigsaw-puzzle", label: "Jigsaw Puzzle" },
         { value: "ordered-puzzle", label: "Ordered Puzzle" },
@@ -133,6 +134,18 @@ export default function ObjectEditor({
             ) {
                 setAnimationsJson(origAnimJson);
             } else if (
+                obj.value === "numpad-puzzle" &&
+                origAnimJson.blackboardData?.componentType === "keypad" &&
+                origAnimJson.blackboardData?.jsonData?.model === "numpad"
+            ) {
+                setAnimationsJson(origAnimJson);
+            } else if (
+                obj.value === "keyboard-puzzle" &&
+                origAnimJson.blackboardData?.componentType === "keypad" &&
+                origAnimJson.blackboardData?.jsonData?.model === "basic"
+            ) {
+                setAnimationsJson(origAnimJson);
+            } else if (
                 obj.value !== "unordered-puzzle" &&
                 obj.value !== "ordered-puzzle" &&
                 origAnimJson.blackboardData?.componentType === obj.value
@@ -160,6 +173,14 @@ export default function ObjectEditor({
                     animCopy.blackboardData.jsonData.randomizePos = true;
                     animCopy.blackboardData.draggable = true;
                     animCopy.blackboardData.jsonData.scaleBy = 3;
+                } else if (obj.value === "numpad-puzzle") {
+                    animCopy.blackboardData.jsonData.componentType = "keypad";
+                    animCopy.blackboardData.jsonData.model = "numpad";
+                    animCopy.blackboardData.jsonData.is_last_object = true;
+                } else if (obj.value === "keyboard-puzzle") {
+                    animCopy.blackboardData.jsonData.componentType = "keypad";
+                    animCopy.blackboardData.jsonData.model = "basic";
+                    animCopy.blackboardData.jsonData.is_last_object = true;
                 }
                 setAnimationsJson(animCopy);
             }
