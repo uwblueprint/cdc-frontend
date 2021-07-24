@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Container from "@material-ui/core/Container";
@@ -25,7 +25,6 @@ import {
     editScenario,
     deleteScenario,
 } from "../../lib/scenarioEndpoints";
-import { UserContext } from "../../Providers/UserProviders";
 import { getAllScenes } from "../../lib/sceneEndpoints";
 import {
     getAllAssets,
@@ -134,7 +133,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Admin() {
     const classes = useStyles();
-    const { user } = useContext(UserContext);
     const handleError = useErrorHandler();
 
     const [value, setValue] = React.useState("rooms");
@@ -332,13 +330,6 @@ export default function Admin() {
         <Container component="main" maxWidth="xs">
             <CssBaseline />
             <div className={classes.paper}>
-                <Typography component="div" variant="h5">
-                    Admin Dashboard 😎
-                </Typography>
-                <Typography component="div" variant="h6">
-                    Welcome {user.display_name}
-                </Typography>
-
                 <div className={classes.root}>
                     <IconButton
                         className={classes.addButton}

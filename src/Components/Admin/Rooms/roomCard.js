@@ -13,16 +13,18 @@ import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 
 const useStyles = makeStyles(() => ({
     cardImage: {
-        width: "280px",
+        width: "90%",
         height: "180px",
+        maxWidth: 400,
         marginTop: 16,
         objectFit: "cover",
         borderTopLeftRadius: "4px",
         borderTopRightRadius: "4px",
     },
     selectedCardImage: {
-        width: "280px",
+        width: "90%",
         height: "180px",
+        maxWidth: 400,
         marginTop: 16,
         objectFit: "cover",
         borderTopLeftRadius: "4px",
@@ -56,8 +58,6 @@ const useStyles = makeStyles(() => ({
     },
     selectedMetadata: {
         display: "flex",
-        minWidth: "280px",
-        maxWidth: "280px",
         justifyContent: "space-between",
         fontSize: 16,
         marginLeft: "6%",
@@ -95,6 +95,10 @@ const useStyles = makeStyles(() => ({
             color: Colours.White,
         },
         fontSize: 15,
+        paddingLeft: 18,
+        paddingRight: 18,
+        paddingTop: 8,
+        paddingBottom: 8,
     },
     menuItemDelete: {
         "&:hover": {
@@ -107,6 +111,10 @@ const useStyles = makeStyles(() => ({
         },
         color: Colours.MainRed5,
         fontSize: 15,
+        paddingLeft: 18,
+        paddingRight: 18,
+        paddingTop: 8,
+        paddingBottom: 10,
     },
 }));
 
@@ -192,12 +200,12 @@ export default function RoomCard({ data, handleEditClick, handleDeleteClick }) {
                 <Menu
                     anchorEl={anchorEl}
                     anchorOrigin={{
-                        vertical: "top",
+                        vertical: "center",
                         horizontal: "center",
                     }}
                     transformOrigin={{
-                        vertical: "top",
-                        horizontal: "center",
+                        vertical: -70,
+                        horizontal: 150,
                     }}
                     MenuListProps={{ disablePadding: true }}
                     keepMounted

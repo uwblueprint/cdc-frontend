@@ -8,6 +8,8 @@ import {
     createPresignedLinkAndUploadS3,
 } from "../../../lib/s3Utility";
 import { makeStyles } from "@material-ui/core/styles";
+import { IconButton } from "@material-ui/core";
+import { KeyboardArrowDown, KeyboardArrowUp } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
     textField: {
@@ -37,7 +39,8 @@ export default function UnorderedPuzzle(props) {
     const [uploaded, setUploaded] = React.useState(false);
     const [images, setImages] = React.useState(props.images);
     const [curIndex, setCurIndex] = React.useState(0);
-    const [imagesLen, setImagesLen] = React.useState(0);
+    const [imagesLen, setImagesLen] = React.useState(props.imagesLen);
+    const isUnordered = props.isUnordered;
 
     const imagesLengthList = [
         { value: 2, label: "2" },
@@ -88,13 +91,21 @@ export default function UnorderedPuzzle(props) {
         const populateImages = async () => {
             let newImages = [];
             newImages = images;
+            let xTarg = 0;
+            if (!isUnordered) {
+                xTarg = -2.5;
+            }
             while (imagesLen > newImages.length) {
-                const tempImage = { xTarget: 0, yTarget: 0, imageSrc: "" };
+                const tempImage = { xTarget: xTarg, yTarget: 0, imageSrc: "" };
                 newImages.push(tempImage);
+                if (!isUnordered) {
+                    xTarg += 1.25;
+                }
             }
             while (imagesLen < newImages.length) {
                 newImages.pop();
             }
+            props.saveImages(newImages);
             setImages(newImages);
             setImagesLen(0);
             setUploaded(false);
@@ -110,6 +121,7 @@ export default function UnorderedPuzzle(props) {
         images,
         curIndex,
         imagesLen,
+        isUnordered,
         props,
         handleError,
     ]);
@@ -121,21 +133,55 @@ export default function UnorderedPuzzle(props) {
             await fileToByteArray(file, setImageByteArray);
             setName(file.name);
             setType(file.type.replace("image/", ""));
-            setImagesLen(images.length);
         }
+    };
+
+    const reorder = (startIndex, endIndex) => {
+        const result = images;
+        const [removed] = result.splice(startIndex, 1);
+        result.splice(endIndex, 0, removed);
+        return result;
+    };
+
+    const reorderImages = (sourceIndex, destinationIndex) => {
+        if (
+            sourceIndex == null ||
+            destinationIndex == null ||
+            sourceIndex === destinationIndex
+        ) {
+            return;
+        }
+
+        const reorderedList = reorder(sourceIndex, destinationIndex);
+        const temp = reorderedList[sourceIndex].xTarget;
+        reorderedList[sourceIndex].xTarget =
+            reorderedList[destinationIndex].xTarget;
+        reorderedList[destinationIndex].xTarget = temp;
+        props.saveImages([...reorderedList]);
+        setImages([...reorderedList]);
+    };
+
+    const onMoveUpClick = (index) => {
+        reorderImages(index, Math.max(0, index - 1));
+    };
+
+    const onMoveDownClick = (index) => {
+        reorderImages(index, Math.min(images.length - 1, index + 1));
     };
 
     return (
         <div>
-            <Select
-                value={imagesLengthList.filter(
-                    (option) => option.value === images?.length
-                )}
-                options={imagesLengthList}
-                placeholder="Select number of images..."
-                searchable={false}
-                onChange={selectPuzzleImages}
-            />
+            {isUnordered ? (
+                <Select
+                    value={imagesLengthList.filter(
+                        (option) => option.value === images?.length
+                    )}
+                    options={imagesLengthList}
+                    placeholder="Select number of images..."
+                    searchable={false}
+                    onChange={selectPuzzleImages}
+                />
+            ) : null}
             {images.map((item, index) => {
                 return (
                     <div key={index}>
@@ -182,6 +228,20 @@ export default function UnorderedPuzzle(props) {
                         </label>
                         {uploaded && index === curIndex ? (
                             <div>{name} successfully uploaded</div>
+                        ) : null}
+                        {!isUnordered ? (
+                            <div>
+                                <IconButton
+                                    onClick={() => onMoveUpClick(index)}
+                                >
+                                    <KeyboardArrowUp />
+                                </IconButton>
+                                <IconButton
+                                    onClick={() => onMoveDownClick(index)}
+                                >
+                                    <KeyboardArrowDown />
+                                </IconButton>
+                            </div>
                         ) : null}
                     </div>
                 );
