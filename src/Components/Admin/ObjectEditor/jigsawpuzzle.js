@@ -5,6 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import { fileToBase64String } from "../../../lib/s3Utility";
 import { makeStyles } from "@material-ui/core/styles";
 import { httpPost } from "../../../lib/dataAccess";
+import Grid from "@material-ui/core/Grid";
 
 const useStyles = makeStyles((theme) => ({
     textField: {
@@ -66,14 +67,196 @@ export default function JigsawPuzzle(props) {
                         variant="h6"
                         className={classes.text}
                     >
-                        Image Preview:
+                        Images Preview:
                     </Typography>
-                    <img
-                        src={images[0]}
-                        height={250}
-                        max-width={1000}
-                        object-fit={"contain"}
-                    ></img>
+                    {/* <Grid
+                        container
+                        item
+                        xs={12}
+                        md={6}
+                        lg={4}
+                        spacing={1}
+                        alignItems="center"
+                        justify="flex-start"
+                    >
+                        <Grid
+                            container
+                            item
+                            xs={4}
+                            alignItems="center"
+                            justify="center"
+                        >
+                            <div>
+                                <img
+                                    src={images[0]}
+                                    height={125}
+                                    max-width={1000}
+                                    object-fit={"contain"}
+                                ></img>
+                            </div>
+                            <br></br>
+                            <div>
+                                <img
+                                    src={images[3]}
+                                    height={125}
+                                    max-width={1000}
+                                    object-fit={"contain"}
+                                ></img>
+                            </div>
+                            <div>
+                                <img
+                                    src={images[6]}
+                                    height={125}
+                                    max-width={1000}
+                                    object-fit={"contain"}
+                                ></img>
+                            </div>
+                        </Grid>
+                        <Grid
+                            container
+                            item
+                            xs={4}
+                            alignItems="center"
+                            justify="center"
+                        >
+                            <div>
+                                <img
+                                    src={images[1]}
+                                    height={125}
+                                    max-width={1000}
+                                    object-fit={"contain"}
+                                ></img>
+                            </div>
+                            <div>
+                                <img
+                                    src={images[4]}
+                                    height={125}
+                                    max-width={1000}
+                                    object-fit={"contain"}
+                                ></img>
+                            </div>
+                            <div>
+                                <img
+                                    src={images[7]}
+                                    height={125}
+                                    max-width={1000}
+                                    object-fit={"contain"}
+                                ></img>
+                            </div>
+                        </Grid>
+                        <Grid
+                            container
+                            item
+                            xs={4}
+                            alignItems="center"
+                            justify="center"
+                        >
+                            <div>
+                                <img
+                                    src={images[2]}
+                                    height={125}
+                                    max-width={1000}
+                                    object-fit={"contain"}
+                                ></img>
+                            </div>
+                            <div>
+                                <img
+                                    src={images[5]}
+                                    height={125}
+                                    max-width={1000}
+                                    object-fit={"contain"}
+                                ></img>
+                            </div>
+                            <div>
+                                <img
+                                    src={images[8]}
+                                    height={125}
+                                    max-width={1000}
+                                    object-fit={"contain"}
+                                ></img>
+                            </div>
+                        </Grid>
+                    </Grid> */}
+                    <Grid container spacing={3}>
+                        <Grid container item xs={12} spacing={3}>
+                            <Grid item xs={4}>
+                                <img
+                                    src={images[0]}
+                                    height={125}
+                                    max-width={1000}
+                                    object-fit={"contain"}
+                                ></img>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <img
+                                    src={images[1]}
+                                    height={125}
+                                    max-width={1000}
+                                    object-fit={"contain"}
+                                ></img>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <img
+                                    src={images[2]}
+                                    height={125}
+                                    max-width={1000}
+                                    object-fit={"contain"}
+                                ></img>
+                            </Grid>
+                        </Grid>
+                        <Grid container item xs={12} spacing={3}>
+                            <Grid item xs={4}>
+                                <img
+                                    src={images[3]}
+                                    height={125}
+                                    max-width={1000}
+                                    object-fit={"contain"}
+                                ></img>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <img
+                                    src={images[4]}
+                                    height={125}
+                                    max-width={1000}
+                                    object-fit={"contain"}
+                                ></img>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <img
+                                    src={images[5]}
+                                    height={125}
+                                    max-width={1000}
+                                    object-fit={"contain"}
+                                ></img>
+                            </Grid>
+                        </Grid>
+                        <Grid container item xs={12} spacing={3}>
+                            <Grid item xs={4}>
+                                <img
+                                    src={images[6]}
+                                    height={125}
+                                    max-width={1000}
+                                    object-fit={"contain"}
+                                ></img>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <img
+                                    src={images[7]}
+                                    height={125}
+                                    max-width={1000}
+                                    object-fit={"contain"}
+                                ></img>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <img
+                                    src={images[8]}
+                                    height={125}
+                                    max-width={1000}
+                                    object-fit={"contain"}
+                                ></img>
+                            </Grid>
+                        </Grid>
+                    </Grid>
                 </div>
             ) : null}
             <input
