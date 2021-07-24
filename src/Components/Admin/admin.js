@@ -199,7 +199,7 @@ export default function Admin() {
         name,
         description,
         friendly_name,
-        screenshot_url,
+        display_image_url,
     }) => {
         setCreateModalOpen(false);
         const resp = await postScenario(
@@ -207,7 +207,7 @@ export default function Admin() {
                 name,
                 description,
                 friendly_name,
-                screenshot_url,
+                display_image_url,
             },
             handleError
         );
@@ -229,7 +229,7 @@ export default function Admin() {
         is_published,
         is_previewable,
         expected_solve_time,
-        screenshot_url,
+        display_image_url,
     }) => {
         setEditModalOpen(false);
         const resp = await editScenario(
@@ -242,7 +242,7 @@ export default function Admin() {
                 is_published,
                 is_previewable,
                 expected_solve_time,
-                screenshot_url,
+                display_image_url,
             },
             handleError
         );

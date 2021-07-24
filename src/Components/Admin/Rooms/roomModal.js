@@ -60,7 +60,8 @@ export default function RoomModal({
         setIsPublished(room ? room.is_published : false);
         setIsPreviewable(room ? room.is_previewable : false);
         setRoomSolveTime(room ? room.expected_solve_time : "");
-        setPreviewSrc(room ? room.screenshot_url : "");
+        setPreviewSrc(room ? room.display_image_url : "");
+        setFileName(room ? room.display_image_url : "");
         setErrors(
             room
                 ? room.errors
@@ -84,18 +85,25 @@ export default function RoomModal({
             const fileType = split[1];
 
             setFileName(fileName);
-            handleUploadAssetSubmit(fileName, fileType, file);
+            handleUploadDisplayImageSubmit(fileName, fileType, file);
         }
     };
 
-    const handleUploadAssetSubmit = async (name, file_type, asset) => {
+    const handleUploadDisplayImageSubmit = async (
+        name,
+        file_type,
+        display_image
+    ) => {
         const response = await createPresignedLinkAndUploadS3(
-            { file_type: file_type, type: "asset", file_content: asset },
+            {
+                file_type: file_type,
+                type: "image",
+                file_content: display_image,
+            },
             handleError
         );
 
-        const imagePrefix = process.env.REACT_APP_ADMIN_ASSET_PREFIX;
-        setPreviewSrc(imagePrefix + response.data.s3_key);
+        setPreviewSrc(response.data.s3_key);
     };
 
     const handleRoomNameChange = (event) => {
@@ -214,14 +222,14 @@ export default function RoomModal({
                 is_published: isPublished,
                 is_previewable: isPreviewable,
                 expected_solve_time: roomSolveTime,
-                screenshot_url: previewSrc,
+                display_image_url: previewSrc,
             });
         } else if (!isEdit && !error) {
             handleSubmit({
                 name: roomName,
                 description: roomDescription,
                 friendly_name: friendlyName,
-                screenshot_url: previewSrc,
+                display_image_url: previewSrc,
             });
         }
 
@@ -348,7 +356,11 @@ export default function RoomModal({
                                     Image Preview:
                                 </Typography>
                                 <img
-                                    src={previewSrc}
+                                    src={
+                                        process.env
+                                            .REACT_APP_ADMIN_ASSET_PREFIX +
+                                        previewSrc
+                                    }
                                     width={500}
                                     objectFit={"contain"}
                                 ></img>

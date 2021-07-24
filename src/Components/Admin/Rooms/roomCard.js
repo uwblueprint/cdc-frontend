@@ -172,8 +172,9 @@ export default function RoomCard({ data, handleEditClick, handleDeleteClick }) {
                                 : classes.cardImage
                         }
                         src={
-                            data.screenshot_url
-                                ? data.screenshot_url
+                            data.display_image_url
+                                ? process.env.REACT_APP_ADMIN_ASSET_PREFIX +
+                                  data.display_image_url
                                 : defaultImage
                         }
                         alt="Escape Room"
