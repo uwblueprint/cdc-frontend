@@ -3,7 +3,6 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
 import { Colours } from "../../../styles/Constants.ts";
 
 import RoomCard from "./roomCard.js";
@@ -11,9 +10,6 @@ import RoomCard from "./roomCard.js";
 const useStyles = makeStyles((theme) => ({
     page: {
         marginTop: theme.spacing(1),
-        // display: "flex",
-        // flexDirection: "column",
-        // alignItems: "center",
         justifyContent: "left",
         alignContent: "left",
         marginLeft: "-65px",
@@ -23,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: "-45px",
     },
     row: {
+        marginTop: 10,
         display: "flex",
         flexDirection: "row",
         justifyContent: "left",
@@ -42,7 +39,7 @@ export default function EscapeRooms({
     ] = React.useState([]);
 
     useEffect(() => {
-        let environmentGrid = [];
+        const environmentGrid = [];
         const cardsPerRow = 3;
 
         for (let i = 0; i < environments.length; i += cardsPerRow) {
@@ -50,7 +47,6 @@ export default function EscapeRooms({
         }
 
         setPreprocessedEnvironment(environmentGrid);
-        console.log(environmentGrid);
     }, [environments]);
 
     return (
@@ -66,9 +62,9 @@ export default function EscapeRooms({
             </Typography>
 
             <div className={classes.page}>
-                {preprocessedEnvironment.map(function (row) {
+                {preprocessedEnvironment.map(function (row, index) {
                     return (
-                        <div className={classes.row}>
+                        <div className={classes.row} key={index}>
                             {row.map(function (room) {
                                 return (
                                     <RoomCard

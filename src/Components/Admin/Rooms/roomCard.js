@@ -51,8 +51,6 @@ const useStyles = makeStyles(() => ({
         maxWidth: "280px",
         justifyContent: "space-between",
         fontSize: 16,
-        marginLeft: "6%",
-        marginRight: "6%",
         marginTop: -4,
         backgroundColor: "white",
         height: 80,
@@ -68,8 +66,6 @@ const useStyles = makeStyles(() => ({
         maxWidth: "280px",
         justifyContent: "space-between",
         fontSize: 16,
-        marginLeft: "6%",
-        marginRight: "6%",
         marginTop: -4,
         backgroundColor: "white",
         height: 80,
@@ -167,43 +163,46 @@ export default function RoomCard({ data, handleEditClick, handleDeleteClick }) {
                 justify="center"
                 onClick={handleCardClick}
                 onDoubleClick={handleDoubleClick}
+                style={{ maxWidth: 320 }}
             >
-                <Grid
-                    container
-                    item
-                    xs={12}
-                    alignItems="center"
-                    justify="center"
-                >
-                    <img
+                <div>
+                    <Grid
+                        container
+                        item
+                        xs={12}
+                        alignItems="center"
+                        justify="center"
+                    >
+                        <img
+                            className={
+                                isHighlighted
+                                    ? classes.selectedCardImage
+                                    : classes.cardImage
+                            }
+                            src={data.image ? data.image : defaultImage}
+                            alt="Escape Room"
+                        />
+                    </Grid>
+                    <Grid
+                        container
+                        item
+                        xs={12}
+                        alignItems="center"
                         className={
                             isHighlighted
-                                ? classes.selectedCardImage
-                                : classes.cardImage
+                                ? classes.selectedMetadata
+                                : classes.metadata
                         }
-                        src={data.image ? data.image : defaultImage}
-                        alt="Escape Room"
-                    />
-                </Grid>
-                <Grid
-                    container
-                    item
-                    xs={12}
-                    alignItems="center"
-                    className={
-                        isHighlighted
-                            ? classes.selectedMetadata
-                            : classes.metadata
-                    }
-                >
-                    <p className={classes.dataName}>{data.name}</p>
-                    <IconButton
-                        onClick={handleMenuClick}
-                        style={{ maxWidth: "20%" }}
                     >
-                        <MoreVertIcon />
-                    </IconButton>
-                </Grid>
+                        <p className={classes.dataName}>{data.name}</p>
+                        <IconButton
+                            onClick={handleMenuClick}
+                            style={{ maxWidth: "20%" }}
+                        >
+                            <MoreVertIcon />
+                        </IconButton>
+                    </Grid>
+                </div>
 
                 <Menu
                     anchorEl={anchorEl}
