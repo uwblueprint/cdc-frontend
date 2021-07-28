@@ -76,8 +76,8 @@ const useStyles = makeStyles((theme) => ({
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        overflowX: "scroll",
-        minWidth: "1000px",
+        // overflowX: "scroll",
+        // minWidth: "1000px",
     },
     root: {
         flexGrow: 1,
@@ -158,6 +158,7 @@ export default function Admin() {
 
     const getAllEnvironments = async (handleError) => {
         const data = await getAllScenarios(handleError);
+        // add preprocessing for grid
         setEnvironments(data);
     };
 
