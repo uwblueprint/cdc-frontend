@@ -44,7 +44,11 @@ export default function EscapeRooms({
                 <Grid
                     container
                     item
-                    xs={12}
+                    xs={3}
+                    sm={12}
+                    // md={1}
+                    // lg={1}
+                    xl={12}
                     spacing={1}
                     alignItems="center"
                     justify="flex-start"
