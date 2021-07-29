@@ -8,6 +8,7 @@ import { DeleteForever } from "@material-ui/icons";
 import TextPaneView from "../ObjectEditor/textpaneview";
 import VisualPaneView from "../ObjectEditor/visualpaneview";
 import UnorderedPuzzle from "../ObjectEditor/unorderedpuzzle";
+import KeypadPuzzle from "../ObjectEditor/keypadpuzzle";
 
 import { getPuzzle, editPuzzle } from "../../../lib/puzzleEndpoints";
 
@@ -174,11 +175,11 @@ export default function ObjectEditor({
                     animCopy.blackboardData.draggable = true;
                     animCopy.blackboardData.jsonData.scaleBy = 3;
                 } else if (obj.value === "numpad-puzzle") {
-                    animCopy.blackboardData.jsonData.componentType = "keypad";
+                    animCopy.blackboardData.componentType = "keypad";
                     animCopy.blackboardData.jsonData.model = "numpad";
                     animCopy.blackboardData.jsonData.is_last_object = true;
                 } else if (obj.value === "keyboard-puzzle") {
-                    animCopy.blackboardData.jsonData.componentType = "keypad";
+                    animCopy.blackboardData.componentType = "keypad";
                     animCopy.blackboardData.jsonData.model = "basic";
                     animCopy.blackboardData.jsonData.is_last_object = true;
                 }
@@ -190,6 +191,12 @@ export default function ObjectEditor({
     const saveTexts = (texts) => {
         const animCopy = animationsJson;
         animCopy.blackboardData.jsonData.data = texts;
+        setAnimationsJson(animCopy);
+    };
+
+    const savePass = (pass) => {
+        const animCopy = animationsJson;
+        animCopy.blackboardData.jsonData.password = pass;
         setAnimationsJson(animCopy);
     };
 
@@ -234,6 +241,21 @@ export default function ObjectEditor({
                     alert("Error: Not all images have been uploaded yet");
                     return;
                 }
+            }
+            animCopy.blackboardData.jsonData.images = images;
+        }
+        if (
+            (isInteractable && puzzleType === "numpad-puzzle") ||
+            (isInteractable && puzzleType === "keyboard-puzzle")
+        ) {
+            if (animCopy.blackboardData.jsonData.password) {
+                if (animCopy.blackboardData.jsonData.password === "") {
+                    alert("Error: Password not set");
+                    return;
+                }
+            } else {
+                alert("Error: Password not set");
+                return;
             }
             animCopy.blackboardData.jsonData.images = images;
         }
@@ -382,6 +404,12 @@ export default function ObjectEditor({
                     isUnordered={false}
                     imagesLen={5}
                 />
+            ) : null}
+            {isInteractable && puzzleType === "numpad-puzzle" ? (
+                <KeypadPuzzle savePass={savePass} pass={""} classes={classes} />
+            ) : null}
+            {isInteractable && puzzleType === "keyboard-puzzle" ? (
+                <KeypadPuzzle savePass={savePass} pass={""} classes={classes} />
             ) : null}
             {!isInteractable || puzzleType !== "" ? (
                 <div>
