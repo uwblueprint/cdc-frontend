@@ -43,6 +43,8 @@ export default function RoomModal({
     // handle second page image upload for scenario creation
     const [pageNum, setPageNum] = useState(1);
     const [fileName, setFileName] = useState("");
+    const [fileType, setFileType] = useState("");
+    const [file, setFile] = useState(null);
     const [previewSrc, setPreviewSrc] = useState("");
 
     const [errors, setErrors] = useState({
@@ -61,7 +63,6 @@ export default function RoomModal({
         setIsPreviewable(room ? room.is_previewable : false);
         setRoomSolveTime(room ? room.expected_solve_time : "");
         setPreviewSrc(room ? room.display_image_url : "");
-        setFileName(room ? room.display_image_url : "");
         setErrors(
             room
                 ? room.errors
@@ -85,7 +86,8 @@ export default function RoomModal({
             const fileType = split[1];
 
             setFileName(fileName);
-            handleUploadDisplayImageSubmit(fileName, fileType, file);
+            setFileType(fileType);
+            setFile(file);
         }
     };
 
@@ -94,16 +96,30 @@ export default function RoomModal({
         file_type,
         display_image
     ) => {
-        const response = await createPresignedLinkAndUploadS3(
-            {
+        let body = {};
+
+        // if editting an existing room, include s3Key in body
+        if (room && room.display_image_url) {
+            body = {
                 file_type: file_type,
                 type: "image",
                 file_content: display_image,
-            },
+                s3Key: room.display_image_url,
+            };
+        } else {
+            body = {
+                file_type: file_type,
+                type: "image",
+                file_content: display_image,
+            };
+        }
+        const response = await createPresignedLinkAndUploadS3(
+            body,
             handleError
         );
 
         setPreviewSrc(response.data.s3_key);
+        return response.data.s3_key;
     };
 
     const handleRoomNameChange = (event) => {
@@ -204,7 +220,7 @@ export default function RoomModal({
         setPreviewSrc("");
     };
 
-    const handleModalSubmitClick = () => {
+    const handleModalSubmitClick = async () => {
         const error = Boolean(
             errors
                 ? errors.name ||
@@ -215,6 +231,15 @@ export default function RoomModal({
         );
 
         if (isEdit && !error) {
+            let display_image_url = "";
+            if (fileName !== "") {
+                display_image_url = await handleUploadDisplayImageSubmit(
+                    fileName,
+                    fileType,
+                    file
+                );
+            }
+
             handleSubmit({
                 name: roomName,
                 description: roomDescription,
@@ -222,14 +247,23 @@ export default function RoomModal({
                 is_published: isPublished,
                 is_previewable: isPreviewable,
                 expected_solve_time: roomSolveTime,
-                display_image_url: previewSrc,
+                display_image_url: display_image_url,
             });
         } else if (!isEdit && !error) {
+            let display_image_url = "";
+            if (fileName !== "") {
+                display_image_url = await handleUploadDisplayImageSubmit(
+                    fileName,
+                    fileType,
+                    file
+                );
+            }
+
             handleSubmit({
                 name: roomName,
                 description: roomDescription,
                 friendly_name: friendlyName,
-                display_image_url: previewSrc,
+                display_image_url: display_image_url,
             });
         }
 
@@ -372,7 +406,7 @@ export default function RoomModal({
                             type="file"
                             onChange={(e) => handleUploadFileChange(e)}
                         />
-                        {previewSrc !== "" ? (
+                        {previewSrc !== "" && fileName !== "" ? (
                             <div>{fileName} successfully uploaded</div>
                         ) : null}
                     </div>
