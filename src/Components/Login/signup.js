@@ -12,11 +12,11 @@ import empty from "is-empty";
 import { AccountCircle } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
 
-import { auth, generateUserDocument } from "../../firebaseCredentials.js";
+import { auth } from "../../firebaseCredentials.js";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
-        marginTop: theme.spacing(8),
+        marginTop: theme.spacing(12),
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -70,8 +70,6 @@ export default function Signup() {
                     auth.signOut();
                 });
             });
-            // Don't need the below line any more, will leave it for now, until we refactor out firebase user
-            generateUserDocument(user, { displayName });
             history.push("/login");
         } catch (error) {
             const errorCode = error.code;
@@ -167,8 +165,8 @@ export default function Signup() {
                         Create Account
                     </Button>
                     <Grid container>
-                        <Grid item xs>
-                            <Link href="/login" variant="body2">
+                        <Grid item xs style={{ textAlign: "center" }}>
+                            <Link href="/login" style={{ fontSize: 14 }}>
                                 Already have an account? Sign in
                             </Link>
                         </Grid>
