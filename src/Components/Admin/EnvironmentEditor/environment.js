@@ -20,8 +20,6 @@ import {
     duplicateScene,
 } from "../../../lib/sceneEndpoints";
 
-import InputBase from "@material-ui/core/InputBase";
-import SearchIcon from "@material-ui/icons/Search";
 import "../../../styles/index.css";
 import { Colours } from "../../../styles/Constants.ts";
 
@@ -66,40 +64,8 @@ const useStyles = makeStyles((theme) => ({
         display: "flex",
         justifyContent: "center",
         padding: "16px 12px",
-        backgroundColor: "#E2E5ED",
+        backgroundColor: Colours.Grey3,
         borderRadius: "12px",
-    },
-    search: {
-        position: "absolute",
-        borderRadius: "4px",
-        backgroundColor: Colours.White,
-        marginLeft: "431px",
-        height: "37px",
-        alignItems: "center",
-        [theme.breakpoints.up("sm")]: {
-            marginLeft: theme.spacing(3),
-            width: "auto",
-        },
-    },
-    searchIcon: {
-        padding: theme.spacing(0, 2),
-        height: "100%",
-        position: "absolute",
-        pointerEvents: "none",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        color: Colours.Grey6,
-    },
-    inputRoot: {
-        color: Colours.Grey6,
-    },
-    inputInput: {
-        padding: theme.spacing(1, 1, 1, 0),
-        paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-        [theme.breakpoints.up("md")]: {
-            width: "579px",
-        },
     },
 }));
 
@@ -328,26 +294,12 @@ export default function EnvironmentEditor({
     return (
         <div>
             <div className={classes.page}>
-                <Navbar home color="secondary" />
+                <Navbar home color="secondary" roomName={environment.name} />
                 <EnvironmentBar
                     onCreateButtonClick={onCreateButtonClick}
                     onTemplateButtonClick={onTemplateButtonClick}
                     isEnvironment
-                >
-                    <div className={classes.search}>
-                        <div className={classes.searchIcon}>
-                            <SearchIcon />
-                        </div>
-                        <InputBase
-                            placeholder="Search for objects and environments"
-                            classes={{
-                                root: classes.inputRoot,
-                                input: classes.inputInput,
-                            }}
-                            inputProps={{ "aria-label": "search" }}
-                        />
-                    </div>
-                </EnvironmentBar>
+                ></EnvironmentBar>
             </div>
             <div className={classes.container}>
                 {scenes !== undefined && scenes.length !== 0 ? (

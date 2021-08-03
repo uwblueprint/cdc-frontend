@@ -78,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Navbar({ home, search, color }) {
+export default function Navbar({ home, search, color, roomName }) {
     const classes = useStyles();
     const history = useHistory();
     const handleError = useErrorHandler();
@@ -119,7 +119,7 @@ export default function Navbar({ home, search, color }) {
             <AppBar position="fixed" color={color}>
                 <Toolbar className={classes.toolbar}>
                     {home && (
-                        <Fragment>
+                        <>
                             <IconButton
                                 onClick={handleHomeClick}
                                 color="inherit"
@@ -127,9 +127,9 @@ export default function Navbar({ home, search, color }) {
                                 <HomeIcon />
                             </IconButton>
                             <Typography className={classes.roomName}>
-                                Escape Room 1
+                                {roomName}
                             </Typography>
-                        </Fragment>
+                        </>
                     )}
                     {search && (
                         <div className={classes.search}>
@@ -173,12 +173,6 @@ export default function Navbar({ home, search, color }) {
                                 onClose={handleClose}
                                 className={classes.menu}
                             >
-                                <MenuItem
-                                    className={classes.Grey8}
-                                    onClick={handleClose}
-                                >
-                                    [Name]
-                                </MenuItem>
                                 <MenuItem onClick={handleClose}>
                                     Account Settings
                                 </MenuItem>

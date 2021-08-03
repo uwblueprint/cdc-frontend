@@ -51,12 +51,22 @@ const useStyles = makeStyles((theme) => ({
         width: "250px",
     },
     button: {
-        color: "white",
+        color: Colours.White,
+        "&:hover": {
+            backgroundColor: Colours.MainRed7,
+            color: Colours.White,
+        },
         borderRadius: "5px",
         backgroundColor: Colours.MainRed5,
         width: "164px",
         height: "44px",
         textTransform: "capitalize",
+    },
+    menuHeader: {
+        color: Colours.Grey5,
+        marginLeft: "16px",
+        marginTop: "6px",
+        marginBottom: "6px",
     },
 }));
 
@@ -123,7 +133,7 @@ export default function EnvironmentBar({
                             open={menuOpen}
                             onClose={onMenuClose}
                         >
-                            <MenuItem>Menu</MenuItem>
+                            <h3 className={classes.menuHeader}>Menu</h3>
                             <MenuItem>Rename Escape Room</MenuItem>
                             <MenuItem>Copy Editor Link</MenuItem>
                             <MenuItem>Delete</MenuItem>
