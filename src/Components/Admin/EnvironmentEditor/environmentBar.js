@@ -159,7 +159,7 @@ export default function EnvironmentBar({
                             open={addMenuOpen}
                             onClose={onAddMenuClose}
                         >
-                            <MenuItem>New Scene</MenuItem>
+                            <h3 className={classes.menuHeader}>New Scene</h3>
                             <MenuItem onClick={handleCreateButtonClick}>
                                 From Scratch
                             </MenuItem>

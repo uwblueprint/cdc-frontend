@@ -299,7 +299,7 @@ export default function EnvironmentEditor({
                     onCreateButtonClick={onCreateButtonClick}
                     onTemplateButtonClick={onTemplateButtonClick}
                     isEnvironment
-                ></EnvironmentBar>
+                />
             </div>
             <div className={classes.container}>
                 {scenes !== undefined && scenes.length !== 0 ? (
