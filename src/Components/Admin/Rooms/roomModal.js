@@ -62,7 +62,12 @@ export default function RoomModal({
         setIsPublished(room ? room.is_published : false);
         setIsPreviewable(room ? room.is_previewable : false);
         setRoomSolveTime(room ? room.expected_solve_time : "");
-        setPreviewSrc(room ? room.display_image_url : "");
+        setPreviewSrc(
+            room && room.display_image_url
+                ? process.env.REACT_APP_ADMIN_ASSET_PREFIX +
+                      room.display_image_url
+                : ""
+        );
         setErrors(
             room
                 ? room.errors
@@ -88,6 +93,8 @@ export default function RoomModal({
             setFileName(fileName);
             setFileType(fileType);
             setFile(file);
+            const previewUrl = URL.createObjectURL(file);
+            setPreviewSrc(previewUrl);
         }
     };
 
@@ -106,7 +113,7 @@ export default function RoomModal({
                 file_content: display_image,
                 s3Key: room.display_image_url,
             };
-        } else {
+        } else if (display_image) {
             body = {
                 file_type: file_type,
                 type: "image",
@@ -231,7 +238,7 @@ export default function RoomModal({
         );
 
         if (isEdit && !error) {
-            let display_image_url = "";
+            let display_image_url = room.display_image_url;
             if (fileName !== "") {
                 display_image_url = await handleUploadDisplayImageSubmit(
                     fileName,
@@ -390,11 +397,7 @@ export default function RoomModal({
                                     Image Preview:
                                 </Typography>
                                 <img
-                                    src={
-                                        process.env
-                                            .REACT_APP_ADMIN_ASSET_PREFIX +
-                                        previewSrc
-                                    }
+                                    src={previewSrc}
                                     width={500}
                                     objectFit={"contain"}
                                 ></img>
