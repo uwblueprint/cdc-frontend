@@ -4,10 +4,10 @@ import { Colours } from "./Constants.ts";
 export const Theme = createMuiTheme({
     palette: {
         primary: {
-            main: Colours.MainRed9,
+            main: Colours.MainRed5,
         },
         secondary: {
-            main: Colours.SkyBlue9,
+            main: Colours.Grey9,
         },
         error: {
             main: Colours.MainRed5,
