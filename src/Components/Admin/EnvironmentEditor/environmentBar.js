@@ -37,7 +37,6 @@ const useStyles = makeStyles((theme) => ({
     preview: {
         width: 30,
         height: 30,
-        marginTop: "px",
         color: Colours.White,
     },
     buttonWrapperRight: {
