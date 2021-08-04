@@ -11,6 +11,7 @@ import AddIcon from "@material-ui/icons/Add";
 import IconButton from "@material-ui/core/IconButton";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
+import Navbar from "./navbar.js";
 
 import EscapeRooms from "./Rooms/rooms.js";
 import Scenes from "./Scenes/scenes.js";
@@ -330,6 +331,7 @@ export default function Admin() {
         <Container component="main" maxWidth="xs">
             <CssBaseline />
             <div className={classes.paper}>
+                <Navbar search color="primary" />
                 <div className={classes.root}>
                     <IconButton
                         className={classes.addButton}
