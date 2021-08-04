@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import AddIcon from "@material-ui/icons/Add";
 import { IconButton } from "@material-ui/core";
 import { DeleteForever } from "@material-ui/icons";
+import TextField from "@material-ui/core/TextField";
 
 export default function KeypadPuzzle(props) {
     const [pass, setPass] = useState(props.pass);
@@ -32,6 +33,14 @@ export default function KeypadPuzzle(props) {
                     >
                         <AddIcon />
                     </IconButton>
+                    <TextField
+                        id="standard-number"
+                        label="Number"
+                        type="number"
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
                 </div>
             ) : (
                 <div>

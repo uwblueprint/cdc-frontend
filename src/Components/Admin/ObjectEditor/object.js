@@ -11,6 +11,11 @@ import UnorderedPuzzle from "../ObjectEditor/unorderedpuzzle";
 import KeypadPuzzle from "../ObjectEditor/keypadpuzzle";
 
 import { getPuzzle, editPuzzle } from "../../../lib/puzzleEndpoints";
+import MuiAlert from "@material-ui/lab/Alert";
+
+function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const useStyles = makeStyles((theme) => ({
     page: {
@@ -68,6 +73,10 @@ export default function ObjectEditor({
     const [isInteractable, setIsInteractable] = useState(null);
     const [header, setHeader] = useState("");
     const [images, setImages] = useState([]);
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [successText, setSuccessText] = useState("");
+    const [showError, setShowError] = useState(false);
+    const [errorText, setErrorText] = useState("");
 
     const puzzleTypeList = [
         { value: "text-pane", label: "Text Puzzle" },
@@ -115,7 +124,25 @@ export default function ObjectEditor({
         if (isInteractable === null && Object.keys(origAnimJson).length === 0) {
             getPuzzleBody();
         }
-    }, [sceneId, objectId, isInteractable, origAnimJson, handleError]);
+        if (showSuccess) {
+            setTimeout(() => {
+                setShowSuccess(false);
+            }, 5000);
+        }
+        if (showError) {
+            setTimeout(() => {
+                setShowError(false);
+            }, 5000);
+        }
+    }, [
+        sceneId,
+        objectId,
+        isInteractable,
+        origAnimJson,
+        showSuccess,
+        showError,
+        handleError,
+    ]);
 
     const selectPuzzleType = (obj) => {
         if (obj) {
@@ -238,7 +265,10 @@ export default function ObjectEditor({
         ) {
             for (let i = 0; i < images.length; i++) {
                 if (images[i].imageSrc === "") {
-                    alert("Error: Not all images have been uploaded yet");
+                    setErrorText(
+                        "Error: Not all images have been uploaded yet"
+                    );
+                    setShowError(true);
                     return;
                 }
             }
@@ -250,11 +280,13 @@ export default function ObjectEditor({
         ) {
             if (animCopy.blackboardData.jsonData.password) {
                 if (animCopy.blackboardData.jsonData.password === "") {
-                    alert("Error: Password not set");
+                    setErrorText("Error: Password not set");
+                    setShowError(true);
                     return;
                 }
             } else {
-                alert("Error: Password not set");
+                setErrorText("Error: Password not set");
+                setShowError(true);
                 return;
             }
             animCopy.blackboardData.jsonData.images = images;
@@ -272,11 +304,15 @@ export default function ObjectEditor({
             puzzleType === "text-pane" &&
             animationsJson?.blackboardData?.jsonData?.data?.length === 0
         ) {
-            alert("Error: Need at least one text to save text-pane");
+            setErrorText("Error: Need at least one text to save text-pane");
+            setShowError(true);
             return;
         }
         savePuzzle();
-        alert("Saved puzzle CRUD changes for object with id: " + objectId);
+        setSuccessText(
+            "Saved puzzle CRUD changes for object with id: " + objectId
+        );
+        setShowSuccess(true);
     };
 
     const toggleButton = () => {
@@ -297,7 +333,10 @@ export default function ObjectEditor({
             if (newText.text.length <= 100) {
                 setHeader(newText.text);
             } else {
-                alert("Error: Maximum header text length is 100 characters");
+                setErrorText(
+                    "Error: Maximum header text length is 100 characters"
+                );
+                setShowError(true);
             }
         }
     };
@@ -418,6 +457,10 @@ export default function ObjectEditor({
                     </Button>
                 </div>
             ) : null}
+            {showSuccess ? (
+                <Alert severity="success">{successText}</Alert>
+            ) : null}
+            {showError ? <Alert severity="error">{errorText}</Alert> : null}
         </div>
     );
 }
