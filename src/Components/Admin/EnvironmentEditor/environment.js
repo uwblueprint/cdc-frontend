@@ -451,7 +451,10 @@ export default function EnvironmentEditor({
             />
             <DeleteModal
                 open={deleteModalOpen}
-                confirmMessage="Are you sure you want to delete this scene?"
+                title="Delete Scene and Transition"
+                confirmMessage={
+                    "Are you sure you want to delete this scene?\nDeleting the scene will also delete the transition."
+                }
                 handleClose={onDeleteModalCancel}
                 handleSubmit={onDeleteModalSubmit}
             />
