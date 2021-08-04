@@ -1,13 +1,13 @@
 body {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "PT Sans", "Open Sans",
-        "Darker Grotesque", "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
-        "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Darker Grotesque",
+        "Open Sans", "Segoe UI", "Roboto", "Helvetica Neue", "Oxygen", "Ubuntu",
+        "Cantarell", "Fira Sans", "Droid Sans", "PT Sans", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-    font-family: source-code-pro, "PT Sans", "Open Sans", "Darker Grotesque",
+    font-family: source-code-pro, "Darker Grotesque", "Open Sans", "PT Sans",
         Menlo, Monaco, Consolas, monospace;
 }
