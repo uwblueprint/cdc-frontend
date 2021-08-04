@@ -289,6 +289,9 @@ export default function EnvironmentEditor({
         setScenes(modifiedScenes);
         setDeleteSceneId(null);
         setDeleteModalOpen(false);
+
+        const data = await getScenario(environmentId, handleError);
+        setEnvironment(data);
     };
 
     return (
