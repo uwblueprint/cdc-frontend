@@ -16,8 +16,17 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
+function NewlineText(string) {
+    return string.split("\n").map((str, index) => (
+        <p style={{ fontSize: 14, lineHeight: "16px" }} key={index}>
+            {str}
+        </p>
+    ));
+}
+
 export default function DeleteModal({
     open,
+    title = "",
     confirmMessage,
     handleClose,
     handleSubmit,
@@ -25,7 +34,10 @@ export default function DeleteModal({
     const classes = useStyles();
     return (
         <Dialog open={open} onClose={handleClose}>
-            <DialogContent>{confirmMessage}</DialogContent>
+            <DialogContent>
+                {title}
+                {NewlineText(confirmMessage)}
+            </DialogContent>
             <DialogActions className={classes.buttonContainer}>
                 <Button onClick={handleClose}>Cancel</Button>
                 <Button onClick={handleSubmit} className={classes.deleteButton}>

@@ -391,6 +391,7 @@ export default function Admin() {
                     />
                     <DeleteModal
                         open={deleteModalOpen}
+                        title="Delete Room"
                         confirmMessage="Are you sure you want to delete this room?"
                         handleClose={handleDeleteRoomCancel}
                         handleSubmit={handleDeleteRoomSubmit}
@@ -402,6 +403,7 @@ export default function Admin() {
                     />
                     <DeleteModal
                         open={deleteAssetModalOpen}
+                        title="Delete Asset"
                         confirmMessage="Are you sure you want to delete this asset?"
                         handleClose={handleDeleteAssetCancel}
                         handleSubmit={handleDeleteAssetSubmit}
