@@ -121,6 +121,7 @@ export default function RoomCard({ data, handleEditClick, handleDeleteClick }) {
     const history = useHistory();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [isHighlighted, setIsHighlighted] = React.useState(false);
+    const imageHash = Date.now();
 
     const handleMenuClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -166,12 +167,20 @@ export default function RoomCard({ data, handleEditClick, handleDeleteClick }) {
                     justify="center"
                 >
                     <img
+                        key={data.id}
                         className={
                             isHighlighted
                                 ? classes.selectedCardImage
                                 : classes.cardImage
                         }
-                        src={data.image ? data.image : defaultImage}
+                        src={
+                            data.display_image_url
+                                ? process.env.REACT_APP_ADMIN_ASSET_PREFIX +
+                                  data.display_image_url +
+                                  "?" +
+                                  imageHash
+                                : defaultImage
+                        }
                         alt="Escape Room"
                     />
                 </Grid>

@@ -200,6 +200,7 @@ export default function Admin() {
         name,
         description,
         friendly_name,
+        display_image_url,
     }) => {
         setCreateModalOpen(false);
         const resp = await postScenario(
@@ -207,6 +208,7 @@ export default function Admin() {
                 name,
                 description,
                 friendly_name,
+                display_image_url,
             },
             handleError
         );
@@ -228,6 +230,7 @@ export default function Admin() {
         is_published,
         is_previewable,
         expected_solve_time,
+        display_image_url,
     }) => {
         setEditModalOpen(false);
         const resp = await editScenario(
@@ -240,6 +243,7 @@ export default function Admin() {
                 is_published,
                 is_previewable,
                 expected_solve_time,
+                display_image_url,
             },
             handleError
         );
@@ -387,6 +391,7 @@ export default function Admin() {
                     />
                     <DeleteModal
                         open={deleteModalOpen}
+                        title="Delete Room"
                         confirmMessage="Are you sure you want to delete this room?"
                         handleClose={handleDeleteRoomCancel}
                         handleSubmit={handleDeleteRoomSubmit}
@@ -398,6 +403,7 @@ export default function Admin() {
                     />
                     <DeleteModal
                         open={deleteAssetModalOpen}
+                        title="Delete Asset"
                         confirmMessage="Are you sure you want to delete this asset?"
                         handleClose={handleDeleteAssetCancel}
                         handleSubmit={handleDeleteAssetSubmit}
