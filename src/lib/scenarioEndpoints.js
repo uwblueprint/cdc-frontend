@@ -23,7 +23,7 @@ export const getScenario = async (id, handleError) => {
 };
 
 export const postScenario = async (
-    { name, description, friendly_name },
+    { name, description, friendly_name, display_image_url },
     handleError
 ) => {
     try {
@@ -31,6 +31,7 @@ export const postScenario = async (
             name,
             description,
             friendly_name,
+            display_image_url,
         });
         return response;
     } catch (error) {
@@ -50,6 +51,7 @@ export const editScenario = async (
         is_previewable,
         expected_solve_time,
         transitions,
+        display_image_url,
     },
     handleError
 ) => {
@@ -63,6 +65,7 @@ export const editScenario = async (
             is_previewable,
             expected_solve_time,
             transitions,
+            display_image_url,
         });
         return response;
     } catch (error) {

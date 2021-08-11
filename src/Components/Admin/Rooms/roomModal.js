@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
@@ -9,6 +9,9 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import { useErrorHandler } from "react-error-boundary";
+
+import { createPresignedLinkAndUploadS3 } from "../../../lib/s3Utility";
 
 const useStyles = makeStyles(() => ({
     textField: {
@@ -28,17 +31,28 @@ export default function RoomModal({
     isEdit,
 }) {
     const classes = useStyles();
-    const [roomName, setRoomName] = React.useState("");
-    const [friendlyName, setFriendlyName] = React.useState("");
-    const [roomDescription, setRoomDescription] = React.useState("");
-    const [roomSolveTime, setRoomSolveTime] = React.useState("");
-    const [isPublished, setIsPublished] = React.useState(false);
-    const [isPreviewable, setIsPreviewable] = React.useState(false);
-    const [errors, setErrors] = React.useState({
+    const handleError = useErrorHandler();
+
+    const [roomName, setRoomName] = useState("");
+    const [friendlyName, setFriendlyName] = useState("");
+    const [roomDescription, setRoomDescription] = useState("");
+    const [roomSolveTime, setRoomSolveTime] = useState("");
+    const [isPublished, setIsPublished] = useState(false);
+    const [isPreviewable, setIsPreviewable] = useState(false);
+
+    // handle second page image upload for scenario creation
+    const [pageNum, setPageNum] = useState(1);
+    const [fileName, setFileName] = useState("");
+    const [fileType, setFileType] = useState("");
+    const [file, setFile] = useState(null);
+    const [previewSrc, setPreviewSrc] = useState("");
+
+    const [errors, setErrors] = useState({
         name: "",
         friendlyName: "",
         description: "",
         solveTime: "",
+        assetUpload: "",
     });
 
     useEffect(() => {
@@ -48,6 +62,12 @@ export default function RoomModal({
         setIsPublished(room ? room.is_published : false);
         setIsPreviewable(room ? room.is_previewable : false);
         setRoomSolveTime(room ? room.expected_solve_time : "");
+        setPreviewSrc(
+            room && room.display_image_url
+                ? process.env.REACT_APP_ADMIN_ASSET_PREFIX +
+                      room.display_image_url
+                : ""
+        );
         setErrors(
             room
                 ? room.errors
@@ -59,6 +79,55 @@ export default function RoomModal({
                   }
         );
     }, [room]);
+
+    const handleUploadFileChange = (event) => {
+        setErrors({ ...errors, assetUpload: "" });
+        if (event.target.files && event.target.files[0]) {
+            const file = event.target.files[0];
+            const name = file.name;
+            const lastDot = name.lastIndexOf(".");
+            const split = name.split(lastDot);
+            const fileName = split[0];
+            const fileType = split[1];
+
+            setFileName(fileName);
+            setFileType(fileType);
+            setFile(file);
+            const previewUrl = URL.createObjectURL(file);
+            setPreviewSrc(previewUrl);
+        }
+    };
+
+    const handleUploadDisplayImageSubmit = async (
+        name,
+        file_type,
+        display_image
+    ) => {
+        let body = {};
+
+        // if editting an existing room, include s3Key in body
+        if (room && room.display_image_url) {
+            body = {
+                file_type: file_type,
+                type: "image",
+                file_content: display_image,
+                s3Key: room.display_image_url,
+            };
+        } else if (display_image) {
+            body = {
+                file_type: file_type,
+                type: "image",
+                file_content: display_image,
+            };
+        }
+        const response = await createPresignedLinkAndUploadS3(
+            body,
+            handleError
+        );
+
+        setPreviewSrc(response.data.s3_key);
+        return response.data.s3_key;
+    };
 
     const handleRoomNameChange = (event) => {
         const response = event.target.value;
@@ -135,7 +204,30 @@ export default function RoomModal({
         }
     };
 
-    const handleModalSubmitClick = () => {
+    const handleModalCloseClick = () => {
+        resetFields();
+        handleModalClose();
+    };
+
+    const resetFields = () => {
+        setRoomName("");
+        setFriendlyName("");
+        setRoomDescription("");
+        setIsPublished(false);
+        setIsPreviewable(false);
+        setRoomSolveTime("");
+        setErrors({
+            name: "",
+            friendlyName: "",
+            description: "",
+            solveTime: "",
+        });
+        setPageNum(1);
+        setFileName("");
+        setPreviewSrc("");
+    };
+
+    const handleModalSubmitClick = async () => {
         const error = Boolean(
             errors
                 ? errors.name ||
@@ -146,6 +238,15 @@ export default function RoomModal({
         );
 
         if (isEdit && !error) {
+            let display_image_url = room.display_image_url;
+            if (fileName !== "") {
+                display_image_url = await handleUploadDisplayImageSubmit(
+                    fileName,
+                    fileType,
+                    file
+                );
+            }
+
             handleSubmit({
                 name: roomName,
                 description: roomDescription,
@@ -153,14 +254,27 @@ export default function RoomModal({
                 is_published: isPublished,
                 is_previewable: isPreviewable,
                 expected_solve_time: roomSolveTime,
+                display_image_url: display_image_url,
             });
         } else if (!isEdit && !error) {
+            let display_image_url = "";
+            if (fileName !== "") {
+                display_image_url = await handleUploadDisplayImageSubmit(
+                    fileName,
+                    fileType,
+                    file
+                );
+            }
+
             handleSubmit({
                 name: roomName,
                 description: roomDescription,
                 friendly_name: friendlyName,
+                display_image_url: display_image_url,
             });
         }
+
+        resetFields();
     };
 
     const handleIsPublishedClick = () => {
@@ -172,90 +286,147 @@ export default function RoomModal({
     };
 
     return (
-        <Dialog open={modalOpen} onClose={handleModalClose}>
+        <Dialog open={modalOpen} onClose={handleModalCloseClick}>
             <DialogTitle>
                 {isEdit ? "Edit Escape Room" : "New Escape Room"}
             </DialogTitle>
             <DialogContent>
-                <div>
-                    <Typography component="div" variant="h5">
-                        Room Name:{" "}
-                    </Typography>
-                    <TextField
-                        value={roomName}
-                        onChange={handleRoomNameChange}
-                        className={classes.textField}
-                        required
-                        error={Boolean(errors ? errors.name : false)}
-                        helperText={errors ? errors.name : false}
-                    />
-                </div>
-                <div>
-                    <Typography component="div" variant="h5">
-                        Room Friendly Name:{" "}
-                    </Typography>
-                    <TextField
-                        value={friendlyName}
-                        onChange={handleFriendlyNameChange}
-                        className={classes.textField}
-                        required
-                        error={Boolean(errors ? errors.friendlyName : false)}
-                        helperText={errors ? errors.friendlyName : false}
-                    />
-                </div>
-                <div>
-                    <Typography component="div" variant="h5">
-                        Room Description:{" "}
-                    </Typography>
-                    <TextField
-                        value={roomDescription}
-                        onChange={handleRoomDescriptionChange}
-                        className={classes.textField}
-                        required
-                        error={Boolean(errors ? errors.description : false)}
-                        helperText={errors ? errors.description : false}
-                    />
-                </div>
-                {isEdit && (
+                {pageNum === 1 ? (
+                    <>
+                        <div>
+                            <Typography component="div" variant="h5">
+                                Room Name:{" "}
+                            </Typography>
+                            <TextField
+                                value={roomName}
+                                onChange={handleRoomNameChange}
+                                className={classes.textField}
+                                required
+                                error={Boolean(errors ? errors.name : false)}
+                                helperText={errors ? errors.name : false}
+                            />
+                        </div>
+                        <div>
+                            <Typography component="div" variant="h5">
+                                Room Friendly Name:{" "}
+                            </Typography>
+                            <TextField
+                                value={friendlyName}
+                                onChange={handleFriendlyNameChange}
+                                className={classes.textField}
+                                required
+                                error={Boolean(
+                                    errors ? errors.friendlyName : false
+                                )}
+                                helperText={
+                                    errors ? errors.friendlyName : false
+                                }
+                            />
+                        </div>
+                        <div>
+                            <Typography component="div" variant="h5">
+                                Room Description:{" "}
+                            </Typography>
+                            <TextField
+                                value={roomDescription}
+                                onChange={handleRoomDescriptionChange}
+                                className={classes.textField}
+                                required
+                                error={Boolean(
+                                    errors ? errors.description : false
+                                )}
+                                helperText={errors ? errors.description : false}
+                            />
+                        </div>
+                        {isEdit && (
+                            <div>
+                                <Typography component="div" variant="h5">
+                                    Expected Solve Time:{" "}
+                                </Typography>
+                                <TextField
+                                    value={roomSolveTime}
+                                    onChange={handleRoomSolveTimeChange}
+                                    className={classes.textField}
+                                    required
+                                    error={Boolean(
+                                        errors ? errors.solveTime : false
+                                    )}
+                                    helperText={
+                                        errors ? errors.solveTime : false
+                                    }
+                                />
+                                <FormControlLabel
+                                    value="Room is Published"
+                                    control={
+                                        <Checkbox
+                                            onClick={handleIsPublishedClick}
+                                            checked={isPublished}
+                                        />
+                                    }
+                                    label="Room is Published"
+                                />
+                                <FormControlLabel
+                                    value="Room is Previewable"
+                                    control={
+                                        <Checkbox
+                                            onClick={handleIsPreviewableClick}
+                                            checked={isPreviewable}
+                                        />
+                                    }
+                                    label="Room is Previewable"
+                                />
+                            </div>
+                        )}
+                    </>
+                ) : (
                     <div>
-                        <Typography component="div" variant="h5">
-                            Expected Solve Time:{" "}
+                        <Typography
+                            component="div"
+                            variant="h5"
+                            style={{ width: "100%" }}
+                        >
+                            Upload Image
                         </Typography>
-                        <TextField
-                            value={roomSolveTime}
-                            onChange={handleRoomSolveTimeChange}
-                            className={classes.textField}
-                            required
-                            error={Boolean(errors ? errors.solveTime : false)}
-                            helperText={errors ? errors.solveTime : false}
+                        {previewSrc ? (
+                            <div>
+                                <Typography
+                                    component="div"
+                                    variant="h6"
+                                    style={{ width: "100%" }}
+                                >
+                                    Image Preview:
+                                </Typography>
+                                <img
+                                    src={previewSrc}
+                                    width={500}
+                                    objectFit={"contain"}
+                                ></img>
+                            </div>
+                        ) : null}
+                        <input
+                            accept=".jpg,.jpeg,.png"
+                            style={{ width: "100%" }}
+                            type="file"
+                            onChange={(e) => handleUploadFileChange(e)}
                         />
-                        <FormControlLabel
-                            value="Room is Published"
-                            control={
-                                <Checkbox
-                                    onClick={handleIsPublishedClick}
-                                    checked={isPublished}
-                                />
-                            }
-                            label="Room is Published"
-                        />
-                        <FormControlLabel
-                            value="Room is Previewable"
-                            control={
-                                <Checkbox
-                                    onClick={handleIsPreviewableClick}
-                                    checked={isPreviewable}
-                                />
-                            }
-                            label="Room is Previewable"
-                        />
+                        {previewSrc !== "" && fileName !== "" ? (
+                            <div>{fileName} successfully uploaded</div>
+                        ) : null}
                     </div>
                 )}
             </DialogContent>
             <DialogActions className={classes.buttonContainer}>
-                <Button onClick={handleModalClose}> Cancel </Button>
-                <Button onClick={handleModalSubmitClick}>
-                    {isEdit ? "Edit" : "Create"}
+                <Button onClick={handleModalCloseClick}> Cancel </Button>
+                <Button
+                    onClick={
+                        pageNum === 2
+                            ? handleModalSubmitClick
+                            : () => {
+                                  setPageNum(2);
+                              }
+                    }
+                >
+                    {pageNum === 1 ? "Next" : isEdit ? "Edit" : "Create"}
                 </Button>
             </DialogActions>
         </Dialog>
