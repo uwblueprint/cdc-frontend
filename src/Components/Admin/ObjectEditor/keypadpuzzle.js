@@ -11,8 +11,12 @@ export default function KeypadPuzzle(props) {
         const newPass = prompt("Enter the text for the puzzle: ");
 
         if (newPass) {
-            props.savePass(newPass);
-            setPass(newPass);
+            if (newPass !== /^[0-9.,]+$/) {
+                alert("Error: Password may only contain numbers");
+            } else {
+                props.savePass(newPass);
+                setPass(newPass);
+            }
         }
     };
 
@@ -33,14 +37,16 @@ export default function KeypadPuzzle(props) {
                     >
                         <AddIcon />
                     </IconButton>
-                    <TextField
-                        id="standard-number"
-                        label="Number"
-                        type="number"
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
+                    {props.isNumpad ? (
+                        <TextField
+                            id="standard-number"
+                            label="Number"
+                            type="number"
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                        />
+                    ) : null}
                 </div>
             ) : (
                 <div>

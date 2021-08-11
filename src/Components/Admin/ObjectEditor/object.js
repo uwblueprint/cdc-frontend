@@ -445,10 +445,20 @@ export default function ObjectEditor({
                 />
             ) : null}
             {isInteractable && puzzleType === "numpad-puzzle" ? (
-                <KeypadPuzzle savePass={savePass} pass={""} classes={classes} />
+                <KeypadPuzzle
+                    savePass={savePass}
+                    pass={""}
+                    isNumpad={true}
+                    classes={classes}
+                />
             ) : null}
             {isInteractable && puzzleType === "keyboard-puzzle" ? (
-                <KeypadPuzzle savePass={savePass} pass={""} classes={classes} />
+                <KeypadPuzzle
+                    savePass={savePass}
+                    pass={""}
+                    isNumpad={false}
+                    classes={classes}
+                />
             ) : null}
             {!isInteractable || puzzleType !== "" ? (
                 <div>
