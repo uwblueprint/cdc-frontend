@@ -87,6 +87,13 @@ export const fileToByteArray = (file, setByteArray) => {
     });
 };
 
+export const fileToBase64String = (file, setBase64String) => {
+    fileToDataUri(file).then((dataUri) => {
+        const dataUriSplit = dataUri.split(",")[1];
+        setBase64String(dataUriSplit);
+    });
+};
+
 const fileToDataUri = (file) =>
     new Promise((resolve) => {
         const reader = new FileReader();

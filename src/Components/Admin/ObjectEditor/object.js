@@ -10,6 +10,7 @@ import VisualPaneView from "../ObjectEditor/visualpaneview";
 import UnorderedPuzzle from "../ObjectEditor/unorderedpuzzle";
 
 import { getPuzzle, editPuzzle } from "../../../lib/puzzleEndpoints";
+import JigsawPuzzle from "./jigsawpuzzle";
 
 const useStyles = makeStyles((theme) => ({
     page: {
@@ -185,6 +186,12 @@ export default function ObjectEditor({
         setAnimationsJson(animCopy);
     };
 
+    const saveJigsawImages = (images) => {
+        const animCopy = animationsJson;
+        animCopy.blackboardData.jsonData.images = images;
+        setAnimationsJson(animCopy);
+    };
+
     const saveImageN = (index, s3Key) => {
         const imagesCopy = images;
         imagesCopy[index].imageSrc = s3Key;
@@ -327,6 +334,12 @@ export default function ObjectEditor({
                             : ""
                     }
                     src={animationsJson.blackboardData.jsonData.imageSrc}
+                />
+            ) : null}
+            {isInteractable && puzzleType === "jigsaw-puzzle" ? (
+                <JigsawPuzzle
+                    saveJigsawImages={saveJigsawImages}
+                    images={animationsJson.blackboardData.jsonData.images}
                 />
             ) : null}
             {isInteractable && puzzleType === "unordered-puzzle" ? (
