@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Container from "@material-ui/core/Container";
@@ -11,6 +11,7 @@ import AddIcon from "@material-ui/icons/Add";
 import IconButton from "@material-ui/core/IconButton";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
+import Navbar from "./navbar.js";
 
 import EscapeRooms from "./Rooms/rooms.js";
 import Scenes from "./Scenes/scenes.js";
@@ -25,7 +26,6 @@ import {
     editScenario,
     deleteScenario,
 } from "../../lib/scenarioEndpoints";
-import { UserContext } from "../../Providers/UserProviders";
 import { getAllScenes } from "../../lib/sceneEndpoints";
 import {
     getAllAssets,
@@ -34,6 +34,7 @@ import {
 } from "../../lib/assetEndpoints";
 import { useErrorHandler } from "react-error-boundary";
 import { createPresignedLinkAndUploadS3 } from "../../lib/s3Utility";
+import { Colours } from "../../styles/Constants.ts";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -81,44 +82,58 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
         background: "#fafafa",
     },
-    tab: {
+
+    defaultTab: {
         maxWidth: "182px",
         height: "65px",
-        background: "#E4EBFF",
-        borderTopRightRadius: "32px",
-        borderTopLeftRadius: "32px",
         top: "20px",
         fontFamily: "Arial",
         fontStyle: "normal",
         fontWeight: "600",
         fontSize: "18px",
-        lineHeight: "20px",
-        color: "#737272",
+        lineHeight: "25px",
+        color: Colours.Grey5,
         textTransform: "capitalize",
-        marginBottom: "10px",
+        marginBottom: "17px",
+        borderBottom: "solid",
+        borderColor: Colours.Grey5,
+        borderBottomWidth: "5px",
+    },
+    activeTab: {
+        maxWidth: "182px",
+        height: "65px",
+        top: "20px",
+        fontFamily: "Arial",
+        fontStyle: "normal",
+        fontWeight: "600",
+        fontSize: "18px",
+        lineHeight: "25px",
+        color: Colours.MainRed5,
+        textTransform: "capitalize",
+        marginBottom: "17px",
+    },
+    tabs: {
+        "& .MuiTabs-indicator": {
+            backgroundColor: Colours.MainRed5,
+        },
     },
     addButton: {
         marginTop: theme.spacing(3),
         marginRight: theme.spacing(1),
         width: "50px",
         height: "50px",
-        background: "#B9BECE",
+        background: Colours.MainRed5,
         borderRadius: "24.5px",
         color: "white",
         float: "right",
     },
     tabBackground: {
-        background: "#E4EBFF",
         width: "1000px",
-        borderBottomRightRadius: "32px",
-        borderBottomLeftRadius: "32px",
-        borderTopRightRadius: "32px",
     },
 }));
 
 export default function Admin() {
     const classes = useStyles();
-    const { user } = useContext(UserContext);
     const handleError = useErrorHandler();
 
     const [value, setValue] = React.useState("rooms");
@@ -165,6 +180,10 @@ export default function Admin() {
         }
     }, [value, handleError]);
 
+    const getTabStyle = (isActive) => {
+        return isActive ? classes.activeTab : classes.defaultTab;
+    };
+
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
@@ -181,6 +200,7 @@ export default function Admin() {
         name,
         description,
         friendly_name,
+        display_image_url,
     }) => {
         setCreateModalOpen(false);
         const resp = await postScenario(
@@ -188,6 +208,7 @@ export default function Admin() {
                 name,
                 description,
                 friendly_name,
+                display_image_url,
             },
             handleError
         );
@@ -209,6 +230,7 @@ export default function Admin() {
         is_published,
         is_previewable,
         expected_solve_time,
+        display_image_url,
     }) => {
         setEditModalOpen(false);
         const resp = await editScenario(
@@ -221,6 +243,7 @@ export default function Admin() {
                 is_published,
                 is_previewable,
                 expected_solve_time,
+                display_image_url,
             },
             handleError
         );
@@ -312,13 +335,7 @@ export default function Admin() {
         <Container component="main" maxWidth="xs">
             <CssBaseline />
             <div className={classes.paper}>
-                <Typography component="div" variant="h5">
-                    Admin Dashboard 😎
-                </Typography>
-                <Typography component="div" variant="h6">
-                    Welcome {user.display_name}
-                </Typography>
-
+                <Navbar search color="primary" />
                 <div className={classes.root}>
                     <IconButton
                         className={classes.addButton}
@@ -374,6 +391,7 @@ export default function Admin() {
                     />
                     <DeleteModal
                         open={deleteModalOpen}
+                        title="Delete Room"
                         confirmMessage="Are you sure you want to delete this room?"
                         handleClose={handleDeleteRoomCancel}
                         handleSubmit={handleDeleteRoomSubmit}
@@ -385,35 +403,40 @@ export default function Admin() {
                     />
                     <DeleteModal
                         open={deleteAssetModalOpen}
+                        title="Delete Asset"
                         confirmMessage="Are you sure you want to delete this asset?"
                         handleClose={handleDeleteAssetCancel}
                         handleSubmit={handleDeleteAssetSubmit}
                     />
                     <Tabs
                         value={value}
-                        indicatorColor="primary"
+                        className={classes.tabs}
                         onChange={handleChange}
                     >
                         <Tab
-                            className={classes.tab}
+                            disableRipple
+                            className={getTabStyle(value === "rooms")}
                             value="rooms"
                             label="Escape Rooms"
                             {...TabHelper("rooms")}
                         />
                         <Tab
-                            className={classes.tab}
+                            disableRipple
+                            className={getTabStyle(value === "scenes")}
                             value="scenes"
                             label="Scenes"
                             {...TabHelper("scenes")}
                         />
                         <Tab
-                            className={classes.tab}
+                            disableRipple
+                            className={getTabStyle(value === "assets")}
                             value="assets"
                             label="Object Assets"
                             {...TabHelper("assets")}
                         />
                         <Tab
-                            className={classes.tab}
+                            disableRipple
+                            className={getTabStyle(value === "stats")}
                             value="stats"
                             label="Statistics"
                             {...TabHelper("stats")}

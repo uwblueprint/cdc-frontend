@@ -11,6 +11,7 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import Navbar from "../Admin/navbar.js";
 import empty from "is-empty";
 import { useHistory } from "react-router-dom";
 import { useErrorHandler } from "react-error-boundary";
@@ -124,6 +125,7 @@ export default function Login() {
         <Container component="main" maxWidth="xs">
             <CssBaseline />
             <div className={classes.paper}>
+                <Navbar color="primary" />
                 <Avatar className={classes.avatar}>
                     <LockOutlinedIcon />
                 </Avatar>
