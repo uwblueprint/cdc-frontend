@@ -4,10 +4,7 @@ import { Button } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import AddIcon from "@material-ui/icons/Add";
 import { IconButton } from "@material-ui/core";
-import {
-    fileToByteArray,
-    createPresignedLinkAndUploadS3,
-} from "../../../lib/s3Utility";
+import { fileToByteArray } from "../../../lib/s3Utility";
 import { makeStyles } from "@material-ui/core/styles";
 import { DeleteForever } from "@material-ui/icons";
 
@@ -41,28 +38,14 @@ export default function VisualPaneView(props) {
     const [imageSrc, setImageSrc] = React.useState(props.src);
 
     useEffect(() => {
-        const handleUploadImageSubmit = async (
-            name,
-            file_type,
-            object_type,
-            imageByteArray
-        ) => {
-            const response = await createPresignedLinkAndUploadS3(
-                {
-                    file_type: file_type,
-                    type: "image",
-                    file_content: imageByteArray,
-                },
-                handleError
-            );
-
-            const imagePrefix = process.env.REACT_APP_ADMIN_ASSET_PREFIX;
-            setImageSrc(imagePrefix + response.data.s3_key);
-            props.saveImage(caption, imagePrefix + response.data.s3_key);
+        const handleUploadImageSubmit = async (imageByteArray) => {
+            const blob = new Blob([imageByteArray], { type: "" });
+            setImageSrc(URL.createObjectURL(blob));
+            props.saveImage(caption, imageByteArray, type);
         };
 
         const uploadImage = async () => {
-            handleUploadImageSubmit(name, type, "image", imageByteArray);
+            handleUploadImageSubmit(imageByteArray);
             setUploaded(true);
             setImageByteArray(null);
         };
@@ -70,7 +53,7 @@ export default function VisualPaneView(props) {
         if (imageByteArray !== null) {
             uploadImage();
         }
-    }, [name, type, imageByteArray, caption, props, handleError]);
+    }, [type, imageByteArray, caption, props, handleError]);
 
     const handleUploadFileChange = async (event) => {
         if (event.target.files && event.target.files[0]) {

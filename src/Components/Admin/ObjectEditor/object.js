@@ -10,6 +10,7 @@ import VisualPaneView from "../ObjectEditor/visualpaneview";
 import UnorderedPuzzle from "../ObjectEditor/unorderedpuzzle";
 
 import { getPuzzle, editPuzzle } from "../../../lib/puzzleEndpoints";
+import { createPresignedLinkAndUploadS3 } from "../../../lib/s3Utility";
 import JigsawPuzzle from "./jigsawpuzzle";
 
 const useStyles = makeStyles((theme) => ({
@@ -179,10 +180,11 @@ export default function ObjectEditor({
         setAnimationsJson(animCopy);
     };
 
-    const saveImage = (caption, s3Key) => {
+    const saveImage = (caption, imgArr, type) => {
         const animCopy = animationsJson;
         animCopy.blackboardData.jsonData.caption = caption;
-        animCopy.blackboardData.jsonData.imageSrc = s3Key;
+        animCopy.blackboardData.jsonData.imgArr = imgArr;
+        animCopy.blackboardData.jsonData.type = type;
         setAnimationsJson(animCopy);
     };
 
@@ -192,9 +194,10 @@ export default function ObjectEditor({
         setAnimationsJson(animCopy);
     };
 
-    const saveImageN = (index, s3Key) => {
+    const saveImageN = (index, imgArr, type) => {
         const imagesCopy = images;
-        imagesCopy[index].imageSrc = s3Key;
+        imagesCopy[index].imgArr = imgArr;
+        imagesCopy[index].type = type;
         setImages(imagesCopy);
     };
 
@@ -226,6 +229,41 @@ export default function ObjectEditor({
         setAnimationsJson(animCopy);
 
         const savePuzzle = async () => {
+            const animCopy = animationsJson;
+            if (isInteractable && puzzleType === "visual-pane") {
+                const response = await createPresignedLinkAndUploadS3(
+                    {
+                        file_type: animCopy.blackboardData.jsonData.type,
+                        type: "image",
+                        file_content: animCopy.blackboardData.jsonData.imgArr,
+                    },
+                    handleError
+                );
+
+                const imagePrefix = process.env.REACT_APP_ADMIN_ASSET_PREFIX;
+                animCopy.blackboardData.jsonData.imageSrc =
+                    imagePrefix + response.data.s3_key;
+            }
+            if (
+                (isInteractable && puzzleType === "ordered-puzzle") ||
+                (isInteractable && puzzleType === "unordered-puzzle")
+            ) {
+                for (let i = 0; i < images.length; i++) {
+                    const response = await createPresignedLinkAndUploadS3(
+                        {
+                            file_type: images[i].type,
+                            type: "image",
+                            file_content: images[i].imgArr,
+                        },
+                        handleError
+                    );
+                    const imagePrefix =
+                        process.env.REACT_APP_ADMIN_ASSET_PREFIX;
+                    images[i].imageSrc = imagePrefix + response.data.s3_key;
+                }
+                animCopy.blackboardData.jsonData.images = images;
+            }
+            setAnimationsJson(animCopy);
             await editPuzzle(
                 { sceneId, objectId, isInteractable, animationsJson },
                 handleError

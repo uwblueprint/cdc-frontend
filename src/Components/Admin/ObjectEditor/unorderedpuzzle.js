@@ -56,30 +56,16 @@ export default function UnorderedPuzzle(props) {
     };
 
     useEffect(() => {
-        const handleUploadImageSubmit = async (
-            name,
-            file_type,
-            object_type,
-            imageByteArray
-        ) => {
-            const response = await createPresignedLinkAndUploadS3(
-                {
-                    file_type: file_type,
-                    type: "image",
-                    file_content: imageByteArray,
-                },
-                handleError
-            );
-
-            const imagePrefix = process.env.REACT_APP_ADMIN_ASSET_PREFIX;
+        const handleUploadImageSubmit = async (imageByteArray) => {
+            const blob = new Blob([imageByteArray], { type: "" });
             const imagesCopy = images;
-            imagesCopy[curIndex].imageSrc = imagePrefix + response.data.s3_key;
+            imagesCopy[curIndex].imageSrc = URL.createObjectURL(blob);
             setImages(imagesCopy);
-            props.saveImageN(curIndex, imagePrefix + response.data.s3_key);
+            props.saveImageN(curIndex, imageByteArray, type);
         };
 
         const uploadImage = async () => {
-            await handleUploadImageSubmit(name, type, "image", imageByteArray);
+            await handleUploadImageSubmit(imageByteArray);
             setUploaded(true);
             setImageByteArray(null);
         };
@@ -115,7 +101,6 @@ export default function UnorderedPuzzle(props) {
             populateImages();
         }
     }, [
-        name,
         type,
         imageByteArray,
         images,
