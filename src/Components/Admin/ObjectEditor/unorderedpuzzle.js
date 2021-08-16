@@ -3,10 +3,7 @@ import Select from "react-select";
 import { useErrorHandler } from "react-error-boundary";
 import { Button } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
-import {
-    fileToByteArray,
-    createPresignedLinkAndUploadS3,
-} from "../../../lib/s3Utility";
+import { fileToByteArray } from "../../../lib/s3Utility";
 import { makeStyles } from "@material-ui/core/styles";
 import { IconButton } from "@material-ui/core";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@material-ui/icons";

@@ -12,6 +12,7 @@ import UnorderedPuzzle from "../ObjectEditor/unorderedpuzzle";
 import { getPuzzle, editPuzzle } from "../../../lib/puzzleEndpoints";
 import { createPresignedLinkAndUploadS3 } from "../../../lib/s3Utility";
 import JigsawPuzzle from "./jigsawpuzzle";
+import { httpPost } from "../../../lib/dataAccess";
 
 const useStyles = makeStyles((theme) => ({
     page: {
@@ -188,9 +189,9 @@ export default function ObjectEditor({
         setAnimationsJson(animCopy);
     };
 
-    const saveJigsawImages = (images) => {
+    const saveJigsawImages = (base64String) => {
         const animCopy = animationsJson;
-        animCopy.blackboardData.jsonData.images = images;
+        animCopy.blackboardData.jsonData.b64string = base64String;
         setAnimationsJson(animCopy);
     };
 
@@ -240,6 +241,8 @@ export default function ObjectEditor({
                     handleError
                 );
 
+                delete animCopy.blackboardData.jsonData.type;
+                delete animCopy.blackboardData.jsonData.imgArr;
                 const imagePrefix = process.env.REACT_APP_ADMIN_ASSET_PREFIX;
                 animCopy.blackboardData.jsonData.imageSrc =
                     imagePrefix + response.data.s3_key;
@@ -257,11 +260,22 @@ export default function ObjectEditor({
                         },
                         handleError
                     );
+
+                    delete images[i].type;
+                    delete images[i].imgArr;
                     const imagePrefix =
                         process.env.REACT_APP_ADMIN_ASSET_PREFIX;
                     images[i].imageSrc = imagePrefix + response.data.s3_key;
                 }
                 animCopy.blackboardData.jsonData.images = images;
+            }
+            if (isInteractable && puzzleType === "jigsaw-puzzle") {
+                const baseEndpoint = process.env.REACT_APP_ADMIN_BASE_ENDPOINT;
+                const response = await httpPost(baseEndpoint + `jigsaw`, {
+                    encoded_image: animCopy.blackboardData.jsonData.b64string,
+                });
+                delete animCopy.blackboardData.jsonData.b64string;
+                animCopy.blackboardData.jsonData.images = response.data.data;
             }
             setAnimationsJson(animCopy);
             await editPuzzle(
