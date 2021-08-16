@@ -114,6 +114,22 @@ export default function ObjectEditor({
                         setPuzzleType("unordered-puzzle");
                     }
                 }
+                if (
+                    data.animations_json.blackboardData.componentType ===
+                    "keypad"
+                ) {
+                    if (
+                        data.animations_json.blackboardData.jsonData.model ===
+                        "numpad"
+                    ) {
+                        setPuzzleType("numpad-puzzle");
+                    } else if (
+                        data.animations_json.blackboardData.jsonData.model ===
+                        "basic"
+                    ) {
+                        setPuzzleType("keyboard-puzzle");
+                    }
+                }
                 setIsInteractable(data.is_interactable);
                 if (data.animations_json.blackboardData.blackboardText) {
                     setHeader(
@@ -206,10 +222,12 @@ export default function ObjectEditor({
                     animCopy.blackboardData.componentType = "keypad";
                     animCopy.blackboardData.jsonData.model = "numpad";
                     animCopy.blackboardData.jsonData.is_last_object = true;
+                    animCopy.blackboardData.jsonData.password = "";
                 } else if (obj.value === "keyboard-puzzle") {
                     animCopy.blackboardData.componentType = "keypad";
                     animCopy.blackboardData.jsonData.model = "basic";
                     animCopy.blackboardData.jsonData.is_last_object = true;
+                    animCopy.blackboardData.jsonData.password = "";
                 }
                 setAnimationsJson(animCopy);
             }

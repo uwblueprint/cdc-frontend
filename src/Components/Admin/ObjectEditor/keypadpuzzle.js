@@ -50,6 +50,7 @@ export default function KeypadPuzzle(props) {
         const re = /^[0-9\b]{1,7}$/;
         if (e.target.value === "" || re.test(e.target.value)) {
             setTempPass(e.target.value);
+            setSavePass(true);
         } else {
             alert(
                 "Error: Password must be at most 7 characters and only consist of numbers"
@@ -62,6 +63,7 @@ export default function KeypadPuzzle(props) {
         const re = /^[0-9a-zA-Z\b]{1,7}$/;
         if (e.target.value === "" || re.test(e.target.value)) {
             setTempPass(e.target.value);
+            setSavePass(true);
         } else {
             alert(
                 "Error: Password must be at most 7 characters and must be alphanumeric"
