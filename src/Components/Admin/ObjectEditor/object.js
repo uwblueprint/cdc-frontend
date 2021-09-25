@@ -232,18 +232,37 @@ export default function ObjectEditor({
         const savePuzzle = async () => {
             const animCopy = animationsJson;
             if (isInteractable && puzzleType === "visual-pane") {
-                const response = await createPresignedLinkAndUploadS3(
-                    {
-                        file_type: animCopy.blackboardData.jsonData.type,
-                        type: "image",
-                        file_content: animCopy.blackboardData.jsonData.imgArr,
-                    },
-                    handleError
-                );
+                let response = null;
+                const imagePrefix = process.env.REACT_APP_ADMIN_ASSET_PREFIX;
+
+                if (origAnimJson.blackboardData?.jsonData?.imageSrc) {
+                    response = await createPresignedLinkAndUploadS3(
+                        {
+                            file_type: animCopy.blackboardData.jsonData.type,
+                            type: "image",
+                            file_content:
+                                animCopy.blackboardData.jsonData.imgArr,
+                            s3Key: origAnimJson.blackboardData?.jsonData?.imageSrc.replace(
+                                imagePrefix,
+                                ""
+                            ),
+                        },
+                        handleError
+                    );
+                } else {
+                    response = await createPresignedLinkAndUploadS3(
+                        {
+                            file_type: animCopy.blackboardData.jsonData.type,
+                            type: "image",
+                            file_content:
+                                animCopy.blackboardData.jsonData.imgArr,
+                        },
+                        handleError
+                    );
+                }
 
                 delete animCopy.blackboardData.jsonData.type;
                 delete animCopy.blackboardData.jsonData.imgArr;
-                const imagePrefix = process.env.REACT_APP_ADMIN_ASSET_PREFIX;
                 animCopy.blackboardData.jsonData.imageSrc =
                     imagePrefix + response.data.s3_key;
             }
@@ -252,19 +271,39 @@ export default function ObjectEditor({
                 (isInteractable && puzzleType === "unordered-puzzle")
             ) {
                 for (let i = 0; i < images.length; i++) {
-                    const response = await createPresignedLinkAndUploadS3(
-                        {
-                            file_type: images[i].type,
-                            type: "image",
-                            file_content: images[i].imgArr,
-                        },
-                        handleError
-                    );
+                    let response = null;
+                    const imagePrefix =
+                        process.env.REACT_APP_ADMIN_ASSET_PREFIX;
+
+                    if (
+                        origAnimJson.blackboardData?.jsonData?.images &&
+                        origAnimJson.blackboardData.jsonData.images.length >=
+                            i + 1
+                    ) {
+                        response = await createPresignedLinkAndUploadS3(
+                            {
+                                file_type: images[i].type,
+                                type: "image",
+                                file_content: images[i].imgArr,
+                                s3Key: origAnimJson.blackboardData.jsonData.images[
+                                    i
+                                ].imageSrc.replace(imagePrefix, ""),
+                            },
+                            handleError
+                        );
+                    } else {
+                        response = await createPresignedLinkAndUploadS3(
+                            {
+                                file_type: images[i].type,
+                                type: "image",
+                                file_content: images[i].imgArr,
+                            },
+                            handleError
+                        );
+                    }
 
                     delete images[i].type;
                     delete images[i].imgArr;
-                    const imagePrefix =
-                        process.env.REACT_APP_ADMIN_ASSET_PREFIX;
                     images[i].imageSrc = imagePrefix + response.data.s3_key;
                 }
                 animCopy.blackboardData.jsonData.images = images;
