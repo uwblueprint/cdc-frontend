@@ -31,7 +31,6 @@ export default function KeypadPuzzle(props) {
     };
 
     const deletePass = () => {
-        alert(pass);
         props.savePass("");
         setPass("");
         if (props.isNumpad) {
