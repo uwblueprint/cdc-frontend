@@ -478,7 +478,11 @@ export default function ObjectEditor({
             {isInteractable && puzzleType === "numpad-puzzle" ? (
                 <KeypadPuzzle
                     savePass={savePass}
-                    pass={""}
+                    pass={
+                        origAnimJson?.blackboardData?.jsonData?.password
+                            ? origAnimJson?.blackboardData?.jsonData?.password
+                            : ""
+                    }
                     isNumpad={true}
                     classes={classes}
                 />
@@ -486,7 +490,11 @@ export default function ObjectEditor({
             {isInteractable && puzzleType === "keyboard-puzzle" ? (
                 <KeypadPuzzle
                     savePass={savePass}
-                    pass={""}
+                    pass={
+                        origAnimJson?.blackboardData?.jsonData?.password
+                            ? origAnimJson?.blackboardData?.jsonData?.password
+                            : ""
+                    }
                     isNumpad={false}
                     classes={classes}
                 />

@@ -31,6 +31,7 @@ export default function KeypadPuzzle(props) {
     };
 
     const deletePass = () => {
+        alert(pass);
         props.savePass("");
         setPass("");
         if (props.isNumpad) {
@@ -47,7 +48,7 @@ export default function KeypadPuzzle(props) {
     };
 
     const numpadOnChange = (e) => {
-        const re = /^[0-9\b]{1,7}$/;
+        const re = /^[0-9]{1,7}$/;
         if (e.target.value === "" || re.test(e.target.value)) {
             setTempPass(e.target.value);
             setSavePass(true);
@@ -60,13 +61,13 @@ export default function KeypadPuzzle(props) {
     };
 
     const keyboardOnChange = (e) => {
-        const re = /^[0-9a-zA-Z\b]{1,7}$/;
+        const re = /^[0-9a-zA-Z]{1,16}$/;
         if (e.target.value === "" || re.test(e.target.value)) {
             setTempPass(e.target.value);
             setSavePass(true);
         } else {
             alert(
-                "Error: Password must be at most 7 characters and must be alphanumeric"
+                "Error: Password must be at most 16 characters and must be alphanumeric"
             );
             setSavePass(false);
         }
@@ -97,7 +98,7 @@ export default function KeypadPuzzle(props) {
                         <TextField
                             inputProps={{
                                 className: classes.input,
-                                pattern: "[0-9a-zA-Z]{1,7}",
+                                pattern: "[0-9a-zA-Z]{1,16}",
                             }}
                             onChange={keyboardOnChange}
                         />
