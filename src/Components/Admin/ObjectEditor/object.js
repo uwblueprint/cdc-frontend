@@ -8,11 +8,17 @@ import { DeleteForever } from "@material-ui/icons";
 import TextPaneView from "../ObjectEditor/textpaneview";
 import VisualPaneView from "../ObjectEditor/visualpaneview";
 import UnorderedPuzzle from "../ObjectEditor/unorderedpuzzle";
+import KeypadPuzzle from "../ObjectEditor/keypadpuzzle";
 
 import { getPuzzle, editPuzzle } from "../../../lib/puzzleEndpoints";
 import { createPresignedLinkAndUploadS3 } from "../../../lib/s3Utility";
 import JigsawPuzzle from "./jigsawpuzzle";
 import { httpPost } from "../../../lib/dataAccess";
+import MuiAlert from "@material-ui/lab/Alert";
+
+function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const useStyles = makeStyles((theme) => ({
     page: {
@@ -70,11 +76,16 @@ export default function ObjectEditor({
     const [isInteractable, setIsInteractable] = useState(null);
     const [header, setHeader] = useState("");
     const [images, setImages] = useState([]);
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [successText, setSuccessText] = useState("");
+    const [showError, setShowError] = useState(false);
+    const [errorText, setErrorText] = useState("");
 
     const puzzleTypeList = [
         { value: "text-pane", label: "Text Puzzle" },
         { value: "rotation-controls", label: "Rotation Puzzle" },
-        { value: "keypad", label: "Keypad Puzzle" },
+        { value: "numpad-puzzle", label: "Numpad Puzzle" },
+        { value: "keyboard-puzzle", label: "Keyboard Puzzle" },
         { value: "visual-pane", label: "Visual Puzzle" },
         { value: "jigsaw-puzzle", label: "Jigsaw Puzzle" },
         { value: "ordered-puzzle", label: "Ordered Puzzle" },
@@ -105,6 +116,22 @@ export default function ObjectEditor({
                         setPuzzleType("unordered-puzzle");
                     }
                 }
+                if (
+                    data.animations_json.blackboardData.componentType ===
+                    "keypad"
+                ) {
+                    if (
+                        data.animations_json.blackboardData.jsonData.model ===
+                        "numpad"
+                    ) {
+                        setPuzzleType("numpad-puzzle");
+                    } else if (
+                        data.animations_json.blackboardData.jsonData.model ===
+                        "basic"
+                    ) {
+                        setPuzzleType("keyboard-puzzle");
+                    }
+                }
                 setIsInteractable(data.is_interactable);
                 if (data.animations_json.blackboardData.blackboardText) {
                     setHeader(
@@ -116,7 +143,25 @@ export default function ObjectEditor({
         if (isInteractable === null && Object.keys(origAnimJson).length === 0) {
             getPuzzleBody();
         }
-    }, [sceneId, objectId, isInteractable, origAnimJson, handleError]);
+        if (showSuccess) {
+            setTimeout(() => {
+                setShowSuccess(false);
+            }, 5000);
+        }
+        if (showError) {
+            setTimeout(() => {
+                setShowError(false);
+            }, 5000);
+        }
+    }, [
+        sceneId,
+        objectId,
+        isInteractable,
+        origAnimJson,
+        showSuccess,
+        showError,
+        handleError,
+    ]);
 
     const selectPuzzleType = (obj) => {
         if (obj) {
@@ -133,6 +178,18 @@ export default function ObjectEditor({
                 origAnimJson.blackboardData?.componentType ===
                     "ordered-puzzle" &&
                 origAnimJson.blackboardData?.jsonData?.useTargets === true
+            ) {
+                setAnimationsJson(origAnimJson);
+            } else if (
+                obj.value === "numpad-puzzle" &&
+                origAnimJson.blackboardData?.componentType === "keypad" &&
+                origAnimJson.blackboardData?.jsonData?.model === "numpad"
+            ) {
+                setAnimationsJson(origAnimJson);
+            } else if (
+                obj.value === "keyboard-puzzle" &&
+                origAnimJson.blackboardData?.componentType === "keypad" &&
+                origAnimJson.blackboardData?.jsonData?.model === "basic"
             ) {
                 setAnimationsJson(origAnimJson);
             } else if (
@@ -163,6 +220,16 @@ export default function ObjectEditor({
                     animCopy.blackboardData.jsonData.randomizePos = true;
                     animCopy.blackboardData.draggable = true;
                     animCopy.blackboardData.jsonData.scaleBy = 3;
+                } else if (obj.value === "numpad-puzzle") {
+                    animCopy.blackboardData.componentType = "keypad";
+                    animCopy.blackboardData.jsonData.model = "numpad";
+                    animCopy.blackboardData.jsonData.is_last_object = true;
+                    animCopy.blackboardData.jsonData.password = "";
+                } else if (obj.value === "keyboard-puzzle") {
+                    animCopy.blackboardData.componentType = "keypad";
+                    animCopy.blackboardData.jsonData.model = "basic";
+                    animCopy.blackboardData.jsonData.is_last_object = true;
+                    animCopy.blackboardData.jsonData.password = "";
                 }
                 setAnimationsJson(animCopy);
             }
@@ -172,6 +239,12 @@ export default function ObjectEditor({
     const saveTexts = (texts) => {
         const animCopy = animationsJson;
         animCopy.blackboardData.jsonData.data = texts;
+        setAnimationsJson(animCopy);
+    };
+
+    const savePass = (pass) => {
+        const animCopy = animationsJson;
+        animCopy.blackboardData.jsonData.password = pass;
         setAnimationsJson(animCopy);
     };
 
@@ -221,9 +294,29 @@ export default function ObjectEditor({
         ) {
             for (let i = 0; i < images.length; i++) {
                 if (images[i].imageSrc === "") {
-                    alert("Error: Not all images have been uploaded yet");
+                    setErrorText(
+                        "Error: Not all images have been uploaded yet"
+                    );
+                    setShowError(true);
                     return;
                 }
+            }
+            animCopy.blackboardData.jsonData.images = images;
+        }
+        if (
+            (isInteractable && puzzleType === "numpad-puzzle") ||
+            (isInteractable && puzzleType === "keyboard-puzzle")
+        ) {
+            if (animCopy.blackboardData.jsonData.password) {
+                if (animCopy.blackboardData.jsonData.password === "") {
+                    setErrorText("Error: Password not set");
+                    setShowError(true);
+                    return;
+                }
+            } else {
+                setErrorText("Error: Password not set");
+                setShowError(true);
+                return;
             }
             animCopy.blackboardData.jsonData.images = images;
         }
@@ -327,11 +420,15 @@ export default function ObjectEditor({
             puzzleType === "text-pane" &&
             animationsJson?.blackboardData?.jsonData?.data?.length === 0
         ) {
-            alert("Error: Need at least one text to save text-pane");
+            setErrorText("Error: Need at least one text to save text-pane");
+            setShowError(true);
             return;
         }
         savePuzzle();
-        alert("Saved puzzle CRUD changes for object with id: " + objectId);
+        setSuccessText(
+            "Saved puzzle CRUD changes for object with id: " + objectId
+        );
+        setShowSuccess(true);
     };
 
     const toggleButton = () => {
@@ -352,7 +449,10 @@ export default function ObjectEditor({
             if (newText.text.length <= 100) {
                 setHeader(newText.text);
             } else {
-                alert("Error: Maximum header text length is 100 characters");
+                setErrorText(
+                    "Error: Maximum header text length is 100 characters"
+                );
+                setShowError(true);
             }
         }
     };
@@ -466,6 +566,30 @@ export default function ObjectEditor({
                     imagesLen={5}
                 />
             ) : null}
+            {isInteractable && puzzleType === "numpad-puzzle" ? (
+                <KeypadPuzzle
+                    savePass={savePass}
+                    pass={
+                        origAnimJson?.blackboardData?.jsonData?.password
+                            ? origAnimJson?.blackboardData?.jsonData?.password
+                            : ""
+                    }
+                    isNumpad={true}
+                    classes={classes}
+                />
+            ) : null}
+            {isInteractable && puzzleType === "keyboard-puzzle" ? (
+                <KeypadPuzzle
+                    savePass={savePass}
+                    pass={
+                        origAnimJson?.blackboardData?.jsonData?.password
+                            ? origAnimJson?.blackboardData?.jsonData?.password
+                            : ""
+                    }
+                    isNumpad={false}
+                    classes={classes}
+                />
+            ) : null}
             {!isInteractable || puzzleType !== "" ? (
                 <div>
                     <Button color="primary" onClick={() => handleSave()}>
@@ -473,6 +597,10 @@ export default function ObjectEditor({
                     </Button>
                 </div>
             ) : null}
+            {showSuccess ? (
+                <Alert severity="success">{successText}</Alert>
+            ) : null}
+            {showError ? <Alert severity="error">{errorText}</Alert> : null}
         </div>
     );
 }
