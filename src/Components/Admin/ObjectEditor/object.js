@@ -95,7 +95,7 @@ export default function ObjectEditor({
     useEffect(() => {
         const getPuzzleBody = async () => {
             const data = await getPuzzle(sceneId, objectId, handleError);
-            setOrigAnimJson(data.animations_json);
+            setOrigAnimJson(JSON.parse(JSON.stringify(data.animations_json)));
             setAnimationsJson(data.animations_json);
             if (Object.keys(data.animations_json).length === 0) {
                 setIsInteractable(false);
@@ -108,7 +108,12 @@ export default function ObjectEditor({
                     "ordered-puzzle"
                 ) {
                     setImages(
-                        data.animations_json.blackboardData.jsonData.images
+                        JSON.parse(
+                            JSON.stringify(
+                                data.animations_json.blackboardData.jsonData
+                                    .images
+                            )
+                        )
                     );
                     if (
                         !data.animations_json.blackboardData.jsonData.useTargets
@@ -328,14 +333,16 @@ export default function ObjectEditor({
                 let response = null;
                 const imagePrefix = process.env.REACT_APP_ADMIN_ASSET_PREFIX;
 
-                if (origAnimJson.blackboardData?.jsonData?.imageSrc) {
+                if (animCopy.blackboardData?.jsonData?.imageSrc) {
                     response = await createPresignedLinkAndUploadS3(
                         {
-                            file_type: animCopy.blackboardData.jsonData.type,
+                            file_type: animCopy.blackboardData?.jsonData?.imageSrc
+                                .split(".")
+                                .reverse()[0],
                             type: "image",
                             file_content:
                                 animCopy.blackboardData.jsonData.imgArr,
-                            s3Key: origAnimJson.blackboardData?.jsonData?.imageSrc.replace(
+                            s3Key: animCopy.blackboardData?.jsonData?.imageSrc.replace(
                                 imagePrefix,
                                 ""
                             ),
@@ -369,16 +376,15 @@ export default function ObjectEditor({
                         process.env.REACT_APP_ADMIN_ASSET_PREFIX;
 
                     if (
-                        origAnimJson.blackboardData?.jsonData?.images &&
-                        origAnimJson.blackboardData.jsonData.images.length >=
-                            i + 1
+                        animCopy.blackboardData?.jsonData?.images &&
+                        i < animCopy.blackboardData.jsonData.images.length
                     ) {
                         response = await createPresignedLinkAndUploadS3(
                             {
                                 file_type: images[i].type,
                                 type: "image",
                                 file_content: images[i].imgArr,
-                                s3Key: origAnimJson.blackboardData.jsonData.images[
+                                s3Key: animCopy.blackboardData.jsonData.images[
                                     i
                                 ].imageSrc.replace(imagePrefix, ""),
                             },
@@ -540,7 +546,12 @@ export default function ObjectEditor({
                     images={
                         origAnimJson?.blackboardData?.jsonData?.useTargets ===
                         false
-                            ? origAnimJson.blackboardData.jsonData.images
+                            ? JSON.parse(
+                                  JSON.stringify(
+                                      origAnimJson.blackboardData.jsonData
+                                          .images
+                                  )
+                              )
                             : []
                     }
                     isUnordered={true}

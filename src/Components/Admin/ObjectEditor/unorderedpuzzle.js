@@ -54,7 +54,7 @@ export default function UnorderedPuzzle(props) {
 
     useEffect(() => {
         const handleUploadImageSubmit = async (imageByteArray) => {
-            const blob = new Blob([imageByteArray], { type: "" });
+            const blob = new Blob([imageByteArray], { type: type });
             const imagesCopy = images;
             imagesCopy[curIndex].imageSrc = URL.createObjectURL(blob);
             setImages(imagesCopy);
