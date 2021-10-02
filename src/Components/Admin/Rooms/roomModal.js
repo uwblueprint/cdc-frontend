@@ -528,6 +528,13 @@ export default function RoomModal({
                                   setPageNum(2);
                               }
                     }
+                    disabled={
+                        (pageNum === 1 &&
+                            (roomName === "" ||
+                                roomDescription === "" ||
+                                friendlyName === "")) ||
+                        (pageNum === 2 && previewSrc === "")
+                    }
                     className={classes.createButton}
                 >
                     {pageNum === 1 ? "Next" : isEdit ? "Edit" : "Create"}
