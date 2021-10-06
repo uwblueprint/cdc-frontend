@@ -140,6 +140,10 @@ export default function Admin() {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [createModalOpen, setCreateModalOpen] = React.useState(false);
     const [editModalOpen, setEditModalOpen] = React.useState(false);
+    const [
+        shareAndPublishModalOpen,
+        setShareAndPublishModalOpen,
+    ] = React.useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
     const [uploadAssetModalOpen, setUploadAssetModalOpen] = React.useState(
         false
@@ -223,6 +227,14 @@ export default function Admin() {
         setEditModalOpen(true);
     };
 
+    const handleShareAndPublishClick = (roomId) => {
+        const room = environments.find(
+            (environment) => environment.id === roomId
+        );
+        setEditRoom(room);
+        setShareAndPublishModalOpen(true);
+    };
+
     const handleEditRoomSubmit = async ({
         name,
         description,
@@ -255,8 +267,40 @@ export default function Admin() {
         setEnvironments(copiedEnvs);
     };
 
+    const handleShareAndPublishSubmit = async ({
+        is_published,
+        is_previewable,
+    }) => {
+        setEditModalOpen(false);
+        const resp = await editScenario(
+            {
+                id: editRoom.id,
+                name: editRoom.name,
+                friendly_name: editRoom.friendly_name,
+                description: editRoom.description,
+                scene_ids: editRoom.scene_ids,
+                is_published,
+                is_previewable,
+                expected_solve_time: editRoom.expected_solve_time,
+                display_image_url: editRoom.display_image_url,
+            },
+            handleError
+        );
+        const replaceIndex = environments.findIndex(
+            (env) => env.id === editRoom.id
+        );
+        const copiedEnvs = [...environments];
+        copiedEnvs[replaceIndex] = resp.data;
+        setEnvironments(copiedEnvs);
+    };
+
     const handleEditRoomClose = () => {
         setEditModalOpen(false);
+        setEditRoom({});
+    };
+
+    const handleShareAndPublishClose = () => {
+        setShareAndPublishModalOpen(false);
         setEditRoom({});
     };
 
@@ -389,6 +433,13 @@ export default function Admin() {
                         room={editRoom}
                         isEdit
                     />
+                    <RoomModal
+                        modalOpen={shareAndPublishModalOpen}
+                        handleModalClose={handleShareAndPublishClose}
+                        handleSubmit={handleShareAndPublishSubmit}
+                        room={editRoom}
+                        isShareAndPublish
+                    />
                     <DeleteModal
                         open={deleteModalOpen}
                         title="Delete Room"
@@ -451,6 +502,9 @@ export default function Admin() {
                             environments={environments}
                             handleEditRoomClick={handleEditRoomClick}
                             handleDeleteRoomClick={handleDeleteRoomClick}
+                            handleShareAndPublishClick={
+                                handleShareAndPublishClick
+                            }
                         />
                     </TabPanel>
                     <TabPanel

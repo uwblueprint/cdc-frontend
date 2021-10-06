@@ -55,6 +55,7 @@ export default function RoomModal({
     handleSubmit,
     room,
     isEdit,
+    isShareAndPublish,
 }) {
     const classes = useStyles();
     const handleError = useErrorHandler();
@@ -320,7 +321,11 @@ export default function RoomModal({
                 }}
             >
                 <span className={classes.dialogTitle}>
-                    {isEdit ? "Edit Escape Room" : "Name Game & Link"}
+                    {isEdit
+                        ? "Edit Escape Room"
+                        : isShareAndPublish
+                        ? "Share & Publish Game"
+                        : "Name Game & Link"}
                 </span>
                 <IconButton
                     className={classes.closeButton}
@@ -331,7 +336,9 @@ export default function RoomModal({
                 </IconButton>
             </DialogTitle>
             <DialogContent>
-                {pageNum === 1 ? (
+                {isShareAndPublish ? (
+                    <p>test</p>
+                ) : pageNum === 1 ? (
                     <>
                         <div>
                             <Typography
