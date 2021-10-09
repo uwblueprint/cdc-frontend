@@ -57,7 +57,7 @@ export default function UnorderedPuzzle(props) {
             const blob = new Blob([imageByteArray], { type: type });
             const imagesCopy = images;
             imagesCopy[curIndex].imageSrc = URL.createObjectURL(blob);
-            setImages(imagesCopy);
+            setImages(JSON.parse(JSON.stringify(imagesCopy)));
             props.saveImageN(curIndex, imageByteArray, type);
         };
 

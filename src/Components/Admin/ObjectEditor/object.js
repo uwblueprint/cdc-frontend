@@ -96,7 +96,7 @@ export default function ObjectEditor({
         const getPuzzleBody = async () => {
             const data = await getPuzzle(sceneId, objectId, handleError);
             setOrigAnimJson(JSON.parse(JSON.stringify(data.animations_json)));
-            setAnimationsJson(data.animations_json);
+            setAnimationsJson(JSON.parse(JSON.stringify(data.animations_json)));
             if (Object.keys(data.animations_json).length === 0) {
                 setIsInteractable(false);
             } else {
@@ -177,32 +177,32 @@ export default function ObjectEditor({
                     "ordered-puzzle" &&
                 origAnimJson.blackboardData?.jsonData?.useTargets === false
             ) {
-                setAnimationsJson(origAnimJson);
+                setAnimationsJson(JSON.parse(JSON.stringify(origAnimJson)));
             } else if (
                 obj.value === "ordered-puzzle" &&
                 origAnimJson.blackboardData?.componentType ===
                     "ordered-puzzle" &&
                 origAnimJson.blackboardData?.jsonData?.useTargets === true
             ) {
-                setAnimationsJson(origAnimJson);
+                setAnimationsJson(JSON.parse(JSON.stringify(origAnimJson)));
             } else if (
                 obj.value === "numpad-puzzle" &&
                 origAnimJson.blackboardData?.componentType === "keypad" &&
                 origAnimJson.blackboardData?.jsonData?.model === "numpad"
             ) {
-                setAnimationsJson(origAnimJson);
+                setAnimationsJson(JSON.parse(JSON.stringify(origAnimJson)));
             } else if (
                 obj.value === "keyboard-puzzle" &&
                 origAnimJson.blackboardData?.componentType === "keypad" &&
                 origAnimJson.blackboardData?.jsonData?.model === "basic"
             ) {
-                setAnimationsJson(origAnimJson);
+                setAnimationsJson(JSON.parse(JSON.stringify(origAnimJson)));
             } else if (
                 obj.value !== "unordered-puzzle" &&
                 obj.value !== "ordered-puzzle" &&
                 origAnimJson.blackboardData?.componentType === obj.value
             ) {
-                setAnimationsJson(origAnimJson);
+                setAnimationsJson(JSON.parse(JSON.stringify(origAnimJson)));
             } else {
                 const animCopy = {
                     blackboardData: { componentType: obj.value, jsonData: {} },
@@ -297,6 +297,15 @@ export default function ObjectEditor({
             (isInteractable && puzzleType === "ordered-puzzle") ||
             (isInteractable && puzzleType === "unordered-puzzle")
         ) {
+            if (
+                JSON.stringify(origAnimJson) === JSON.stringify(animCopy) &&
+                JSON.stringify(images) ===
+                    JSON.stringify(animCopy.blackboardData.jsonData.images)
+            ) {
+                setErrorText("Error: No changes made");
+                setShowError(true);
+                return;
+            }
             for (let i = 0; i < images.length; i++) {
                 if (images[i].imageSrc === "") {
                     setErrorText(
@@ -307,6 +316,10 @@ export default function ObjectEditor({
                 }
             }
             animCopy.blackboardData.jsonData.images = images;
+        } else if (JSON.stringify(origAnimJson) === JSON.stringify(animCopy)) {
+            setErrorText("Error: No changes made");
+            setShowError(true);
+            return;
         }
         if (
             (isInteractable && puzzleType === "numpad-puzzle") ||
@@ -333,16 +346,16 @@ export default function ObjectEditor({
                 let response = null;
                 const imagePrefix = process.env.REACT_APP_ADMIN_ASSET_PREFIX;
 
-                if (animCopy.blackboardData?.jsonData?.imageSrc) {
+                if (origAnimJson.blackboardData?.jsonData?.imageSrc) {
                     response = await createPresignedLinkAndUploadS3(
                         {
-                            file_type: animCopy.blackboardData?.jsonData?.imageSrc
+                            file_type: origAnimJson.blackboardData?.jsonData?.imageSrc
                                 .split(".")
                                 .reverse()[0],
                             type: "image",
                             file_content:
                                 animCopy.blackboardData.jsonData.imgArr,
-                            s3Key: animCopy.blackboardData?.jsonData?.imageSrc.replace(
+                            s3Key: origAnimJson.blackboardData?.jsonData?.imageSrc.replace(
                                 imagePrefix,
                                 ""
                             ),
@@ -371,20 +384,31 @@ export default function ObjectEditor({
                 (isInteractable && puzzleType === "unordered-puzzle")
             ) {
                 for (let i = 0; i < images.length; i++) {
+                    if (!images[i].imgArr) {
+                        continue;
+                    }
                     let response = null;
+                    let type = images[i].type;
                     const imagePrefix =
                         process.env.REACT_APP_ADMIN_ASSET_PREFIX;
+                    if (!type) {
+                        type = animCopy.blackboardData.jsonData.images[
+                            i
+                        ].imageSrc
+                            .split(".")
+                            .reverse()[0];
+                    }
 
                     if (
-                        animCopy.blackboardData?.jsonData?.images &&
-                        i < animCopy.blackboardData.jsonData.images.length
+                        origAnimJson.blackboardData?.jsonData?.images &&
+                        i < origAnimJson.blackboardData.jsonData.images.length
                     ) {
                         response = await createPresignedLinkAndUploadS3(
                             {
-                                file_type: images[i].type,
+                                file_type: type,
                                 type: "image",
                                 file_content: images[i].imgArr,
-                                s3Key: animCopy.blackboardData.jsonData.images[
+                                s3Key: origAnimJson.blackboardData.jsonData.images[
                                     i
                                 ].imageSrc.replace(imagePrefix, ""),
                             },
@@ -393,7 +417,7 @@ export default function ObjectEditor({
                     } else {
                         response = await createPresignedLinkAndUploadS3(
                             {
-                                file_type: images[i].type,
+                                file_type: type,
                                 type: "image",
                                 file_content: images[i].imgArr,
                             },
@@ -405,7 +429,9 @@ export default function ObjectEditor({
                     delete images[i].imgArr;
                     images[i].imageSrc = imagePrefix + response.data.s3_key;
                 }
-                animCopy.blackboardData.jsonData.images = images;
+                animCopy.blackboardData.jsonData.images = JSON.parse(
+                    JSON.stringify(images)
+                );
             }
             if (isInteractable && puzzleType === "jigsaw-puzzle") {
                 const baseEndpoint = process.env.REACT_APP_ADMIN_BASE_ENDPOINT;
@@ -415,7 +441,8 @@ export default function ObjectEditor({
                 delete animCopy.blackboardData.jsonData.b64string;
                 animCopy.blackboardData.jsonData.images = response.data.data;
             }
-            setAnimationsJson(animCopy);
+            setAnimationsJson(JSON.parse(JSON.stringify(animCopy)));
+            setOrigAnimJson(JSON.parse(JSON.stringify(animCopy)));
             await editPuzzle(
                 { sceneId, objectId, isInteractable, animationsJson },
                 handleError
@@ -441,7 +468,7 @@ export default function ObjectEditor({
         if (isInteractable) {
             setAnimationsJson({});
         } else {
-            setAnimationsJson(origAnimJson);
+            setAnimationsJson(JSON.parse(JSON.stringify(origAnimJson)));
         }
         setIsInteractable(!isInteractable);
     };
