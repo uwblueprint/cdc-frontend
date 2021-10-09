@@ -57,8 +57,15 @@ export default function UnorderedPuzzle(props) {
             const blob = new Blob([imageByteArray], { type: type });
             const imagesCopy = images;
             imagesCopy[curIndex].imageSrc = URL.createObjectURL(blob);
+            imagesCopy[curIndex].imgArr = imageByteArray;
+            imagesCopy[curIndex].type = type;
             setImages(JSON.parse(JSON.stringify(imagesCopy)));
-            props.saveImageN(curIndex, imageByteArray, type);
+            props.saveImageN(
+                curIndex,
+                imageByteArray,
+                type,
+                URL.createObjectURL(blob)
+            );
         };
 
         const uploadImage = async () => {
@@ -89,7 +96,7 @@ export default function UnorderedPuzzle(props) {
                 newImages.pop();
             }
             props.saveImages(newImages);
-            setImages(newImages);
+            setImages(JSON.parse(JSON.stringify(newImages)));
             setImagesLen(0);
             setUploaded(false);
         };

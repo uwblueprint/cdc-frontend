@@ -273,15 +273,16 @@ export default function ObjectEditor({
         setAnimationsJson(animCopy);
     };
 
-    const saveImageN = (index, imgArr, type) => {
+    const saveImageN = (index, imgArr, type, imgBlob) => {
         const imagesCopy = images;
+        imagesCopy[index].imageSrc = imgBlob;
         imagesCopy[index].imgArr = imgArr;
         imagesCopy[index].type = type;
         setImages(imagesCopy);
     };
 
     const saveImages = (imagesCopy) => {
-        setImages(imagesCopy);
+        setImages(JSON.parse(JSON.stringify(imagesCopy)));
     };
 
     const handleSave = () => {
