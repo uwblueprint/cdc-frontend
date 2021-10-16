@@ -259,6 +259,12 @@ export default function RoomModal({
     };
 
     const handleModalCloseClick = () => {
+        if (isShareAndPublish) {
+            handleSubmit({
+                is_published: isPublished,
+                is_previewable: isPreviewable,
+            });
+        }
         resetFields();
         handleModalClose();
     };
@@ -381,9 +387,9 @@ export default function RoomModal({
                             <span style={{ margin: "auto", height: 70 }}>
                                 <Switch
                                     checked={isPublished}
-                                    onChange={() =>
-                                        setIsPublished(!isPublished)
-                                    }
+                                    onChange={() => {
+                                        setIsPublished(!isPublished);
+                                    }}
                                     inputProps={{
                                         "aria-label": "controlled",
                                         height: 40,
