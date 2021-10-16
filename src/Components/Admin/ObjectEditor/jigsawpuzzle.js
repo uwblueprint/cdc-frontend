@@ -4,7 +4,6 @@ import { Button } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import { fileToBase64String } from "../../../lib/s3Utility";
 import { makeStyles } from "@material-ui/core/styles";
-import { httpPost } from "../../../lib/dataAccess";
 
 const useStyles = makeStyles((theme) => ({
     textField: {
@@ -39,23 +38,28 @@ export default function JigsawPuzzle(props) {
     const classes = useStyles();
     const handleError = useErrorHandler();
     const [base64String, setBase64String] = React.useState("");
-    const [images, setImages] = React.useState(props.images);
+    const [imgPreview, setImgPreview] = React.useState("");
 
     useEffect(() => {
         const uploadImage = async () => {
-            const baseEndpoint = process.env.REACT_APP_ADMIN_BASE_ENDPOINT;
-            const response = await httpPost(baseEndpoint + `jigsaw`, {
-                encoded_image: base64String,
-            });
-            setImages(response.data.data);
-            props.saveJigsawImages(response.data.data);
+            const byteCharacters = atob(base64String);
+
+            // From: https://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], { type: "" });
+            setImgPreview(URL.createObjectURL(blob));
+            props.saveJigsawImages(base64String);
             setBase64String("");
         };
 
         if (base64String !== "") {
             uploadImage();
         }
-    }, [base64String, images, props, handleError]);
+    }, [base64String, props, handleError]);
 
     const handleUploadFileChange = async (event) => {
         if (event.target.files && event.target.files[0]) {
@@ -69,97 +73,21 @@ export default function JigsawPuzzle(props) {
             <Typography component="div" variant="h5" className={classes.text}>
                 Upload Image
             </Typography>
-            {images ? (
+            {imgPreview !== "" ? (
                 <div>
                     <Typography
                         component="div"
                         variant="h6"
                         className={classes.text}
                     >
-                        Images Preview:
+                        Image Preview:
                     </Typography>
-                    <div className={classes.grid}>
-                        <div className={classes.cell}>
-                            <img
-                                src={images[0]}
-                                height={125}
-                                max-width={1000}
-                                object-fit={"contain"}
-                            ></img>
-                        </div>
-
-                        <div className={classes.cell}>
-                            <img
-                                src={images[1]}
-                                height={125}
-                                max-width={1000}
-                                object-fit={"contain"}
-                            ></img>
-                        </div>
-
-                        <div className={classes.cell}>
-                            <img
-                                src={images[2]}
-                                height={125}
-                                max-width={1000}
-                                object-fit={"contain"}
-                            ></img>
-                        </div>
-
-                        <div className={classes.cell}>
-                            <img
-                                src={images[3]}
-                                height={125}
-                                max-width={1000}
-                                object-fit={"contain"}
-                            ></img>
-                        </div>
-
-                        <div className={classes.cell}>
-                            <img
-                                src={images[4]}
-                                height={125}
-                                max-width={1000}
-                                object-fit={"contain"}
-                            ></img>
-                        </div>
-
-                        <div className={classes.cell}>
-                            <img
-                                src={images[5]}
-                                height={125}
-                                max-width={1000}
-                                object-fit={"contain"}
-                            ></img>
-                        </div>
-
-                        <div className={classes.cell}>
-                            <img
-                                src={images[6]}
-                                height={125}
-                                max-width={1000}
-                                object-fit={"contain"}
-                            ></img>
-                        </div>
-
-                        <div className={classes.cell}>
-                            <img
-                                src={images[7]}
-                                height={125}
-                                max-width={1000}
-                                object-fit={"contain"}
-                            ></img>
-                        </div>
-
-                        <div className={classes.cell}>
-                            <img
-                                src={images[8]}
-                                height={125}
-                                max-width={1000}
-                                object-fit={"contain"}
-                            ></img>
-                        </div>
-                    </div>
+                    <img
+                        src={imgPreview}
+                        height={250}
+                        max-width={1000}
+                        object-fit={"contain"}
+                    ></img>
                 </div>
             ) : null}
             <input
