@@ -66,6 +66,7 @@ export default function RoomModal({
     const [roomSolveTime, setRoomSolveTime] = useState("");
     const [isPublished, setIsPublished] = useState(false);
     const [isPreviewable, setIsPreviewable] = useState(false);
+    const [copy, setCopy] = useState(false);
 
     // handle second page image upload for scenario creation
     const [pageNum, setPageNum] = useState(1);
@@ -252,6 +253,7 @@ export default function RoomModal({
         setPageNum(1);
         setFileName("");
         setPreviewSrc("");
+        setCopy(false);
     };
 
     const handleModalSubmitClick = async () => {
@@ -337,7 +339,86 @@ export default function RoomModal({
             </DialogTitle>
             <DialogContent>
                 {isShareAndPublish ? (
-                    <p>test</p>
+                    <>
+                        <div style={{ width: 500 }}>
+                            <Typography
+                                style={{
+                                    fontSize: 20,
+                                    lineHeight: "27px",
+                                    marginTop: 20,
+                                }}
+                            >
+                                Game Link
+                            </Typography>
+                            <span>
+                                <span
+                                    style={{
+                                        width: 100,
+                                        paddingRight: 10,
+                                        verticalAlign:
+                                            "-webkit-baseline-middle",
+                                    }}
+                                >
+                                    dcc.com/
+                                </span>
+                                <TextField
+                                    value={friendlyName}
+                                    onChange={handleFriendlyNameChange}
+                                    className={classes.textField}
+                                    required
+                                    error={Boolean(
+                                        errors ? errors.friendlyName : false
+                                    )}
+                                    helperText={
+                                        errors ? errors.friendlyName : false
+                                    }
+                                    style={{ width: 300 }}
+                                    variant="outlined"
+                                    inputProps={{
+                                        style: {
+                                            padding: 10,
+                                        },
+                                    }}
+                                    disabled
+                                    placeholder="friendly-url-to-share"
+                                />
+                                <span
+                                    style={{
+                                        width: 100,
+                                        paddingLeft: 20,
+                                        verticalAlign:
+                                            "-webkit-baseline-middle",
+                                        color: "red",
+                                        cursor: "pointer",
+                                    }}
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(
+                                            process.env.REACT_APP_DEPLOYED_URL +
+                                                friendlyName
+                                        );
+                                        setCopy(true);
+                                        // TODO: change to snackbar or something nicer in future
+                                        // alert(
+                                        //     'Value "' +
+                                        //         process.env
+                                        //             .REACT_APP_DEPLOYED_URL +
+                                        //         friendlyName +
+                                        //         '" was copied to clipboard.'
+                                        // );
+                                    }}
+                                >
+                                    Copy Link
+                                </span>
+                                {copy ? (
+                                    <p style={{ color: "green", fontSize: 11 }}>
+                                        {process.env.REACT_APP_DEPLOYED_URL +
+                                            friendlyName +
+                                            " was copied to clipboard."}
+                                    </p>
+                                ) : null}
+                            </span>
+                        </div>
+                    </>
                 ) : pageNum === 1 ? (
                     <>
                         <div>
@@ -526,27 +607,29 @@ export default function RoomModal({
                     </div>
                 )}
             </DialogContent>
-            <DialogActions className={classes.buttonContainer}>
-                <Button
-                    onClick={
-                        pageNum === 2
-                            ? handleModalSubmitClick
-                            : () => {
-                                  setPageNum(2);
-                              }
-                    }
-                    disabled={
-                        (pageNum === 1 &&
-                            (roomName === "" ||
-                                roomDescription === "" ||
-                                friendlyName === "")) ||
-                        (pageNum === 2 && previewSrc === "")
-                    }
-                    className={classes.createButton}
-                >
-                    {pageNum === 1 ? "Next" : isEdit ? "Edit" : "Create"}
-                </Button>
-            </DialogActions>
+            {!isShareAndPublish ? (
+                <DialogActions className={classes.buttonContainer}>
+                    <Button
+                        onClick={
+                            pageNum === 2
+                                ? handleModalSubmitClick
+                                : () => {
+                                      setPageNum(2);
+                                  }
+                        }
+                        disabled={
+                            (pageNum === 1 &&
+                                (roomName === "" ||
+                                    roomDescription === "" ||
+                                    friendlyName === "")) ||
+                            (pageNum === 2 && previewSrc === "")
+                        }
+                        className={classes.createButton}
+                    >
+                        {pageNum === 1 ? "Next" : isEdit ? "Edit" : "Create"}
+                    </Button>
+                </DialogActions>
+            ) : null}
         </Dialog>
     );
 }
