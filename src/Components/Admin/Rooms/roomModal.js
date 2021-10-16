@@ -397,14 +397,6 @@ export default function RoomModal({
                                                 friendlyName
                                         );
                                         setCopy(true);
-                                        // TODO: change to snackbar or something nicer in future
-                                        // alert(
-                                        //     'Value "' +
-                                        //         process.env
-                                        //             .REACT_APP_DEPLOYED_URL +
-                                        //         friendlyName +
-                                        //         '" was copied to clipboard.'
-                                        // );
                                     }}
                                 >
                                     Copy Link
