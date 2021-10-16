@@ -307,6 +307,7 @@ export default function ObjectEditor({
                 setShowError(true);
                 return;
             }
+            console.log(images);
             for (let i = 0; i < images.length; i++) {
                 if (images[i].imageSrc === "") {
                     setErrorText(
@@ -385,9 +386,12 @@ export default function ObjectEditor({
                 (isInteractable && puzzleType === "unordered-puzzle")
             ) {
                 for (let i = 0; i < images.length; i++) {
+                    console.log("here");
+                    console.log(images);
                     if (!images[i].imgArr) {
                         continue;
                     }
+                    console.log(images[i].imgArr);
                     let response = null;
                     let type = images[i].type;
                     const imagePrefix =
@@ -580,7 +584,7 @@ export default function ObjectEditor({
                                           .images
                                   )
                               )
-                            : []
+                            : [{}, {}]
                     }
                     isUnordered={true}
                     imagesLen={
@@ -589,6 +593,7 @@ export default function ObjectEditor({
                             ? origAnimJson.blackboardData.jsonData.images.length
                             : 0
                     }
+                    classes={classes}
                 />
             ) : null}
             {isInteractable && puzzleType === "ordered-puzzle" ? (
