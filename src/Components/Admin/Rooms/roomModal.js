@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
+import Switch from "@material-ui/core/Switch";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -46,6 +47,31 @@ const useStyles = makeStyles((theme) => ({
         height: "20px",
         borderRadius: "100%",
         float: "right",
+    },
+    switch_track: {
+        backgroundColor: "lightgray",
+        marginTop: 5,
+    },
+    switch_base: {
+        marginTop: 5,
+        color: "#f50057",
+        "&.Mui-disabled": {
+            color: "gray",
+        },
+        "&.Mui-checked": {
+            color: "red",
+        },
+        "&.Mui-checked + .MuiSwitch-track": {
+            backgroundColor: "red",
+        },
+    },
+    switch_primary: {
+        "&.Mui-checked": {
+            color: "white",
+        },
+        "&.Mui-checked + .MuiSwitch-track": {
+            backgroundColor: "white",
+        },
     },
 }));
 
@@ -340,6 +366,36 @@ export default function RoomModal({
             <DialogContent>
                 {isShareAndPublish ? (
                     <>
+                        <div style={{ width: 500 }}>
+                            <span
+                                style={{
+                                    paddingRight: 10,
+                                    verticalAlign: "-webkit-baseline-middle",
+                                    fontSize: 20,
+                                    lineHeight: "27px",
+                                    marginRight: 270,
+                                }}
+                            >
+                                Game Published
+                            </span>
+                            <span style={{ margin: "auto", height: 70 }}>
+                                <Switch
+                                    checked={isPublished}
+                                    onChange={() =>
+                                        setIsPublished(!isPublished)
+                                    }
+                                    inputProps={{
+                                        "aria-label": "controlled",
+                                        height: 40,
+                                    }}
+                                    classes={{
+                                        track: classes.switch_track,
+                                        switchBase: classes.switch_base,
+                                        colorPrimary: classes.switch_primary,
+                                    }}
+                                />
+                            </span>
+                        </div>
                         <div style={{ width: 500 }}>
                             <Typography
                                 style={{
