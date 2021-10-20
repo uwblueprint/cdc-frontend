@@ -307,7 +307,6 @@ export default function ObjectEditor({
                 setShowError(true);
                 return;
             }
-            console.log(images);
             for (let i = 0; i < images.length; i++) {
                 if (images[i].imageSrc === "") {
                     setErrorText(
@@ -386,53 +385,51 @@ export default function ObjectEditor({
                 (isInteractable && puzzleType === "unordered-puzzle")
             ) {
                 for (let i = 0; i < images.length; i++) {
-                    console.log("here");
-                    console.log(images);
-                    if (!images[i].imgArr) {
-                        continue;
-                    }
-                    console.log(images[i].imgArr);
-                    let response = null;
-                    let type = images[i].type;
-                    const imagePrefix =
-                        process.env.REACT_APP_ADMIN_ASSET_PREFIX;
-                    if (!type) {
-                        type = animCopy.blackboardData.jsonData.images[
-                            i
-                        ].imageSrc
-                            .split(".")
-                            .reverse()[0];
-                    }
+                    if (images[i].imgArr) {
+                        let response = null;
+                        let type = images[i].type;
+                        const imagePrefix =
+                            process.env.REACT_APP_ADMIN_ASSET_PREFIX;
+                        if (!type) {
+                            type = animCopy.blackboardData.jsonData.images[
+                                i
+                            ].imageSrc
+                                .split(".")
+                                .reverse()[0];
+                        }
 
-                    if (
-                        origAnimJson.blackboardData?.jsonData?.images &&
-                        i < origAnimJson.blackboardData.jsonData.images.length
-                    ) {
-                        response = await createPresignedLinkAndUploadS3(
-                            {
-                                file_type: type,
-                                type: "image",
-                                file_content: images[i].imgArr,
-                                s3Key: origAnimJson.blackboardData.jsonData.images[
-                                    i
-                                ].imageSrc.replace(imagePrefix, ""),
-                            },
-                            handleError
-                        );
-                    } else {
-                        response = await createPresignedLinkAndUploadS3(
-                            {
-                                file_type: type,
-                                type: "image",
-                                file_content: images[i].imgArr,
-                            },
-                            handleError
-                        );
-                    }
+                        if (
+                            origAnimJson.blackboardData?.jsonData?.images &&
+                            i <
+                                origAnimJson.blackboardData.jsonData.images
+                                    .length
+                        ) {
+                            response = await createPresignedLinkAndUploadS3(
+                                {
+                                    file_type: type,
+                                    type: "image",
+                                    file_content: images[i].imgArr,
+                                    s3Key: origAnimJson.blackboardData.jsonData.images[
+                                        i
+                                    ].imageSrc.replace(imagePrefix, ""),
+                                },
+                                handleError
+                            );
+                        } else {
+                            response = await createPresignedLinkAndUploadS3(
+                                {
+                                    file_type: type,
+                                    type: "image",
+                                    file_content: images[i].imgArr,
+                                },
+                                handleError
+                            );
+                        }
 
-                    delete images[i].type;
-                    delete images[i].imgArr;
-                    images[i].imageSrc = imagePrefix + response.data.s3_key;
+                        delete images[i].type;
+                        delete images[i].imgArr;
+                        images[i].imageSrc = imagePrefix + response.data.s3_key;
+                    }
                 }
                 animCopy.blackboardData.jsonData.images = JSON.parse(
                     JSON.stringify(images)
@@ -636,7 +633,7 @@ export default function ObjectEditor({
             ) : null}
             {!isInteractable || puzzleType !== "" ? (
                 <div>
-                    <Button color="primary" onClick={() => handleSave()}>
+                    <Button color="primary" onClick={handleSave}>
                         Save
                     </Button>
                 </div>

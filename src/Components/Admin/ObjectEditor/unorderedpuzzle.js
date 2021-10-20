@@ -76,8 +76,6 @@ export default function UnorderedPuzzle(props) {
             if (!isUnordered) {
                 xTarg = -2.5;
             }
-            console.log(imagesLen);
-            console.log(newImages.length);
             while (imagesLen > newImages.length) {
                 const tempImage = { xTarget: xTarg, yTarget: 0, imageSrc: "" };
                 newImages.push(tempImage);
@@ -152,17 +150,18 @@ export default function UnorderedPuzzle(props) {
     };
 
     const addImage = () => {
+        // TODO: Create function called addImage in props
         props.saveImages([...images, {}]);
         setImages([...images, {}]);
     };
 
     const deleteImage = (index) => {
-        console.log(images);
+        // TODO: Create function called deleteImage in props
+        // it should do similar splice logic
         const tempImages = JSON.parse(JSON.stringify(images));
         tempImages.splice(index, 1);
         setImages(tempImages);
         props.saveImages(tempImages);
-        console.log(tempImages);
     };
 
     return (
