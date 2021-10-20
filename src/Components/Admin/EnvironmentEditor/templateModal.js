@@ -51,7 +51,7 @@ export default function TemplateModal({
         <Dialog open={modalOpen} onClose={handleModalCloseClick}>
             <DialogTitle>{"Create Scene from Template"}</DialogTitle>
             <DialogContent>
-                <div style={{ width: 500 }}>
+                <div style={{ width: 500, overflowY: "hidden" }}>
                     <Autocomplete
                         id="backgroundIdSelection"
                         style={{ width: 300 }}

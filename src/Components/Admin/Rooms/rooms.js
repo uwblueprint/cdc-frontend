@@ -26,6 +26,7 @@ export default function EscapeRooms({
     environments,
     handleEditRoomClick,
     handleDeleteRoomClick,
+    handleShareAndPublishClick,
 }) {
     const classes = useStyles();
 
@@ -59,6 +60,9 @@ export default function EscapeRooms({
                                 data={room}
                                 handleEditClick={handleEditRoomClick}
                                 handleDeleteClick={handleDeleteRoomClick}
+                                handleShareAndPublishClick={
+                                    handleShareAndPublishClick
+                                }
                             />
                         );
                     })}

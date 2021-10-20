@@ -20,6 +20,9 @@ import {
     duplicateScene,
 } from "../../../lib/sceneEndpoints";
 
+import "../../../styles/index.css";
+import { Colours } from "../../../styles/Constants.ts";
+
 const useStyles = makeStyles((theme) => ({
     page: {
         marginTop: theme.spacing(8),
@@ -61,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
         display: "flex",
         justifyContent: "center",
         padding: "16px 12px",
-        backgroundColor: "#E2E5ED",
+        backgroundColor: Colours.Grey3,
         borderRadius: "12px",
     },
 }));
@@ -286,15 +289,19 @@ export default function EnvironmentEditor({
         setScenes(modifiedScenes);
         setDeleteSceneId(null);
         setDeleteModalOpen(false);
+
+        const data = await getScenario(environmentId, handleError);
+        setEnvironment(data);
     };
 
     return (
         <div>
-            <Navbar home />
             <div className={classes.page}>
+                <Navbar home color="secondary" roomName={environment.name} />
                 <EnvironmentBar
                     onCreateButtonClick={onCreateButtonClick}
                     onTemplateButtonClick={onTemplateButtonClick}
+                    isEnvironment
                 />
             </div>
             <div className={classes.container}>
@@ -447,7 +454,10 @@ export default function EnvironmentEditor({
             />
             <DeleteModal
                 open={deleteModalOpen}
-                confirmMessage="Are you sure you want to delete this scene?"
+                title="Delete Scene and Transition"
+                confirmMessage={
+                    "Are you sure you want to delete this scene?\nDeleting the scene will also delete the following transition."
+                }
                 handleClose={onDeleteModalCancel}
                 handleSubmit={onDeleteModalSubmit}
             />

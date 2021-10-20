@@ -11,6 +11,7 @@ import AddIcon from "@material-ui/icons/Add";
 import IconButton from "@material-ui/core/IconButton";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
+import Navbar from "./navbar.js";
 
 import EscapeRooms from "./Rooms/rooms.js";
 import Scenes from "./Scenes/scenes.js";
@@ -139,6 +140,10 @@ export default function Admin() {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [createModalOpen, setCreateModalOpen] = React.useState(false);
     const [editModalOpen, setEditModalOpen] = React.useState(false);
+    const [
+        shareAndPublishModalOpen,
+        setShareAndPublishModalOpen,
+    ] = React.useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
     const [uploadAssetModalOpen, setUploadAssetModalOpen] = React.useState(
         false
@@ -199,6 +204,7 @@ export default function Admin() {
         name,
         description,
         friendly_name,
+        display_image_url,
     }) => {
         setCreateModalOpen(false);
         const resp = await postScenario(
@@ -206,6 +212,7 @@ export default function Admin() {
                 name,
                 description,
                 friendly_name,
+                display_image_url,
             },
             handleError
         );
@@ -220,6 +227,14 @@ export default function Admin() {
         setEditModalOpen(true);
     };
 
+    const handleShareAndPublishClick = (roomId) => {
+        const room = environments.find(
+            (environment) => environment.id === roomId
+        );
+        setEditRoom(room);
+        setShareAndPublishModalOpen(true);
+    };
+
     const handleEditRoomSubmit = async ({
         name,
         description,
@@ -227,6 +242,7 @@ export default function Admin() {
         is_published,
         is_previewable,
         expected_solve_time,
+        display_image_url,
     }) => {
         setEditModalOpen(false);
         const resp = await editScenario(
@@ -239,6 +255,34 @@ export default function Admin() {
                 is_published,
                 is_previewable,
                 expected_solve_time,
+                display_image_url,
+            },
+            handleError
+        );
+        const replaceIndex = environments.findIndex(
+            (env) => env.id === editRoom.id
+        );
+        const copiedEnvs = [...environments];
+        copiedEnvs[replaceIndex] = resp.data;
+        setEnvironments(copiedEnvs);
+    };
+
+    const handleShareAndPublishSubmit = async ({
+        is_published,
+        is_previewable,
+    }) => {
+        setEditModalOpen(false);
+        const resp = await editScenario(
+            {
+                id: editRoom.id,
+                name: editRoom.name,
+                friendly_name: editRoom.friendly_name,
+                description: editRoom.description,
+                scene_ids: editRoom.scene_ids,
+                is_published,
+                is_previewable,
+                expected_solve_time: editRoom.expected_solve_time,
+                display_image_url: editRoom.display_image_url,
             },
             handleError
         );
@@ -252,6 +296,11 @@ export default function Admin() {
 
     const handleEditRoomClose = () => {
         setEditModalOpen(false);
+        setEditRoom({});
+    };
+
+    const handleShareAndPublishClose = () => {
+        setShareAndPublishModalOpen(false);
         setEditRoom({});
     };
 
@@ -330,6 +379,7 @@ export default function Admin() {
         <Container component="main" maxWidth="xs">
             <CssBaseline />
             <div className={classes.paper}>
+                <Navbar search color="primary" />
                 <div className={classes.root}>
                     <IconButton
                         className={classes.addButton}
@@ -383,8 +433,16 @@ export default function Admin() {
                         room={editRoom}
                         isEdit
                     />
+                    <RoomModal
+                        modalOpen={shareAndPublishModalOpen}
+                        handleModalClose={handleShareAndPublishClose}
+                        handleSubmit={handleShareAndPublishSubmit}
+                        room={editRoom}
+                        isShareAndPublish
+                    />
                     <DeleteModal
                         open={deleteModalOpen}
+                        title="Delete Room"
                         confirmMessage="Are you sure you want to delete this room?"
                         handleClose={handleDeleteRoomCancel}
                         handleSubmit={handleDeleteRoomSubmit}
@@ -396,6 +454,7 @@ export default function Admin() {
                     />
                     <DeleteModal
                         open={deleteAssetModalOpen}
+                        title="Delete Asset"
                         confirmMessage="Are you sure you want to delete this asset?"
                         handleClose={handleDeleteAssetCancel}
                         handleSubmit={handleDeleteAssetSubmit}
@@ -443,6 +502,9 @@ export default function Admin() {
                             environments={environments}
                             handleEditRoomClick={handleEditRoomClick}
                             handleDeleteRoomClick={handleDeleteRoomClick}
+                            handleShareAndPublishClick={
+                                handleShareAndPublishClick
+                            }
                         />
                     </TabPanel>
                     <TabPanel
