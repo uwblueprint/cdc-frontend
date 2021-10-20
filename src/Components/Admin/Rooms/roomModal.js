@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
+import Switch from "@material-ui/core/Switch";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -47,6 +48,31 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: "100%",
         float: "right",
     },
+    switch_track: {
+        backgroundColor: "lightgray",
+        marginTop: 5,
+    },
+    switch_base: {
+        marginTop: 5,
+        color: "#f50057",
+        "&.Mui-disabled": {
+            color: "gray",
+        },
+        "&.Mui-checked": {
+            color: "red",
+        },
+        "&.Mui-checked + .MuiSwitch-track": {
+            backgroundColor: "red",
+        },
+    },
+    switch_primary: {
+        "&.Mui-checked": {
+            color: "white",
+        },
+        "&.Mui-checked + .MuiSwitch-track": {
+            backgroundColor: "white",
+        },
+    },
 }));
 
 export default function RoomModal({
@@ -55,6 +81,7 @@ export default function RoomModal({
     handleSubmit,
     room,
     isEdit,
+    isShareAndPublish,
 }) {
     const classes = useStyles();
     const handleError = useErrorHandler();
@@ -65,6 +92,7 @@ export default function RoomModal({
     const [roomSolveTime, setRoomSolveTime] = useState("");
     const [isPublished, setIsPublished] = useState(false);
     const [isPreviewable, setIsPreviewable] = useState(false);
+    const [copy, setCopy] = useState(false);
 
     // handle second page image upload for scenario creation
     const [pageNum, setPageNum] = useState(1);
@@ -231,6 +259,12 @@ export default function RoomModal({
     };
 
     const handleModalCloseClick = () => {
+        if (isShareAndPublish) {
+            handleSubmit({
+                is_published: isPublished,
+                is_previewable: isPreviewable,
+            });
+        }
         resetFields();
         handleModalClose();
     };
@@ -251,6 +285,7 @@ export default function RoomModal({
         setPageNum(1);
         setFileName("");
         setPreviewSrc("");
+        setCopy(false);
     };
 
     const handleModalSubmitClick = async () => {
@@ -320,7 +355,11 @@ export default function RoomModal({
                 }}
             >
                 <span className={classes.dialogTitle}>
-                    {isEdit ? "Edit Escape Room" : "Name Game & Link"}
+                    {isEdit
+                        ? "Edit Escape Room"
+                        : isShareAndPublish
+                        ? "Share & Publish Game"
+                        : "Name Game & Link"}
                 </span>
                 <IconButton
                     className={classes.closeButton}
@@ -331,7 +370,110 @@ export default function RoomModal({
                 </IconButton>
             </DialogTitle>
             <DialogContent>
-                {pageNum === 1 ? (
+                {isShareAndPublish ? (
+                    <>
+                        <div style={{ width: 500 }}>
+                            <span
+                                style={{
+                                    paddingRight: 10,
+                                    verticalAlign: "-webkit-baseline-middle",
+                                    fontSize: 20,
+                                    lineHeight: "27px",
+                                    marginRight: 270,
+                                }}
+                            >
+                                Game Published
+                            </span>
+                            <span style={{ margin: "auto", height: 70 }}>
+                                <Switch
+                                    checked={isPublished}
+                                    onChange={() => {
+                                        setIsPublished(!isPublished);
+                                    }}
+                                    inputProps={{
+                                        "aria-label": "controlled",
+                                        height: 40,
+                                    }}
+                                    classes={{
+                                        track: classes.switch_track,
+                                        switchBase: classes.switch_base,
+                                        colorPrimary: classes.switch_primary,
+                                    }}
+                                />
+                            </span>
+                        </div>
+                        <div style={{ width: 500 }}>
+                            <Typography
+                                style={{
+                                    fontSize: 20,
+                                    lineHeight: "27px",
+                                    marginTop: 20,
+                                }}
+                            >
+                                Game Link
+                            </Typography>
+                            <span>
+                                <span
+                                    style={{
+                                        width: 100,
+                                        paddingRight: 10,
+                                        verticalAlign:
+                                            "-webkit-baseline-middle",
+                                    }}
+                                >
+                                    dcc.com/
+                                </span>
+                                <TextField
+                                    value={friendlyName}
+                                    onChange={handleFriendlyNameChange}
+                                    className={classes.textField}
+                                    required
+                                    error={Boolean(
+                                        errors ? errors.friendlyName : false
+                                    )}
+                                    helperText={
+                                        errors ? errors.friendlyName : false
+                                    }
+                                    style={{ width: 300 }}
+                                    variant="outlined"
+                                    inputProps={{
+                                        style: {
+                                            padding: 10,
+                                        },
+                                    }}
+                                    disabled
+                                    placeholder="friendly-url-to-share"
+                                />
+                                <span
+                                    style={{
+                                        width: 100,
+                                        paddingLeft: 20,
+                                        verticalAlign:
+                                            "-webkit-baseline-middle",
+                                        color: "red",
+                                        cursor: "pointer",
+                                    }}
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(
+                                            process.env.REACT_APP_DEPLOYED_URL +
+                                                friendlyName
+                                        );
+                                        setCopy(true);
+                                    }}
+                                >
+                                    Copy Link
+                                </span>
+                                {copy ? (
+                                    <p style={{ color: "green", fontSize: 11 }}>
+                                        {process.env.REACT_APP_DEPLOYED_URL +
+                                            friendlyName +
+                                            " was copied to clipboard."}
+                                    </p>
+                                ) : null}
+                            </span>
+                        </div>
+                    </>
+                ) : pageNum === 1 ? (
                     <>
                         <div>
                             <Typography
@@ -519,27 +661,29 @@ export default function RoomModal({
                     </div>
                 )}
             </DialogContent>
-            <DialogActions className={classes.buttonContainer}>
-                <Button
-                    onClick={
-                        pageNum === 2
-                            ? handleModalSubmitClick
-                            : () => {
-                                  setPageNum(2);
-                              }
-                    }
-                    disabled={
-                        (pageNum === 1 &&
-                            (roomName === "" ||
-                                roomDescription === "" ||
-                                friendlyName === "")) ||
-                        (pageNum === 2 && previewSrc === "")
-                    }
-                    className={classes.createButton}
-                >
-                    {pageNum === 1 ? "Next" : isEdit ? "Edit" : "Create"}
-                </Button>
-            </DialogActions>
+            {!isShareAndPublish ? (
+                <DialogActions className={classes.buttonContainer}>
+                    <Button
+                        onClick={
+                            pageNum === 2
+                                ? handleModalSubmitClick
+                                : () => {
+                                      setPageNum(2);
+                                  }
+                        }
+                        disabled={
+                            (pageNum === 1 &&
+                                (roomName === "" ||
+                                    roomDescription === "" ||
+                                    friendlyName === "")) ||
+                            (pageNum === 2 && previewSrc === "")
+                        }
+                        className={classes.createButton}
+                    >
+                        {pageNum === 1 ? "Next" : isEdit ? "Edit" : "Create"}
+                    </Button>
+                </DialogActions>
+            ) : null}
         </Dialog>
     );
 }
