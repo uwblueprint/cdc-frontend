@@ -116,7 +116,12 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-export default function RoomCard({ data, handleEditClick, handleDeleteClick }) {
+export default function RoomCard({
+    data,
+    handleEditClick,
+    handleDeleteClick,
+    handleShareAndPublishClick,
+}) {
     const classes = useStyles();
     const history = useHistory();
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -211,7 +216,7 @@ export default function RoomCard({ data, handleEditClick, handleDeleteClick }) {
                         horizontal: "center",
                     }}
                     transformOrigin={{
-                        vertical: -70,
+                        vertical: 0,
                         horizontal: 150,
                     }}
                     MenuListProps={{ disablePadding: true }}
@@ -220,7 +225,13 @@ export default function RoomCard({ data, handleEditClick, handleDeleteClick }) {
                     onClose={handleMenuClose}
                     className={classes.menu}
                 >
-                    <MenuItem disabled className={classes.menuItem}>
+                    <MenuItem
+                        className={classes.menuItem}
+                        onClick={() => {
+                            setAnchorEl(null);
+                            handleShareAndPublishClick(data.id);
+                        }}
+                    >
                         Share & Publish
                     </MenuItem>
                     <MenuItem disabled className={classes.menuItem}>
