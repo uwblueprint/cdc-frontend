@@ -150,18 +150,15 @@ export default function UnorderedPuzzle(props) {
     };
 
     const addImage = () => {
-        // TODO: Create function called addImage in props
-        props.saveImages([...images, {}]);
         setImages([...images, {}]);
+        props.addImage();
     };
 
     const deleteImage = (index) => {
-        // TODO: Create function called deleteImage in props
-        // it should do similar splice logic
         const tempImages = JSON.parse(JSON.stringify(images));
         tempImages.splice(index, 1);
         setImages(tempImages);
-        props.saveImages(tempImages);
+        props.deleteImage(index);
     };
 
     return (
