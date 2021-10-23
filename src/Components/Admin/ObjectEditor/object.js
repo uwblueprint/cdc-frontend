@@ -285,6 +285,16 @@ export default function ObjectEditor({
         setImages(JSON.parse(JSON.stringify(imagesCopy)));
     };
 
+    const addImage = () => {
+        setImages([...images, {}]);
+    };
+
+    const deleteImage = (index) => {
+        const tempImages = JSON.parse(JSON.stringify(images));
+        tempImages.splice(index, 1);
+        setImages(tempImages);
+    };
+
     const handleSave = () => {
         const animCopy = animationsJson;
         if (isInteractable && header !== "") {
@@ -572,6 +582,8 @@ export default function ObjectEditor({
                 <UnorderedPuzzle
                     saveImageN={saveImageN}
                     saveImages={saveImages}
+                    addImage={addImage}
+                    deleteImage={deleteImage}
                     images={
                         origAnimJson?.blackboardData?.jsonData?.useTargets ===
                         false
