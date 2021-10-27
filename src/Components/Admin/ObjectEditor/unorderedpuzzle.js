@@ -152,6 +152,7 @@ export default function UnorderedPuzzle(props) {
     const addImage = () => {
         setImages([...images, {}]);
         props.addImage();
+        setUploaded(false);
     };
 
     const deleteImage = (index) => {
@@ -159,6 +160,7 @@ export default function UnorderedPuzzle(props) {
         tempImages.splice(index, 1);
         setImages(tempImages);
         props.deleteImage(index);
+        setUploaded(false);
     };
 
     return (

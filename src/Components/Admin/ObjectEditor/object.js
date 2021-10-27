@@ -75,7 +75,7 @@ export default function ObjectEditor({
     const [origAnimJson, setOrigAnimJson] = useState({});
     const [isInteractable, setIsInteractable] = useState(null);
     const [header, setHeader] = useState("");
-    const [images, setImages] = useState([]);
+    const [images, setImages] = useState([{}, {}]);
     const [showSuccess, setShowSuccess] = useState(false);
     const [successText, setSuccessText] = useState("");
     const [showError, setShowError] = useState(false);
@@ -203,6 +203,7 @@ export default function ObjectEditor({
                 origAnimJson.blackboardData?.componentType === obj.value
             ) {
                 setAnimationsJson(JSON.parse(JSON.stringify(origAnimJson)));
+                setImages([{}, {}]);
             } else {
                 const animCopy = {
                     blackboardData: { componentType: obj.value, jsonData: {} },
@@ -235,6 +236,12 @@ export default function ObjectEditor({
                     animCopy.blackboardData.jsonData.model = "basic";
                     animCopy.blackboardData.jsonData.is_last_object = true;
                     animCopy.blackboardData.jsonData.password = "";
+                }
+                if (
+                    obj.value !== "unordered-puzzle" &&
+                    obj.value !== "ordered-puzzle"
+                ) {
+                    setImages([{}, {}]);
                 }
                 setAnimationsJson(animCopy);
             }
@@ -290,7 +297,7 @@ export default function ObjectEditor({
     };
 
     const deleteImage = (index) => {
-        const tempImages = JSON.parse(JSON.stringify(images));
+        const tempImages = images;
         tempImages.splice(index, 1);
         setImages(tempImages);
     };
@@ -318,7 +325,7 @@ export default function ObjectEditor({
                 return;
             }
             for (let i = 0; i < images.length; i++) {
-                if (images[i].imageSrc === "") {
+                if (images[i].imageSrc === "" || !images[i].imageSrc) {
                     setErrorText(
                         "Error: Not all images have been uploaded yet"
                     );
