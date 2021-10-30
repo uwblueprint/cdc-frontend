@@ -10,7 +10,11 @@ import VisualPaneView from "../ObjectEditor/visualpaneview";
 import UnorderedPuzzle from "../ObjectEditor/unorderedpuzzle";
 import KeypadPuzzle from "../ObjectEditor/keypadpuzzle";
 
-import { getPuzzle, editPuzzle } from "../../../lib/puzzleEndpoints";
+import {
+    getPuzzle,
+    editPuzzle,
+    deletePuzzleImages,
+} from "../../../lib/puzzleEndpoints";
 import { createPresignedLinkAndUploadS3 } from "../../../lib/s3Utility";
 import JigsawPuzzle from "./jigsawpuzzle";
 import { httpPost } from "../../../lib/dataAccess";
@@ -76,6 +80,7 @@ export default function ObjectEditor({
     const [isInteractable, setIsInteractable] = useState(null);
     const [header, setHeader] = useState("");
     const [images, setImages] = useState([{}, {}]);
+    const [imagesList, setImagesList] = useState([]);
     const [showSuccess, setShowSuccess] = useState(false);
     const [successText, setSuccessText] = useState("");
     const [showError, setShowError] = useState(false);
@@ -237,10 +242,7 @@ export default function ObjectEditor({
                     animCopy.blackboardData.jsonData.is_last_object = true;
                     animCopy.blackboardData.jsonData.password = "";
                 }
-                if (
-                    obj.value !== "unordered-puzzle" &&
-                    obj.value !== "ordered-puzzle"
-                ) {
+                if (obj.value !== "ordered-puzzle") {
                     setImages([{}, {}]);
                 }
                 setAnimationsJson(animCopy);
@@ -297,6 +299,14 @@ export default function ObjectEditor({
     };
 
     const deleteImage = (index) => {
+        if (
+            images[index].imageSrc &&
+            images[index].imageSrc.indexOf("images") !== -1
+        ) {
+            const imgSrc = images[index].imageSrc;
+            const s3key = imgSrc.substr(imgSrc.indexOf("images"));
+            setImagesList([...imagesList, s3key]);
+        }
         const tempImages = images;
         tempImages.splice(index, 1);
         setImages(tempImages);
@@ -466,6 +476,13 @@ export default function ObjectEditor({
                 { sceneId, objectId, isInteractable, animationsJson },
                 handleError
             );
+            if (imagesList.length > 0) {
+                await deletePuzzleImages(
+                    { sceneId, objectId, imagesList },
+                    handleError
+                );
+                setImagesList([]);
+            }
         };
         if (
             isInteractable &&
