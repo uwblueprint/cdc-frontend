@@ -299,12 +299,13 @@ export default function ObjectEditor({
     };
 
     const deleteImage = (index) => {
+        const imagePrefix = process.env.REACT_APP_ADMIN_ASSET_PREFIX;
         if (
             images[index].imageSrc &&
-            images[index].imageSrc.indexOf("images") !== -1
+            images[index].imageSrc.indexOf(imagePrefix) !== -1
         ) {
             const imgSrc = images[index].imageSrc;
-            const s3key = imgSrc.substr(imgSrc.indexOf("images"));
+            const s3key = imgSrc.replace(imagePrefix, "");
             setImagesList([...imagesList, s3key]);
         }
         const tempImages = images;
