@@ -167,14 +167,13 @@ export default function UnorderedPuzzle(props) {
         <div>
             {isUnordered ? (
                 <div>
-                    Add Images
+                    Add Images ({images.length}/5)
                     <IconButton
                         className={props.classes.addButton}
                         aria-label="add"
+                        disabled={images.length === 5}
                         onClick={() => {
-                            if (images.length !== 5) {
-                                addImage();
-                            }
+                            addImage();
                         }}
                     >
                         <AddIcon />
