@@ -10,7 +10,11 @@ import VisualPaneView from "../ObjectEditor/visualpaneview";
 import UnorderedPuzzle from "../ObjectEditor/unorderedpuzzle";
 import KeypadPuzzle from "../ObjectEditor/keypadpuzzle";
 
-import { getPuzzle, editPuzzle } from "../../../lib/puzzleEndpoints";
+import {
+    getPuzzle,
+    editPuzzle,
+    deletePuzzleImages,
+} from "../../../lib/puzzleEndpoints";
 import { createPresignedLinkAndUploadS3 } from "../../../lib/s3Utility";
 import JigsawPuzzle from "./jigsawpuzzle";
 import { httpPost } from "../../../lib/dataAccess";
@@ -75,7 +79,8 @@ export default function ObjectEditor({
     const [origAnimJson, setOrigAnimJson] = useState({});
     const [isInteractable, setIsInteractable] = useState(null);
     const [header, setHeader] = useState("");
-    const [images, setImages] = useState([]);
+    const [images, setImages] = useState([{}, {}]);
+    const [imagesList, setImagesList] = useState([]);
     const [showSuccess, setShowSuccess] = useState(false);
     const [successText, setSuccessText] = useState("");
     const [showError, setShowError] = useState(false);
@@ -203,6 +208,7 @@ export default function ObjectEditor({
                 origAnimJson.blackboardData?.componentType === obj.value
             ) {
                 setAnimationsJson(JSON.parse(JSON.stringify(origAnimJson)));
+                setImages([{}, {}]);
             } else {
                 const animCopy = {
                     blackboardData: { componentType: obj.value, jsonData: {} },
@@ -235,6 +241,9 @@ export default function ObjectEditor({
                     animCopy.blackboardData.jsonData.model = "basic";
                     animCopy.blackboardData.jsonData.is_last_object = true;
                     animCopy.blackboardData.jsonData.password = "";
+                }
+                if (obj.value !== "ordered-puzzle") {
+                    setImages([{}, {}]);
                 }
                 setAnimationsJson(animCopy);
             }
@@ -285,6 +294,25 @@ export default function ObjectEditor({
         setImages(JSON.parse(JSON.stringify(imagesCopy)));
     };
 
+    const addImage = () => {
+        setImages([...images, {}]);
+    };
+
+    const deleteImage = (index) => {
+        const imagePrefix = process.env.REACT_APP_ADMIN_ASSET_PREFIX;
+        if (
+            images[index].imageSrc &&
+            images[index].imageSrc.indexOf(imagePrefix) !== -1
+        ) {
+            const imgSrc = images[index].imageSrc;
+            const s3key = imgSrc.replace(imagePrefix, "");
+            setImagesList([...imagesList, s3key]);
+        }
+        const tempImages = images;
+        tempImages.splice(index, 1);
+        setImages(tempImages);
+    };
+
     const handleSave = () => {
         const animCopy = animationsJson;
         if (isInteractable && header !== "") {
@@ -308,7 +336,7 @@ export default function ObjectEditor({
                 return;
             }
             for (let i = 0; i < images.length; i++) {
-                if (images[i].imageSrc === "") {
+                if (images[i].imageSrc === "" || !images[i].imageSrc) {
                     setErrorText(
                         "Error: Not all images have been uploaded yet"
                     );
@@ -385,50 +413,51 @@ export default function ObjectEditor({
                 (isInteractable && puzzleType === "unordered-puzzle")
             ) {
                 for (let i = 0; i < images.length; i++) {
-                    if (!images[i].imgArr) {
-                        continue;
-                    }
-                    let response = null;
-                    let type = images[i].type;
-                    const imagePrefix =
-                        process.env.REACT_APP_ADMIN_ASSET_PREFIX;
-                    if (!type) {
-                        type = animCopy.blackboardData.jsonData.images[
-                            i
-                        ].imageSrc
-                            .split(".")
-                            .reverse()[0];
-                    }
+                    if (images[i].imgArr) {
+                        let response = null;
+                        let type = images[i].type;
+                        const imagePrefix =
+                            process.env.REACT_APP_ADMIN_ASSET_PREFIX;
+                        if (!type) {
+                            type = animCopy.blackboardData.jsonData.images[
+                                i
+                            ].imageSrc
+                                .split(".")
+                                .reverse()[0];
+                        }
 
-                    if (
-                        origAnimJson.blackboardData?.jsonData?.images &&
-                        i < origAnimJson.blackboardData.jsonData.images.length
-                    ) {
-                        response = await createPresignedLinkAndUploadS3(
-                            {
-                                file_type: type,
-                                type: "image",
-                                file_content: images[i].imgArr,
-                                s3Key: origAnimJson.blackboardData.jsonData.images[
-                                    i
-                                ].imageSrc.replace(imagePrefix, ""),
-                            },
-                            handleError
-                        );
-                    } else {
-                        response = await createPresignedLinkAndUploadS3(
-                            {
-                                file_type: type,
-                                type: "image",
-                                file_content: images[i].imgArr,
-                            },
-                            handleError
-                        );
-                    }
+                        if (
+                            origAnimJson.blackboardData?.jsonData?.images &&
+                            i <
+                                origAnimJson.blackboardData.jsonData.images
+                                    .length
+                        ) {
+                            response = await createPresignedLinkAndUploadS3(
+                                {
+                                    file_type: type,
+                                    type: "image",
+                                    file_content: images[i].imgArr,
+                                    s3Key: origAnimJson.blackboardData.jsonData.images[
+                                        i
+                                    ].imageSrc.replace(imagePrefix, ""),
+                                },
+                                handleError
+                            );
+                        } else {
+                            response = await createPresignedLinkAndUploadS3(
+                                {
+                                    file_type: type,
+                                    type: "image",
+                                    file_content: images[i].imgArr,
+                                },
+                                handleError
+                            );
+                        }
 
-                    delete images[i].type;
-                    delete images[i].imgArr;
-                    images[i].imageSrc = imagePrefix + response.data.s3_key;
+                        delete images[i].type;
+                        delete images[i].imgArr;
+                        images[i].imageSrc = imagePrefix + response.data.s3_key;
+                    }
                 }
                 animCopy.blackboardData.jsonData.images = JSON.parse(
                     JSON.stringify(images)
@@ -448,6 +477,13 @@ export default function ObjectEditor({
                 { sceneId, objectId, isInteractable, animationsJson },
                 handleError
             );
+            if (imagesList.length > 0) {
+                await deletePuzzleImages(
+                    { sceneId, objectId, imagesList },
+                    handleError
+                );
+                setImagesList([]);
+            }
         };
         if (
             isInteractable &&
@@ -571,6 +607,8 @@ export default function ObjectEditor({
                 <UnorderedPuzzle
                     saveImageN={saveImageN}
                     saveImages={saveImages}
+                    addImage={addImage}
+                    deleteImage={deleteImage}
                     images={
                         origAnimJson?.blackboardData?.jsonData?.useTargets ===
                         false
@@ -580,7 +618,7 @@ export default function ObjectEditor({
                                           .images
                                   )
                               )
-                            : []
+                            : [{}, {}]
                     }
                     isUnordered={true}
                     imagesLen={
@@ -589,6 +627,7 @@ export default function ObjectEditor({
                             ? origAnimJson.blackboardData.jsonData.images.length
                             : 0
                     }
+                    classes={classes}
                 />
             ) : null}
             {isInteractable && puzzleType === "ordered-puzzle" ? (
@@ -631,7 +670,7 @@ export default function ObjectEditor({
             ) : null}
             {!isInteractable || puzzleType !== "" ? (
                 <div>
-                    <Button color="primary" onClick={() => handleSave()}>
+                    <Button color="primary" onClick={handleSave}>
                         Save
                     </Button>
                 </div>

@@ -1,4 +1,4 @@
-import { httpGet, httpPut } from "./dataAccess";
+import { httpPost, httpGet, httpPut } from "./dataAccess";
 
 const baseEndpoint = process.env.REACT_APP_ADMIN_BASE_ENDPOINT;
 
@@ -25,6 +25,22 @@ export const editPuzzle = async (
                 is_interactable: isInteractable,
                 animations_json: animationsJson,
             }
+        );
+        return response;
+    } catch (error) {
+        handleError(error);
+        throw error;
+    }
+};
+
+export const deletePuzzleImages = async (
+    { sceneId, objectId, imagesList },
+    handleError
+) => {
+    try {
+        const response = await httpPost(
+            baseEndpoint + `scene/${sceneId}/object/${objectId}/puzzle`,
+            imagesList
         );
         return response;
     } catch (error) {
