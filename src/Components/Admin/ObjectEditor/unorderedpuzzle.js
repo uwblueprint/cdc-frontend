@@ -172,7 +172,9 @@ export default function UnorderedPuzzle(props) {
                         className={props.classes.addButton}
                         aria-label="add"
                         onClick={() => {
-                            addImage();
+                            if (images.length !== 5) {
+                                addImage();
+                            }
                         }}
                     >
                         <AddIcon />
