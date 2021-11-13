@@ -9,6 +9,7 @@ import EnvironmentEditor from "./Components/Admin/EnvironmentEditor/environment"
 import ObjectEditor from "./Components/Admin/ObjectEditor/object";
 import AssetModelViewer from "./Components/Admin/AssetModelViewer/assetModelViewer";
 import { UserContext } from "./Providers/UserProviders";
+import ClipLoader from "react-spinners/ClipLoader";
 
 export default function Routes() {
     const { isLoading, user } = useContext(UserContext);
@@ -19,7 +20,18 @@ export default function Routes() {
         }
     }, [isLoading]);
 
-    return user ? (
+    return isLoading ? (
+        <div
+            style={{
+                display: "grid",
+                placeItems: "center",
+                height: "100vh",
+                overflow: "hidden",
+            }}
+        >
+            <ClipLoader color={"#EC4E55"} loading={isLoading} size={150} />
+        </div>
+    ) : user ? (
         <Switch>
             <Route exact path="/admin" component={Admin} />
             <Route
