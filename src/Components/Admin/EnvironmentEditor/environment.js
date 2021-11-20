@@ -60,15 +60,16 @@ const useStyles = makeStyles((theme) => ({
         display: "flex",
         minWidth: "400px",
         justifyContent: "center",
-        marginTop: theme.spacing(2),
-        marginBottom: theme.spacing(2),
+        marginTop: theme.spacing(1),
+        marginBottom: theme.spacing(1),
     },
     button: {
         display: "flex",
         justifyContent: "center",
         padding: "16px 12px",
         backgroundColor: Colours.Grey3,
-        borderRadius: "12px",
+        width: 300,
+        height: 60,
     },
 }));
 
@@ -416,7 +417,9 @@ export default function EnvironmentEditor({
                                         className={classes.button}
                                         onClick={onCreateButtonClick}
                                     >
-                                        New Scene from Scratch
+                                        <span style={{ textTransform: "none" }}>
+                                            New Scene from Scratch
+                                        </span>
                                     </Button>
                                 </span>
                                 <span className={classes.buttonContainer}>
@@ -425,7 +428,9 @@ export default function EnvironmentEditor({
                                         className={classes.button}
                                         onClick={onTemplateButtonClick}
                                     >
-                                        New Scene from Template
+                                        <span style={{ textTransform: "none" }}>
+                                            New Scene from Template
+                                        </span>
                                     </Button>
                                 </span>
                             </div>
@@ -459,7 +464,9 @@ export default function EnvironmentEditor({
                                     className={classes.button}
                                     onClick={onCreateButtonClick}
                                 >
-                                    New Scene from Scratch
+                                    <span style={{ textTransform: "none" }}>
+                                        New Scene from Scratch
+                                    </span>
                                 </Button>
                             </span>
                             <span className={classes.buttonContainer}>
@@ -468,7 +475,9 @@ export default function EnvironmentEditor({
                                     className={classes.button}
                                     onClick={onTemplateButtonClick}
                                 >
-                                    New Scene from Template
+                                    <span style={{ textTransform: "none" }}>
+                                        New Scene from Template
+                                    </span>
                                 </Button>
                             </span>
                         </div>
