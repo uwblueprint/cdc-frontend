@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useErrorHandler } from "react-error-boundary";
+import Button from "@material-ui/core/Button";
+import AddIcon from "@material-ui/icons/Add";
+import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 
 import Navbar from "../navbar";
 import EnvironmentBar from "./environmentBar";
@@ -55,10 +58,10 @@ const useStyles = makeStyles((theme) => ({
     },
     buttonContainer: {
         display: "flex",
-        width: "100%",
+        minWidth: "400px",
         justifyContent: "center",
-        marginTop: theme.spacing(12),
-        marginBottom: theme.spacing(4),
+        marginTop: theme.spacing(2),
+        marginBottom: theme.spacing(2),
     },
     button: {
         display: "flex",
@@ -316,12 +319,6 @@ export default function EnvironmentEditor({
                         <TransitionCard
                             className={classes.introContainer}
                             scene={null}
-                            handleEditClick={() => {}}
-                            isTutorial
-                        />
-                        <TransitionCard
-                            className={classes.introContainer}
-                            scene={null}
                             handleEditClick={onTransitionEditClick}
                             isIntroduction
                         />
@@ -378,14 +375,25 @@ export default function EnvironmentEditor({
                                                                             onDeleteButtonClick
                                                                         }
                                                                     />
-                                                                    <TransitionCard
-                                                                        scene={
-                                                                            scene
-                                                                        }
-                                                                        handleEditClick={
-                                                                            onTransitionEditClick
-                                                                        }
-                                                                    />
+                                                                    <div
+                                                                        style={{
+                                                                            display:
+                                                                                "inline-flex",
+                                                                            position:
+                                                                                "absolute",
+                                                                            transform:
+                                                                                "translate(0,50%)",
+                                                                        }}
+                                                                    >
+                                                                        <TransitionCard
+                                                                            scene={
+                                                                                scene
+                                                                            }
+                                                                            handleEditClick={
+                                                                                onTransitionEditClick
+                                                                            }
+                                                                        />
+                                                                    </div>
                                                                 </div>
                                                             )}
                                                         </Draggable>
@@ -397,6 +405,30 @@ export default function EnvironmentEditor({
                                     </div>
                                 )}
                             </Droppable>
+                            <div
+                                style={{
+                                    marginRight: 50,
+                                }}
+                            >
+                                <span className={classes.buttonContainer}>
+                                    <Button
+                                        startIcon={<AddIcon />}
+                                        className={classes.button}
+                                        onClick={onCreateButtonClick}
+                                    >
+                                        New Scene from Scratch
+                                    </Button>
+                                </span>
+                                <span className={classes.buttonContainer}>
+                                    <Button
+                                        startIcon={<AccountBalanceIcon />}
+                                        className={classes.button}
+                                        onClick={onTemplateButtonClick}
+                                    >
+                                        New Scene from Template
+                                    </Button>
+                                </span>
+                            </div>
                             <TransitionCard
                                 className={classes.introContainer}
                                 scene={null}
@@ -406,19 +438,40 @@ export default function EnvironmentEditor({
                         </DragDropContext>
                     </div>
                 ) : (
-                    <div>
-                        <TransitionCard
-                            className={classes.introContainer}
-                            scene={null}
-                            handleEditClick={() => {}}
-                            isTutorial
-                        />
+                    <div
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            marginLeft: "65px",
+                            height: 332,
+                        }}
+                    >
                         <TransitionCard
                             className={classes.introContainer}
                             scene={null}
                             handleEditClick={onTransitionEditClick}
                             isIntroduction
                         />
+                        <div>
+                            <span className={classes.buttonContainer}>
+                                <Button
+                                    startIcon={<AddIcon />}
+                                    className={classes.button}
+                                    onClick={onCreateButtonClick}
+                                >
+                                    New Scene from Scratch
+                                </Button>
+                            </span>
+                            <span className={classes.buttonContainer}>
+                                <Button
+                                    startIcon={<AccountBalanceIcon />}
+                                    className={classes.button}
+                                    onClick={onTemplateButtonClick}
+                                >
+                                    New Scene from Template
+                                </Button>
+                            </span>
+                        </div>
                         <TransitionCard
                             className={classes.introContainer}
                             scene={null}
@@ -464,26 +517,3 @@ export default function EnvironmentEditor({
         </div>
     );
 }
-
-/*
-Ahmed: Keeping around as we may want to reuse these buttons later.
-<div className={classes.emptyButtonsContainer}>
-    <div className={classes.buttonContainer}>
-        <Button
-            startIcon={<AddIcon />}
-            className={classes.button}
-            onClick={onCreateButtonClick}
-        >
-            New Scene from Scratch
-        </Button>
-    </div>
-    <div className={classes.buttonContainer}>
-        <Button
-            startIcon={<AccountBalanceIcon />}
-            className={classes.button}
-        >
-            New Scene from Template
-        </Button>
-    </div>
-</div>
-*/
