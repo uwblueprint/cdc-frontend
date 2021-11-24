@@ -1,9 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AddIcon from "@material-ui/icons/Add";
 import { Button, IconButton } from "@material-ui/core";
 import { DeleteForever } from "@material-ui/icons";
 import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
+import MuiAlert from "@material-ui/lab/Alert";
+
+function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const useStyles = makeStyles(() => ({
     input: {
@@ -20,6 +25,16 @@ export default function KeypadPuzzle(props) {
     const [showNumpadPrompt, setNumpadPrompt] = useState(false);
     const [showKeyboardPrompt, setKeyboardPrompt] = useState(false);
     const [showSavePass, setSavePass] = useState(false);
+    const [showError, setShowError] = useState(false);
+    const [errorText, setErrorText] = useState("");
+
+    useEffect(() => {
+        if (showError) {
+            setTimeout(() => {
+                setShowError(false);
+            }, 5000);
+        }
+    }, [showError]);
 
     const showPrompt = () => {
         if (props.isNumpad) {
@@ -52,9 +67,10 @@ export default function KeypadPuzzle(props) {
             setTempPass(e.target.value);
             setSavePass(true);
         } else {
-            alert(
+            setErrorText(
                 "Error: Password must be at most 7 characters and only consist of numbers"
             );
+            setShowError(true);
             setSavePass(false);
         }
     };
@@ -65,9 +81,10 @@ export default function KeypadPuzzle(props) {
             setTempPass(e.target.value);
             setSavePass(true);
         } else {
-            alert(
+            setErrorText(
                 "Error: Password must be at most 16 characters and must be alphanumeric"
             );
+            setShowError(true);
             setSavePass(false);
         }
     };
@@ -116,6 +133,7 @@ export default function KeypadPuzzle(props) {
                     </IconButton>
                 </div>
             )}
+            {showError ? <Alert severity="error">{errorText}</Alert> : null}
         </div>
     );
 }
