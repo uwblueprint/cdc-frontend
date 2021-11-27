@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import AddIcon from "@material-ui/icons/Add";
 import { Button, IconButton } from "@material-ui/core";
 import { DeleteForever } from "@material-ui/icons";
@@ -27,14 +27,6 @@ export default function KeypadPuzzle(props) {
     const [showSavePass, setSavePass] = useState(false);
     const [showError, setShowError] = useState(false);
     const [errorText, setErrorText] = useState("");
-
-    useEffect(() => {
-        if (showError) {
-            setTimeout(() => {
-                setShowError(false);
-            }, 5000);
-        }
-    }, [showError]);
 
     const showPrompt = () => {
         if (props.isNumpad) {
@@ -65,6 +57,7 @@ export default function KeypadPuzzle(props) {
         const re = /^[0-9]{1,7}$/;
         if (e.target.value === "" || re.test(e.target.value)) {
             setTempPass(e.target.value);
+            setShowError(false);
             setSavePass(true);
         } else {
             setErrorText(
@@ -79,6 +72,7 @@ export default function KeypadPuzzle(props) {
         const re = /^[0-9a-zA-Z]{1,16}$/;
         if (e.target.value === "" || re.test(e.target.value)) {
             setTempPass(e.target.value);
+            setShowError(false);
             setSavePass(true);
         } else {
             setErrorText(
