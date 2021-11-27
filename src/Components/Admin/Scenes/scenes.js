@@ -5,13 +5,19 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import SceneCard from "./sceneCard.js";
+import { Colours } from "../../../styles/Constants.ts";
 
 const useStyles = makeStyles((theme) => ({
     page: {
-        marginTop: theme.spacing(8),
+        marginTop: theme.spacing(1),
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        marginLeft: "-65px",
+    },
+    title: {
+        marginTop: theme.spacing(4),
+        marginLeft: "-45px",
     },
 }));
 
@@ -21,10 +27,15 @@ export default function Scenes({ scenes }) {
     return (
         <Container component={"main"} maxWidth="lg">
             <CssBaseline />
+            <Typography
+                component="div"
+                variant="h4"
+                className={classes.title}
+                style={{ color: Colours.Grey9 }}
+            >
+                Your scenes
+            </Typography>
             <div className={classes.page}>
-                <Typography component="h1" variant="h5">
-                    Scenes Page
-                </Typography>
                 <Grid
                     container
                     item
