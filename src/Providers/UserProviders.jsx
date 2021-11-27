@@ -31,7 +31,7 @@ export default function UserProvider({ children }) {
             //Set the state to loading by default
             setAuthState({ state: AUTH_STATES.LOADING, user: null });
 
-            if (user == null) {
+            if (user === null) {
                 setAuthState({ state: AUTH_STATES.NOT_AUTHENTICATED, user });
                 return;
             }
@@ -45,7 +45,16 @@ export default function UserProvider({ children }) {
                 return;
             }
 
-            const response = await httpGet(baseEndpoint + "user_profile");
+            let response = null;
+            try {
+                response = await httpGet(baseEndpoint + "user_profile");
+            } catch (error) {
+                setAuthState({
+                    state: AUTH_STATES.NOT_AUTHENTICATED,
+                    user: null,
+                });
+                return;
+            }
 
             if (!response) {
                 setAuthState({
