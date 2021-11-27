@@ -12,14 +12,13 @@ import { UserContext } from "./Providers/UserProviders";
 import ClipLoader from "react-spinners/ClipLoader";
 
 export default function Routes() {
-    const { isLoading, user, reloadUser } = useContext(UserContext);
+    const { isLoading, user } = useContext(UserContext);
 
     useEffect(() => {
-        reloadUser();
         if (isLoading) {
             return;
         }
-    }, [isLoading, reloadUser]);
+    }, [isLoading]);
 
     return isLoading ? (
         <div

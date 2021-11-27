@@ -1,31 +1,48 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import IconButton from "@material-ui/core/IconButton";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-import MenuItem from "@material-ui/core/MenuItem";
-import Menu from "@material-ui/core/Menu";
+import TransitionCardImage from "../../Images/transition_card.png";
+import IntroductionCardImage from "../../Images/introduction_card.png";
+import ConclusionCardImage from "../../Images/conclusion_card.png";
 
 const useStyles = makeStyles(() => ({
     transitionItem: {
-        display: "inline-flex",
+        margin: "auto",
         flexDirection: "column",
-        backgroundColor: "#E2E5ED",
         padding: 16,
         userSelect: "none",
-        margin: "0 25px 0 0",
-        verticalAlign: "center",
-        width: "150px",
-        height: "150px",
+        width: "175px",
+        height: "120px",
+        borderRadius: 20,
+        backgroundImage: `url(${TransitionCardImage})`,
+        backgroundSize: 205,
+        cursor: "pointer",
     },
-    transitionTopRow: {
-        display: "flex",
-        width: "100%",
-        height: "100px",
-        justifyContent: "center",
-        marginTop: 65,
+    transitionContainer: {
+        display: "inline-flex",
+        height: 332,
     },
-    transitionBottomRow: {
-        alignSelf: "flex-end",
+    introductionItem: {
+        margin: "auto",
+        flexDirection: "column",
+        padding: 16,
+        userSelect: "none",
+        width: "175px",
+        height: "120px",
+        borderRadius: 20,
+        backgroundImage: `url(${IntroductionCardImage})`,
+        backgroundSize: 205,
+        cursor: "pointer",
+    },
+    conclusionItem: {
+        margin: "auto",
+        flexDirection: "column",
+        padding: 16,
+        userSelect: "none",
+        width: "175px",
+        height: "120px",
+        borderRadius: 20,
+        backgroundImage: `url(${ConclusionCardImage})`,
+        backgroundSize: 205,
     },
 }));
 
@@ -34,63 +51,25 @@ export default function TransitionCard({
     handleEditClick,
     isIntroduction,
     isConclusion,
-    isTutorial,
 }) {
     const classes = useStyles();
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const open = Boolean(anchorEl);
-
-    const handleMenuClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleMenuClose = () => {
-        setAnchorEl(null);
-    };
 
     return (
-        <div className={classes.transitionItem}>
-            <div className={classes.transitionTopRow}>
-                {isIntroduction
-                    ? "Introduction"
+        <div
+            className={
+                isIntroduction
+                    ? classes.introductionItem
                     : isConclusion
-                    ? "Conclusion"
-                    : isTutorial
-                    ? "Tutorial"
-                    : "Transition"}
-            </div>
-            {!isConclusion && !isTutorial && (
-                <div className={classes.transitionBottomRow}>
-                    <IconButton onClick={handleMenuClick}>
-                        <MoreVertIcon />
-                    </IconButton>
-                </div>
-            )}
-            <Menu
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "center",
-                }}
-                transformOrigin={{
-                    vertical: "top",
-                    horizontal: "center",
-                }}
-                keepMounted
-                open={open}
-                onClose={handleMenuClose}
-            >
-                <MenuItem
-                    onClick={() => {
-                        setAnchorEl(null);
-                        isIntroduction
-                            ? handleEditClick(-1)
-                            : handleEditClick(scene.id);
-                    }}
-                >
-                    Edit Transitions
-                </MenuItem>
-            </Menu>
-        </div>
+                    ? classes.conclusionItem
+                    : classes.transitionItem
+            }
+            onClick={() => {
+                isIntroduction
+                    ? handleEditClick(-1)
+                    : !isConclusion
+                    ? handleEditClick(scene.id)
+                    : "";
+            }}
+        />
     );
 }
