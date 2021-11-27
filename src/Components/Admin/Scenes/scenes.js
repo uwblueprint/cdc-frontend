@@ -33,7 +33,7 @@ export default function Scenes({ scenes }) {
                 className={classes.title}
                 style={{ color: Colours.Grey9 }}
             >
-                Scenes Page
+                Your scenes
             </Typography>
             <div className={classes.page}>
                 <Grid

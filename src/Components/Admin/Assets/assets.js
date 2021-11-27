@@ -33,7 +33,7 @@ export default function Assets({ assets, handleDeleteAssetClick }) {
                 className={classes.title}
                 style={{ color: Colours.Grey9 }}
             >
-                Assets Page
+                Your assets
             </Typography>
             <div className={classes.page}>
                 <Grid
