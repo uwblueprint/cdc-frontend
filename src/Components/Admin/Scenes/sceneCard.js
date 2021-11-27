@@ -105,7 +105,6 @@ export default function SceneCard({
 
     const handleCardClick = () => {
         setIsHighlighted(true);
-        console.log(isHighlighted);
     };
 
     const handleClickAway = () => {
