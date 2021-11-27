@@ -5,13 +5,19 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import AssetCard from "./assetCard.js";
+import { Colours } from "../../../styles/Constants.ts";
 
 const useStyles = makeStyles((theme) => ({
     page: {
-        marginTop: theme.spacing(8),
+        marginTop: theme.spacing(1),
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        marginLeft: "-65px",
+    },
+    title: {
+        marginTop: theme.spacing(4),
+        marginLeft: "-45px",
     },
 }));
 
@@ -21,10 +27,15 @@ export default function Assets({ assets, handleDeleteAssetClick }) {
     return (
         <Container component={"main"} maxWidth="lg">
             <CssBaseline />
+            <Typography
+                component="div"
+                variant="h4"
+                className={classes.title}
+                style={{ color: Colours.Grey9 }}
+            >
+                Assets Page
+            </Typography>
             <div className={classes.page}>
-                <Typography component="div" variant="h5">
-                    Assets Page
-                </Typography>
                 <Grid
                     container
                     item
