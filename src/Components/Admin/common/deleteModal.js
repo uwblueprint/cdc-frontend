@@ -3,16 +3,51 @@ import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
+import DialogTitle from "@material-ui/core/DialogTitle";
 import { makeStyles } from "@material-ui/core/styles";
+import { Colours } from "../../../styles/Constants.ts";
 
 const useStyles = makeStyles(() => ({
     buttonContainer: {
         display: "flex",
-        justifyContent: "space-between",
+        justifyContent: "center",
+        marginBottom: 20,
     },
-    deleteButton: {
-        backgroundColor: "#F52000",
-        color: "#ffffff",
+    dialogTitle: {
+        color: Colours.Grey9,
+        fontSize: 28,
+        fontWeight: "bold",
+        height: 38,
+    },
+    dialogText: {
+        fontStyle: "normal",
+        fontWeight: "normal",
+        fontSize: "20px",
+        lineHeight: "27px",
+        color: Colours.Grey8,
+    },
+    yesButton: {
+        background: Colours.MainRed5,
+        width: 133,
+        height: 44,
+        borderRadius: 4,
+        textTransform: "capitalize",
+        fontSize: 14,
+        lineHeight: "22px",
+        color: Colours.White,
+        "&:hover": {
+            backgroundColor: () => Colours.MainRed2,
+        },
+    },
+    noButton: {
+        background: Colours.Grey3,
+        width: 133,
+        height: 44,
+        borderRadius: 4,
+        textTransform: "capitalize",
+        fontSize: 14,
+        lineHeight: "22px",
+        color: Colours.Black,
     },
 }));
 
@@ -34,14 +69,26 @@ export default function DeleteModal({
     const classes = useStyles();
     return (
         <Dialog open={open} onClose={handleClose}>
-            <DialogContent>
-                {title}
-                {NewlineText(confirmMessage)}
+            <DialogContent style={{ width: 408, height: 133 }}>
+                <DialogTitle
+                    style={{
+                        borderBottom: "1px solid #D5E1EE",
+                        padding: 0,
+                        paddingBottom: 5,
+                    }}
+                >
+                    <span className={classes.dialogTitle}>{title}</span>
+                </DialogTitle>
+                <span className={classes.dialogText}>
+                    {NewlineText(confirmMessage)}
+                </span>
             </DialogContent>
             <DialogActions className={classes.buttonContainer}>
-                <Button onClick={handleClose}>Cancel</Button>
-                <Button onClick={handleSubmit} className={classes.deleteButton}>
-                    Delete
+                <Button onClick={handleClose} className={classes.noButton}>
+                    No
+                </Button>
+                <Button onClick={handleSubmit} className={classes.yesButton}>
+                    Yes
                 </Button>
             </DialogActions>
         </Dialog>
