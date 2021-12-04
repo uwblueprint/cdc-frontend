@@ -13,10 +13,6 @@ const useStyles = makeStyles(() => ({
         justifyContent: "center",
         marginBottom: 20,
     },
-    deleteButton: {
-        backgroundColor: "#F52000",
-        color: "#ffffff",
-    },
     dialogTitle: {
         color: Colours.Grey9,
         fontSize: 28,
