@@ -14,6 +14,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import { fileToByteArray } from "../../../lib/s3Utility";
 import FormHelperText from "@material-ui/core/FormHelperText";
+import { Colours } from "../../../styles/Constants.ts";
 
 const useStyles = makeStyles((theme) => ({
     textField: {
@@ -31,6 +32,19 @@ const useStyles = makeStyles((theme) => ({
     },
     input: {
         display: "none",
+    },
+    uploadButton: {
+        background: Colours.MainRed5,
+        width: 133,
+        height: 44,
+        borderRadius: 4,
+        textTransform: "capitalize",
+        fontSize: 18,
+        lineHeight: "24px",
+        color: Colours.White,
+        "&:hover": {
+            backgroundColor: () => Colours.MainRed2,
+        },
     },
 }));
 

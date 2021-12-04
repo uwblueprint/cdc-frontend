@@ -20,6 +20,7 @@ import { UserContext } from "../../Providers/UserProviders.jsx";
 import { auth, Auth } from "../../firebaseCredentials.js";
 import { httpPost } from "../../lib/dataAccess";
 import { LoginErrors } from "./loginErrors.ts";
+import { Colours } from "../../styles/Constants.ts";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -38,6 +39,16 @@ const useStyles = makeStyles((theme) => ({
     },
     submit: {
         margin: theme.spacing(3, 0, 2),
+        background: Colours.MainRed5,
+        height: 44,
+        borderRadius: 4,
+        textTransform: "capitalize",
+        fontSize: 18,
+        lineHeight: "24px",
+        color: Colours.White,
+        "&:hover": {
+            backgroundColor: () => Colours.MainRed2,
+        },
     },
 }));
 
