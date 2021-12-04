@@ -35,6 +35,9 @@ const useStyles = makeStyles(() => ({
         fontSize: 14,
         lineHeight: "22px",
         color: Colours.White,
+        "&:hover": {
+            backgroundColor: () => Colours.MainRed2,
+        },
     },
     noButton: {
         background: Colours.Grey3,
