@@ -126,6 +126,9 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: "24.5px",
         color: "white",
         float: "right",
+        "&:hover": {
+            backgroundColor: () => Colours.MainRed2,
+        },
     },
     tabBackground: {
         width: "1000px",

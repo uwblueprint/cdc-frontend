@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: "flex-end",
     },
     createButton: {
-        background: Colours.MainRed7,
+        background: Colours.MainRed5,
         width: 133,
         height: 44,
         borderRadius: 4,
@@ -33,7 +33,9 @@ const useStyles = makeStyles((theme) => ({
         fontSize: 18,
         lineHeight: "24px",
         color: Colours.White,
-        fontWeight: 600,
+        "&:hover": {
+            backgroundColor: () => Colours.MainRed2,
+        },
     },
     dialogTitle: {
         color: Colours.Grey9,
