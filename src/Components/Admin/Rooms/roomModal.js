@@ -428,7 +428,6 @@ export default function RoomModal({
                                 </span>
                                 <TextField
                                     value={friendlyName}
-                                    onChange={() => {}}
                                     className={classes.textField}
                                     required
                                     error={Boolean(
