@@ -374,7 +374,7 @@ export default function RoomModal({
             <DialogContent>
                 {isShareAndPublish ? (
                     <>
-                        <div style={{ width: 500 }}>
+                        <div>
                             <span
                                 style={{
                                     paddingRight: 10,
@@ -404,7 +404,7 @@ export default function RoomModal({
                                 />
                             </span>
                         </div>
-                        <div style={{ width: 500 }}>
+                        <div style={{ paddingBottom: 15 }}>
                             <Typography
                                 style={{
                                     fontSize: 20,
@@ -421,13 +421,13 @@ export default function RoomModal({
                                         paddingRight: 10,
                                         verticalAlign:
                                             "-webkit-baseline-middle",
+                                        fontSize: 14,
                                     }}
                                 >
-                                    dcc.com/
+                                    interactive.calgaryconnecteen.com/
                                 </span>
                                 <TextField
                                     value={friendlyName}
-                                    onChange={handleFriendlyNameChange}
                                     className={classes.textField}
                                     required
                                     error={Boolean(
@@ -436,14 +436,14 @@ export default function RoomModal({
                                     helperText={
                                         errors ? errors.friendlyName : false
                                     }
-                                    style={{ width: 300 }}
+                                    style={{ width: 150, marginTop: 5 }}
                                     variant="outlined"
                                     inputProps={{
                                         style: {
-                                            padding: 10,
+                                            padding: "0px 10px",
+                                            height: 25,
                                         },
                                     }}
-                                    disabled
                                     placeholder="friendly-url-to-share"
                                 />
                                 <span
@@ -466,7 +466,13 @@ export default function RoomModal({
                                     Copy Link
                                 </span>
                                 {copy ? (
-                                    <p style={{ color: "green", fontSize: 11 }}>
+                                    <p
+                                        style={{
+                                            color: "green",
+                                            fontSize: 11,
+                                            marginBottom: 0,
+                                        }}
+                                    >
                                         {process.env.REACT_APP_DEPLOYED_URL +
                                             friendlyName +
                                             " was copied to clipboard."}
@@ -517,11 +523,13 @@ export default function RoomModal({
                                     style={{
                                         width: 100,
                                         paddingRight: 10,
+                                        paddingLeft: 5,
                                         verticalAlign:
                                             "-webkit-baseline-middle",
+                                        fontSize: 14,
                                     }}
                                 >
-                                    dcc.com/
+                                    interactive.calgaryconnecteen.com/
                                 </span>
                                 <TextField
                                     value={friendlyName}
@@ -534,7 +542,7 @@ export default function RoomModal({
                                     helperText={
                                         errors ? errors.friendlyName : false
                                     }
-                                    style={{ width: "80%" }}
+                                    style={{ width: "45%" }}
                                     variant="outlined"
                                     inputProps={{
                                         style: {
@@ -674,15 +682,14 @@ export default function RoomModal({
                                   }
                         }
                         disabled={
-                            (pageNum === 1 &&
-                                (roomName === "" ||
-                                    roomDescription === "" ||
-                                    friendlyName === "")) ||
-                            (pageNum === 2 && previewSrc === "")
+                            pageNum === 1 &&
+                            (roomName === "" ||
+                                roomDescription === "" ||
+                                friendlyName === "")
                         }
                         className={classes.createButton}
                     >
-                        {pageNum === 1 ? "Next" : isEdit ? "Edit" : "Create"}
+                        {pageNum === 1 ? "Next" : isEdit ? "Save" : "Create"}
                     </Button>
                 </DialogActions>
             ) : null}
