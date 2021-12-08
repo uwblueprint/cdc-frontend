@@ -84,6 +84,37 @@ const useStyles = makeStyles(() => ({
         fontWeight: "bold",
         maxWidth: "75%",
     },
+    menuItem: {
+        "&:hover": {
+            background: Colours.MainRed1,
+            color: Colours.MainRed8,
+        },
+        "&:onclick": {
+            background: Colours.MainRed5,
+            color: Colours.White,
+        },
+        fontSize: 15,
+        paddingLeft: 18,
+        paddingRight: 18,
+        paddingTop: 8,
+        paddingBottom: 8,
+    },
+    menuItemDelete: {
+        "&:hover": {
+            background: Colours.MainRed1,
+            color: Colours.MainRed8,
+        },
+        "&:onclick": {
+            background: Colours.MainRed5,
+            color: Colours.White,
+        },
+        color: Colours.MainRed5,
+        fontSize: 15,
+        paddingLeft: 18,
+        paddingRight: 18,
+        paddingTop: 8,
+        paddingBottom: 10,
+    },
 }));
 
 export default function SceneCard({
@@ -177,18 +208,20 @@ export default function SceneCard({
                 <Menu
                     anchorEl={anchorEl}
                     anchorOrigin={{
-                        vertical: "top",
+                        vertical: "center",
                         horizontal: "center",
                     }}
                     transformOrigin={{
-                        vertical: "top",
-                        horizontal: "center",
+                        vertical: 0,
+                        horizontal: 150,
                     }}
+                    MenuListProps={{ disablePadding: true }}
                     keepMounted
                     open={open}
                     onClose={handleMenuClose}
                 >
                     <MenuItem
+                        className={classes.menuItem}
                         onClick={() => {
                             setAnchorEl(null);
                             handleDoubleClick();
@@ -197,22 +230,30 @@ export default function SceneCard({
                         Open Inspector
                     </MenuItem>
                     <MenuItem
+                        className={classes.menuItem}
                         onClick={() => {
                             setAnchorEl(null);
                             handleEditClick(data.id);
                         }}
+                        disabled
                     >
-                        Edit scene metadata
+                        Edit Metadata
                     </MenuItem>
-                    <MenuItem>Copy game link</MenuItem>
-                    <MenuItem>View stats</MenuItem>
+                    <MenuItem disabled className={classes.menuItem}>
+                        Copy Game Link
+                    </MenuItem>
+                    <MenuItem disabled className={classes.menuItem}>
+                        View Stats
+                    </MenuItem>
                     <MenuItem
+                        className={classes.menuItemDelete}
                         onClick={() => {
                             setAnchorEl(null);
                             handleDeleteClick(data.id);
                         }}
+                        disabled
                     >
-                        Delete scene
+                        Delete Scene
                     </MenuItem>
                 </Menu>
             </Grid>
