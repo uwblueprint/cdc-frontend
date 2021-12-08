@@ -4,6 +4,7 @@ import IconButton from "@material-ui/core/IconButton";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
+import { Colours } from "../../../styles/Constants.ts";
 
 const useStyles = makeStyles(() => ({
     sceneItem: {
@@ -25,6 +26,37 @@ const useStyles = makeStyles(() => ({
     },
     sceneBottomRow: {
         alignSelf: "flex-end",
+    },
+    menuItem: {
+        "&:hover": {
+            background: Colours.MainRed1,
+            color: Colours.MainRed8,
+        },
+        "&:onclick": {
+            background: Colours.MainRed5,
+            color: Colours.White,
+        },
+        fontSize: 15,
+        paddingLeft: 18,
+        paddingRight: 18,
+        paddingTop: 8,
+        paddingBottom: 8,
+    },
+    menuItemDelete: {
+        "&:hover": {
+            background: Colours.MainRed1,
+            color: Colours.MainRed8,
+        },
+        "&:onclick": {
+            background: Colours.MainRed5,
+            color: Colours.White,
+        },
+        color: Colours.MainRed5,
+        fontSize: 15,
+        paddingLeft: 18,
+        paddingRight: 18,
+        paddingTop: 8,
+        paddingBottom: 10,
     },
 }));
 
@@ -53,21 +85,24 @@ export default function SceneCard({
                     <MoreVertIcon />
                 </IconButton>
             </div>
+
             <Menu
                 anchorEl={anchorEl}
                 anchorOrigin={{
-                    vertical: "top",
+                    vertical: "center",
                     horizontal: "center",
                 }}
                 transformOrigin={{
-                    vertical: "top",
-                    horizontal: "center",
+                    vertical: 0,
+                    horizontal: 150,
                 }}
+                MenuListProps={{ disablePadding: true }}
                 keepMounted
                 open={open}
                 onClose={handleMenuClose}
             >
                 <MenuItem
+                    className={classes.menuItem}
                     onClick={() => {
                         setAnchorEl(null);
                         handleEditClick(scene.id);
@@ -75,7 +110,7 @@ export default function SceneCard({
                 >
                     Edit Metadata
                 </MenuItem>
-                <MenuItem>
+                <MenuItem className={classes.menuItem}>
                     <a
                         href={
                             process.env.REACT_APP_ADMIN_BACKEND_URL +
@@ -93,6 +128,7 @@ export default function SceneCard({
                     </a>
                 </MenuItem>
                 <MenuItem
+                    className={classes.menuItemDelete}
                     onClick={() => {
                         setAnchorEl(null);
                         handleDeleteClick(scene.id);
