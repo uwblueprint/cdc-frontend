@@ -223,7 +223,6 @@ export default function RoomCard({
                     keepMounted
                     open={open}
                     onClose={handleMenuClose}
-                    className={classes.menu}
                 >
                     <MenuItem
                         className={classes.menuItem}
