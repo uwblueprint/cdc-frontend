@@ -250,7 +250,7 @@ export default function RoomCard({
                             handleEditClick(data.id);
                         }}
                     >
-                        Rename
+                        Edit
                     </MenuItem>
                     <MenuItem
                         className={classes.menuItemDelete}
