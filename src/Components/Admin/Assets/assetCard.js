@@ -85,6 +85,37 @@ const useStyles = makeStyles(() => ({
         fontWeight: "bold",
         maxWidth: "75%",
     },
+    menuItem: {
+        "&:hover": {
+            background: Colours.MainRed1,
+            color: Colours.MainRed8,
+        },
+        "&:onclick": {
+            background: Colours.MainRed5,
+            color: Colours.White,
+        },
+        fontSize: 15,
+        paddingLeft: 18,
+        paddingRight: 18,
+        paddingTop: 8,
+        paddingBottom: 8,
+    },
+    menuItemDelete: {
+        "&:hover": {
+            background: Colours.MainRed1,
+            color: Colours.MainRed8,
+        },
+        "&:onclick": {
+            background: Colours.MainRed5,
+            color: Colours.White,
+        },
+        color: Colours.MainRed5,
+        fontSize: 15,
+        paddingLeft: 18,
+        paddingRight: 18,
+        paddingTop: 8,
+        paddingBottom: 10,
+    },
 }));
 
 export default function AssetCard({ data, handleDeleteClick }) {
@@ -186,6 +217,16 @@ export default function AssetCard({ data, handleDeleteClick }) {
                     onClose={handleMenuClose}
                 >
                     <MenuItem
+                        className={classes.menuItem}
+                        onClick={() => {
+                            setAnchorEl(null);
+                            handleDoubleClick();
+                        }}
+                    >
+                        View Asset
+                    </MenuItem>
+                    <MenuItem
+                        className={classes.menuItemDelete}
                         onClick={() => {
                             setAnchorEl(null);
                             handleDeleteClick(data.id);

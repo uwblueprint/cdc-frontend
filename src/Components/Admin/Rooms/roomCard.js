@@ -228,20 +228,32 @@ export default function RoomCard({
                         className={classes.menuItem}
                         onClick={() => {
                             setAnchorEl(null);
+                            handleDoubleClick();
+                        }}
+                    >
+                        View Editor
+                    </MenuItem>
+                    <MenuItem
+                        className={classes.menuItem}
+                        onClick={() => {
+                            setAnchorEl(null);
                             handleShareAndPublishClick(data.id);
                         }}
                     >
                         Share & Publish
                     </MenuItem>
-                    <MenuItem disabled className={classes.menuItem}>
-                        View Game Stats
-                    </MenuItem>
                     <Divider light />
-                    <MenuItem disabled className={classes.menuItem}>
+                    <MenuItem
+                        className={classes.menuItem}
+                        onClick={() => {
+                            setAnchorEl(null);
+                            navigator.clipboard.writeText(
+                                process.env.REACT_APP_ADMIN_DEPLOYED_URL +
+                                    `admin/environment/${data.id}`
+                            );
+                        }}
+                    >
                         Copy Editor Link
-                    </MenuItem>
-                    <MenuItem disabled className={classes.menuItem}>
-                        Duplicate
                     </MenuItem>
                     <MenuItem
                         className={classes.menuItem}
