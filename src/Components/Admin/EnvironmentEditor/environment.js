@@ -54,10 +54,6 @@ const useStyles = makeStyles((theme) => ({
     page: {
         marginTop: theme.spacing(8),
     },
-    sceneAndTransitionContainer: {
-        minWidth: 600,
-        display: "flex",
-    },
     introContainer: {
         minWidth: 850,
         display: "flex",
@@ -66,11 +62,6 @@ const useStyles = makeStyles((theme) => ({
         display: "flex",
         paddingTop: theme.spacing(12),
         marginLeft: "10px",
-    },
-    dragAndDropContainer: {
-        display: "flex",
-        alignItems: "center",
-        marginLeft: "65px",
     },
     emptyButtonsContainer: {
         display: "flex",
