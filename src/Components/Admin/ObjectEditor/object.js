@@ -9,6 +9,7 @@ import TextPaneView from "../ObjectEditor/textpaneview";
 import VisualPaneView from "../ObjectEditor/visualpaneview";
 import UnorderedPuzzle from "../ObjectEditor/unorderedpuzzle";
 import KeypadPuzzle from "../ObjectEditor/keypadpuzzle";
+import { Colours } from "../../../styles/Constants.ts";
 
 import {
     getPuzzle,
@@ -567,6 +568,14 @@ export default function ObjectEditor({
                 )
             ) : null}
             {isInteractable ? (
+                <div>
+                    <b>Interaction Type</b>
+                    <span style={{ whiteSpace: "pre-line" }}>
+                        Figure out new line
+                    </span>
+                </div>
+            ) : null}
+            {isInteractable ? (
                 <Select
                     value={puzzleTypeList.filter(
                         (option) => option.value === puzzleType
@@ -670,7 +679,17 @@ export default function ObjectEditor({
             ) : null}
             {!isInteractable || puzzleType !== "" ? (
                 <div>
-                    <Button color="primary" onClick={handleSave}>
+                    <Button
+                        color="primary"
+                        onClick={handleSave}
+                        style={{
+                            background: Colours.MainRed5,
+                            color: "white",
+                            position: "absolute",
+                            right: "0",
+                            bottom: "0",
+                        }}
+                    >
                         Save
                     </Button>
                 </div>
