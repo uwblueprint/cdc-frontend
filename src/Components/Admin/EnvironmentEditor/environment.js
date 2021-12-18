@@ -37,14 +37,14 @@ const getItemStyle = (isDragging, draggableStyle) => ({
     height: 342,
 
     // change border colour if dragging
-    border: isDragging ? "yellow solid 5px" : "",
+    border: isDragging ? "#EC4E55 solid 5px" : "",
 
     // styles we need to apply on draggables
     ...draggableStyle,
 });
 
 const getListStyle = (isDraggingOver) => ({
-    border: isDraggingOver ? "lightgreen solid 5px" : "",
+    border: isDraggingOver ? "black solid 5px" : "",
     display: "flex",
     padding: grid,
     overflow: "auto",
@@ -330,6 +330,7 @@ export default function EnvironmentEditor({
                             display: "flex",
                             alignItems: "center",
                             marginLeft: "65px",
+                            paddingRight: "65px",
                         }}
                     >
                         <div style={{ marginRight: 20 }}>
@@ -453,6 +454,7 @@ export default function EnvironmentEditor({
                             display: "flex",
                             alignItems: "center",
                             marginLeft: "65px",
+                            paddingRight: "65px",
                             height: 332,
                         }}
                     >
