@@ -5,6 +5,7 @@ import Select from "react-select";
 import { Button, IconButton } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import { DeleteForever } from "@material-ui/icons";
+import Fab from "@material-ui/core/Fab";
 import TextPaneView from "../ObjectEditor/textpaneview";
 import VisualPaneView from "../ObjectEditor/visualpaneview";
 import UnorderedPuzzle from "../ObjectEditor/unorderedpuzzle";
@@ -568,11 +569,8 @@ export default function ObjectEditor({
                 )
             ) : null}
             {isInteractable ? (
-                <div>
+                <div style={{ marginBottom: "20px" }}>
                     <b>Interaction Type</b>
-                    <span style={{ whiteSpace: "pre-line" }}>
-                        Figure out new line
-                    </span>
                 </div>
             ) : null}
             {isInteractable ? (
@@ -679,19 +677,17 @@ export default function ObjectEditor({
             ) : null}
             {!isInteractable || puzzleType !== "" ? (
                 <div>
-                    <Button
-                        color="primary"
+                    <Fab
+                        variant="extended"
                         onClick={handleSave}
                         style={{
                             background: Colours.MainRed5,
                             color: "white",
-                            position: "absolute",
-                            right: "0",
-                            bottom: "0",
+                            float: "right",
                         }}
                     >
                         Save
-                    </Button>
+                    </Fab>
                 </div>
             ) : null}
             {showSuccess ? (
