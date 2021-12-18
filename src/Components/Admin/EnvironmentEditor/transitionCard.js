@@ -6,7 +6,7 @@ import ConclusionCardImage from "../../Images/conclusion_card.png";
 
 const useStyles = makeStyles(() => ({
     transitionItem: {
-        margin: "auto",
+        marginTop: "10px",
         flexDirection: "column",
         padding: 16,
         userSelect: "none",
