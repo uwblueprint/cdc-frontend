@@ -25,6 +25,7 @@ import {
 
 import "../../../styles/index.css";
 import { Colours } from "../../../styles/Constants.ts";
+import { createPresignedLinkAndUploadS3 } from "../../../lib/s3Utility";
 
 const useStyles = makeStyles((theme) => ({
     page: {
@@ -267,7 +268,39 @@ export default function EnvironmentEditor({
 
         const envData = environment;
         if (envData.transitions[selectedTransitionId].data !== transitions) {
-            envData.transitions[selectedTransitionId].data = transitions;
+            const transitionData = transitions.map((transition) => {
+                return { text: transition.text };
+            });
+            for (let i = 0; i < transitions.length; i++) {
+                if (
+                    Object.prototype.hasOwnProperty.call(
+                        transitions[i],
+                        "previewUrl"
+                    )
+                ) {
+                    const body = {
+                        file_type: transitions[i].fileType,
+                        type: "image",
+                        file_content: transitions[i].file,
+                    };
+
+                    const responseData = await createPresignedLinkAndUploadS3(
+                        body,
+                        handleError
+                    );
+                    transitionData[i].imageSrc =
+                        process.env.REACT_APP_ADMIN_ASSET_PREFIX +
+                        responseData.data.s3_key;
+                } else if (
+                    Object.prototype.hasOwnProperty.call(
+                        transitions[i],
+                        "imageSrc"
+                    )
+                ) {
+                    transitionData[i].imageSrc = transitions[i].imageSrc;
+                }
+            }
+            envData.transitions[selectedTransitionId].data = transitionData;
             const response = await editScenario(envData, handleError);
             setEnvironment(response.data);
         }

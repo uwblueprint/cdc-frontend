@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/Dialog";
+import Typography from "@material-ui/core/Typography";
 import { Button, IconButton } from "@material-ui/core";
 import {
     DeleteForever,
@@ -11,6 +12,7 @@ import {
 } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
+import _ from "lodash";
 
 const useStyles = makeStyles((theme) => ({
     addButton: {
@@ -33,8 +35,17 @@ export default function TransitionModal({
     const classes = useStyles();
     const [transitions, setTransitions] = React.useState([]);
 
+    const [errors, setErrors] = useState({
+        name: "",
+        friendlyName: "",
+        description: "",
+        solveTime: "",
+        assetUpload: "",
+    });
+
     useEffect(() => {
-        setTransitions(JSON.parse(JSON.stringify(originalTransitions)));
+        const tempTransitions = _.cloneDeep(originalTransitions);
+        setTransitions(tempTransitions);
     }, [originalTransitions]);
 
     const reorder = (transitions, startIndex, endIndex) => {
@@ -42,6 +53,28 @@ export default function TransitionModal({
         const [removed] = result.splice(startIndex, 1);
         result.splice(endIndex, 0, removed);
         return result;
+    };
+
+    const handleUploadFileChange = (event, index) => {
+        setErrors({ ...errors, assetUpload: "" });
+        if (event.target.files && event.target.files[0]) {
+            const file = event.target.files[0];
+            const name = file.name;
+            if (name !== "") {
+                const lastDot = name.lastIndexOf(".");
+                const fileName = name.slice(0, lastDot);
+                const fileType = name.slice(lastDot + 1);
+                const previewUrl = URL.createObjectURL(file);
+
+                const tempTransitions = _.cloneDeep(transitions);
+                tempTransitions[index].fileName = fileName;
+                tempTransitions[index].fileType = fileType;
+                tempTransitions[index].file = file;
+                tempTransitions[index].imageSrc = previewUrl;
+                tempTransitions[index].previewUrl = previewUrl;
+                setTransitions(tempTransitions);
+            }
+        }
     };
 
     const reorderTransitions = (sourceIndex, destinationIndex) => {
@@ -79,7 +112,7 @@ export default function TransitionModal({
     };
 
     const deleteTransition = (index) => {
-        const tempTransitions = JSON.parse(JSON.stringify(transitions));
+        const tempTransitions = _.cloneDeep(transitions);
         tempTransitions.splice(index, 1);
         setTransitions(tempTransitions);
     };
@@ -103,6 +136,69 @@ export default function TransitionModal({
                             <h4>
                                 Transition {index + 1} of {transitions.length}
                             </h4>
+                            <div>
+                                <Typography
+                                    component="div"
+                                    variant="h5"
+                                    style={{ width: "100%" }}
+                                >
+                                    Upload Image
+                                </Typography>
+                                {transition.previewUrl ? (
+                                    <div>
+                                        <Typography
+                                            component="div"
+                                            variant="h6"
+                                            style={{ width: "100%" }}
+                                        >
+                                            Image Preview:
+                                        </Typography>
+                                        <img
+                                            src={transition.previewUrl}
+                                            width={500}
+                                            objectFit={"contain"}
+                                        />
+                                    </div>
+                                ) : transition.imageSrc ? (
+                                    <div>
+                                        <Typography
+                                            component="div"
+                                            variant="h6"
+                                            style={{ width: "100%" }}
+                                        >
+                                            Image Preview:
+                                        </Typography>
+                                        <img
+                                            src={transition.imageSrc}
+                                            width={500}
+                                            objectFit={"contain"}
+                                        />
+                                    </div>
+                                ) : null}
+                                <input
+                                    accept=".jpg,.jpeg,.png"
+                                    style={{ width: "100%" }}
+                                    type="file"
+                                    onChange={(e) =>
+                                        handleUploadFileChange(e, index)
+                                    }
+                                />
+                                {Object.prototype.hasOwnProperty.call(
+                                    transition,
+                                    "previewUrl"
+                                ) &&
+                                Object.prototype.hasOwnProperty.call(
+                                    transition,
+                                    "fileName"
+                                ) &&
+                                transition.previewUrl !== "" &&
+                                transition.fileName !== "" ? (
+                                    <div>
+                                        {transition.fileName} successfully
+                                        uploaded
+                                    </div>
+                                ) : null}
+                            </div>
                             <p>{transition.text}</p>
                             <IconButton onClick={() => onMoveUpClick(index)}>
                                 <KeyboardArrowUp />
