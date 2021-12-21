@@ -34,6 +34,7 @@ export default function TransitionModal({
 }) {
     const classes = useStyles();
     const [transitions, setTransitions] = React.useState([]);
+    const [imagesToDelete, setImagesToDelete] = React.useState([]);
 
     const [errors, setErrors] = useState({
         name: "",
@@ -112,6 +113,23 @@ export default function TransitionModal({
 
     const deleteTransition = (index) => {
         const tempTransitions = _.cloneDeep(transitions);
+        if (
+            Object.prototype.hasOwnProperty.call(
+                tempTransitions[index],
+                "imageSrc"
+            ) &&
+            tempTransitions[index].imageSrc !== ""
+        ) {
+            const tempImagesToDelete = JSON.parse(
+                JSON.stringify(imagesToDelete)
+            );
+            const s3Key = tempTransitions[index].imageSrc.replace(
+                process.env.REACT_APP_ADMIN_ASSET_PREFIX,
+                ""
+            );
+            tempImagesToDelete.push(s3Key);
+            setImagesToDelete(tempImagesToDelete);
+        }
         tempTransitions.splice(index, 1);
         setTransitions(tempTransitions);
     };
@@ -226,7 +244,7 @@ export default function TransitionModal({
                 </Button>
                 <Button
                     color="primary"
-                    onClick={() => handleSubmit(transitions)}
+                    onClick={() => handleSubmit(transitions, imagesToDelete)}
                 >
                     Save
                 </Button>

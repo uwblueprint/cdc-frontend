@@ -267,7 +267,7 @@ export default function EnvironmentEditor({
         setScenes(copiedScenes);
     };
 
-    const onTransitionModalSubmit = async (transitions) => {
+    const onTransitionModalSubmit = async (transitions, imagesToDelete) => {
         setEditTransitionModalOpen(false);
 
         const envData = environment;
@@ -300,24 +300,7 @@ export default function EnvironmentEditor({
                             process.env.REACT_APP_ADMIN_ASSET_PREFIX,
                             ""
                         );
-                        const new_file_type_len =
-                            transitions[i].fileType.length;
-                        const old_file_type = oldS3Key.slice(
-                            oldS3Key.length - new_file_type_len
-                        );
-
-                        if (old_file_type === transitions[i].fileType) {
-                            body.s3Key = oldS3Key;
-                        } else {
-                            const imageList = [oldS3Key];
-                            await deleteTransitionImages(
-                                {
-                                    scenarioId: environmentId,
-                                    imagesList: imageList,
-                                },
-                                handleError
-                            );
-                        }
+                        imagesToDelete.push(oldS3Key);
                     }
                     const responseData = await createPresignedLinkAndUploadS3(
                         body,
@@ -335,6 +318,17 @@ export default function EnvironmentEditor({
                     transitionData[i].imageSrc = transitions[i].imageSrc;
                 }
             }
+
+            if (imagesToDelete.length > 0) {
+                await deleteTransitionImages(
+                    {
+                        scenarioId: environmentId,
+                        imagesList: imagesToDelete,
+                    },
+                    handleError
+                );
+            }
+
             envData.transitions[selectedTransitionId].data = transitionData;
             const response = await editScenario(envData, handleError);
             setEnvironment(response.data);
