@@ -82,3 +82,19 @@ export const deleteScenario = async (id, handleError) => {
         throw error;
     }
 };
+
+export const deleteTransitionImages = async (
+    { scenarioId, imagesList },
+    handleError
+) => {
+    try {
+        const response = await httpPost(
+            baseEndpoint + `scenario/${scenarioId}/transition`,
+            imagesList
+        );
+        return response;
+    } catch (error) {
+        handleError(error);
+        throw error;
+    }
+};

@@ -14,7 +14,11 @@ import TemplateModal from "./templateModal";
 import TransitionCard from "./transitionCard";
 import TransitionModal from "./transitionModal";
 import DeleteModal from "../common/deleteModal";
-import { getScenario, editScenario } from "../../../lib/scenarioEndpoints";
+import {
+    getScenario,
+    editScenario,
+    deleteTransitionImages,
+} from "../../../lib/scenarioEndpoints";
 import {
     getScene,
     createScene,
@@ -25,6 +29,7 @@ import {
 
 import "../../../styles/index.css";
 import { Colours } from "../../../styles/Constants.ts";
+import { createPresignedLinkAndUploadS3 } from "../../../lib/s3Utility";
 
 const grid = 4;
 
@@ -277,12 +282,69 @@ export default function EnvironmentEditor({
         setScenes(copiedScenes);
     };
 
-    const onTransitionModalSubmit = async (transitions) => {
+    const onTransitionModalSubmit = async (transitions, imagesToDelete) => {
         setEditTransitionModalOpen(false);
 
         const envData = environment;
         if (envData.transitions[selectedTransitionId].data !== transitions) {
-            envData.transitions[selectedTransitionId].data = transitions;
+            const transitionData = transitions.map((transition) => {
+                return { text: transition.text };
+            });
+            for (let i = 0; i < transitions.length; i++) {
+                if (
+                    Object.prototype.hasOwnProperty.call(
+                        transitions[i],
+                        "previewUrl"
+                    )
+                ) {
+                    const body = {
+                        file_type: transitions[i].fileType,
+                        type: "image",
+                        file_content: transitions[i].file,
+                        s3Key: "",
+                    };
+
+                    if (
+                        Object.prototype.hasOwnProperty.call(
+                            transitions[i],
+                            "imageSrc"
+                        ) &&
+                        transitions[i].imageSrc !== ""
+                    ) {
+                        const oldS3Key = transitions[i].imageSrc.replace(
+                            process.env.REACT_APP_ADMIN_ASSET_PREFIX,
+                            ""
+                        );
+                        imagesToDelete.push(oldS3Key);
+                    }
+                    const responseData = await createPresignedLinkAndUploadS3(
+                        body,
+                        handleError
+                    );
+                    transitionData[i].imageSrc =
+                        process.env.REACT_APP_ADMIN_ASSET_PREFIX +
+                        responseData.data.s3_key;
+                } else if (
+                    Object.prototype.hasOwnProperty.call(
+                        transitions[i],
+                        "imageSrc"
+                    )
+                ) {
+                    transitionData[i].imageSrc = transitions[i].imageSrc;
+                }
+            }
+
+            if (imagesToDelete.length > 0) {
+                await deleteTransitionImages(
+                    {
+                        scenarioId: environmentId,
+                        imagesList: imagesToDelete,
+                    },
+                    handleError
+                );
+            }
+
+            envData.transitions[selectedTransitionId].data = transitionData;
             const response = await editScenario(envData, handleError);
             setEnvironment(response.data);
         }
