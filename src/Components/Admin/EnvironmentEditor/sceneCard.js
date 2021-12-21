@@ -118,7 +118,7 @@ export default function SceneCard({
                             scene.id
                         }
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
                         style={{
                             textDecoration: "none",
                             color: "#000",

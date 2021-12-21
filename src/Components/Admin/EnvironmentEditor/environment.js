@@ -31,13 +31,33 @@ import "../../../styles/index.css";
 import { Colours } from "../../../styles/Constants.ts";
 import { createPresignedLinkAndUploadS3 } from "../../../lib/s3Utility";
 
+const grid = 4;
+
+const getItemStyle = (isDragging, draggableStyle) => ({
+    // some basic styles to make the items look a bit nicer
+    userSelect: "none",
+    padding: grid * 2,
+    margin: `0 ${grid}px 0 0`,
+    width: 565,
+    height: 342,
+
+    // change border colour if dragging
+    border: isDragging ? "#EC4E55 solid 5px" : "",
+
+    // styles we need to apply on draggables
+    ...draggableStyle,
+});
+
+const getListStyle = (isDraggingOver) => ({
+    border: isDraggingOver ? "black solid 5px" : "",
+    display: "flex",
+    padding: grid,
+    overflow: "auto",
+});
+
 const useStyles = makeStyles((theme) => ({
     page: {
         marginTop: theme.spacing(8),
-    },
-    sceneAndTransitionContainer: {
-        minWidth: 600,
-        display: "flex",
     },
     introContainer: {
         minWidth: 850,
@@ -47,11 +67,6 @@ const useStyles = makeStyles((theme) => ({
         display: "flex",
         paddingTop: theme.spacing(12),
         marginLeft: "10px",
-    },
-    dragAndDropContainer: {
-        display: "flex",
-        alignItems: "center",
-        marginLeft: "65px",
     },
     emptyButtonsContainer: {
         display: "flex",
@@ -377,100 +392,91 @@ export default function EnvironmentEditor({
                             display: "flex",
                             alignItems: "center",
                             marginLeft: "65px",
+                            paddingRight: "65px",
                         }}
                     >
-                        <TransitionCard
-                            className={classes.introContainer}
-                            scene={null}
-                            handleEditClick={onTransitionEditClick}
-                            isIntroduction
-                        />
+                        <div style={{ marginRight: 20 }}>
+                            <TransitionCard
+                                className={classes.introContainer}
+                                scene={null}
+                                handleEditClick={onTransitionEditClick}
+                                isIntroduction
+                            />
+                        </div>
                         <DragDropContext onDragEnd={onDragEnd}>
                             <Droppable
                                 droppableId="droppable"
                                 direction="horizontal"
                             >
-                                {(provided) => (
-                                    <div>
-                                        <div
-                                            ref={provided.innerRef}
-                                            className={
-                                                classes.dragAndDropContainer
-                                            }
-                                            {...provided.droppableProps}
-                                        >
-                                            {scenes.map(function (
-                                                scene,
-                                                index
-                                            ) {
-                                                return (
-                                                    <div
-                                                        key={scene.id}
-                                                        className={
-                                                            classes.sceneAndTransitionContainer
-                                                        }
-                                                    >
-                                                        <Draggable
-                                                            index={index}
-                                                            draggableId={scene.id.toString()}
-                                                        >
-                                                            {(provided) => (
-                                                                <div
-                                                                    ref={
-                                                                        provided.innerRef
-                                                                    }
-                                                                    style={
-                                                                        provided
-                                                                            .draggableProps
-                                                                            .style
-                                                                    }
-                                                                    {...provided.draggableProps}
-                                                                    {...provided.dragHandleProps}
-                                                                >
-                                                                    <SceneCard
-                                                                        scene={
-                                                                            scene
-                                                                        }
-                                                                        handleEditClick={
-                                                                            onEditButtonClick
-                                                                        }
-                                                                        handleDeleteClick={
-                                                                            onDeleteButtonClick
-                                                                        }
-                                                                    />
-                                                                    <div
-                                                                        style={{
-                                                                            display:
-                                                                                "inline-flex",
-                                                                            position:
-                                                                                "absolute",
-                                                                            transform:
-                                                                                "translate(0,50%)",
-                                                                        }}
-                                                                    >
-                                                                        <TransitionCard
-                                                                            scene={
-                                                                                scene
-                                                                            }
-                                                                            handleEditClick={
-                                                                                onTransitionEditClick
-                                                                            }
-                                                                        />
-                                                                    </div>
-                                                                </div>
+                                {(provided, snapshot) => (
+                                    <div
+                                        ref={provided.innerRef}
+                                        style={getListStyle(
+                                            snapshot.isDraggingOver
+                                        )}
+                                        {...provided.droppableProps}
+                                    >
+                                        {scenes.map(function (scene, index) {
+                                            return (
+                                                <Draggable
+                                                    key={scene.id.toString()}
+                                                    index={index}
+                                                    draggableId={scene.id.toString()}
+                                                >
+                                                    {(provided, snapshot) => (
+                                                        <div
+                                                            ref={
+                                                                provided.innerRef
+                                                            }
+                                                            {...provided.draggableProps}
+                                                            {...provided.dragHandleProps}
+                                                            style={getItemStyle(
+                                                                snapshot.isDragging,
+                                                                provided
+                                                                    .draggableProps
+                                                                    .style
                                                             )}
-                                                        </Draggable>
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
+                                                        >
+                                                            <SceneCard
+                                                                scene={scene}
+                                                                handleEditClick={
+                                                                    onEditButtonClick
+                                                                }
+                                                                handleDeleteClick={
+                                                                    onDeleteButtonClick
+                                                                }
+                                                            />
+                                                            <div
+                                                                style={{
+                                                                    display:
+                                                                        "inline-flex",
+                                                                    position:
+                                                                        "absolute",
+                                                                    transform:
+                                                                        "translate(0,50%)",
+                                                                }}
+                                                            >
+                                                                <TransitionCard
+                                                                    scene={
+                                                                        scene
+                                                                    }
+                                                                    handleEditClick={
+                                                                        onTransitionEditClick
+                                                                    }
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </Draggable>
+                                            );
+                                        })}
                                         {provided.placeholder}
                                     </div>
                                 )}
                             </Droppable>
                             <div
                                 style={{
-                                    marginRight: 50,
+                                    marginRight: 20,
                                 }}
                             >
                                 <span className={classes.buttonContainer}>
@@ -510,6 +516,7 @@ export default function EnvironmentEditor({
                             display: "flex",
                             alignItems: "center",
                             marginLeft: "65px",
+                            paddingRight: "65px",
                             height: 332,
                         }}
                     >
