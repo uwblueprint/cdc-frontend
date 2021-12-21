@@ -70,7 +70,6 @@ export default function TransitionModal({
                 tempTransitions[index].fileName = fileName;
                 tempTransitions[index].fileType = fileType;
                 tempTransitions[index].file = file;
-                tempTransitions[index].imageSrc = previewUrl;
                 tempTransitions[index].previewUrl = previewUrl;
                 setTransitions(tempTransitions);
             }

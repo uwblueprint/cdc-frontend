@@ -14,7 +14,11 @@ import TemplateModal from "./templateModal";
 import TransitionCard from "./transitionCard";
 import TransitionModal from "./transitionModal";
 import DeleteModal from "../common/deleteModal";
-import { getScenario, editScenario } from "../../../lib/scenarioEndpoints";
+import {
+    getScenario,
+    editScenario,
+    deleteTransitionImages,
+} from "../../../lib/scenarioEndpoints";
 import {
     getScene,
     createScene,
@@ -282,8 +286,39 @@ export default function EnvironmentEditor({
                         file_type: transitions[i].fileType,
                         type: "image",
                         file_content: transitions[i].file,
+                        s3Key: "",
                     };
 
+                    if (
+                        Object.prototype.hasOwnProperty.call(
+                            transitions[i],
+                            "imageSrc"
+                        ) &&
+                        transitions[i].imageSrc !== ""
+                    ) {
+                        const oldS3Key = transitions[i].imageSrc.replace(
+                            process.env.REACT_APP_ADMIN_ASSET_PREFIX,
+                            ""
+                        );
+                        const new_file_type_len =
+                            transitions[i].fileType.length;
+                        const old_file_type = oldS3Key.slice(
+                            oldS3Key.length - new_file_type_len
+                        );
+
+                        if (old_file_type === transitions[i].fileType) {
+                            body.s3Key = oldS3Key;
+                        } else {
+                            const imageList = [oldS3Key];
+                            await deleteTransitionImages(
+                                {
+                                    scenarioId: environmentId,
+                                    imagesList: imageList,
+                                },
+                                handleError
+                            );
+                        }
+                    }
                     const responseData = await createPresignedLinkAndUploadS3(
                         body,
                         handleError
