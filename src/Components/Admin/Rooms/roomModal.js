@@ -404,6 +404,36 @@ export default function RoomModal({
                                 />
                             </span>
                         </div>
+                        <div>
+                            <span
+                                style={{
+                                    paddingRight: 10,
+                                    verticalAlign: "-webkit-baseline-middle",
+                                    fontSize: 20,
+                                    lineHeight: "27px",
+                                    marginRight: 249,
+                                }}
+                            >
+                                Game Previewable
+                            </span>
+                            <span style={{ margin: "auto", height: 70 }}>
+                                <Switch
+                                    checked={isPreviewable}
+                                    onChange={() => {
+                                        setIsPreviewable(!isPreviewable);
+                                    }}
+                                    inputProps={{
+                                        "aria-label": "controlled",
+                                        height: 40,
+                                    }}
+                                    classes={{
+                                        track: classes.switch_track,
+                                        switchBase: classes.switch_base,
+                                        colorPrimary: classes.switch_primary,
+                                    }}
+                                />
+                            </span>
+                        </div>
                         <div style={{ paddingBottom: 15 }}>
                             <Typography
                                 style={{
@@ -594,6 +624,7 @@ export default function RoomModal({
                                 </Typography>
                                 <TextField
                                     value={roomSolveTime}
+                                    style={{ marginBottom: 15 }}
                                     onChange={handleRoomSolveTimeChange}
                                     className={classes.textField}
                                     required
@@ -620,6 +651,7 @@ export default function RoomModal({
                                         />
                                     }
                                     label="Room is Published"
+                                    disabled
                                 />
                                 <FormControlLabel
                                     value="Room is Previewable"
@@ -630,7 +662,12 @@ export default function RoomModal({
                                         />
                                     }
                                     label="Room is Previewable"
+                                    disabled
                                 />
+                                <p style={{ fontSize: 12, margin: 0 }}>
+                                    To modify the above, open the &quot;Share
+                                    &#38; Publish&quot; menu
+                                </p>
                             </div>
                         )}
                     </>

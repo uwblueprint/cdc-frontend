@@ -21,6 +21,7 @@ import { createPresignedLinkAndUploadS3 } from "../../../lib/s3Utility";
 import JigsawPuzzle from "./jigsawpuzzle";
 import { httpPost } from "../../../lib/dataAccess";
 import MuiAlert from "@material-ui/lab/Alert";
+import _ from "lodash";
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -316,7 +317,8 @@ export default function ObjectEditor({
     };
 
     const saveImages = (imagesCopy) => {
-        setImages(JSON.parse(JSON.stringify(imagesCopy)));
+        const tempImageCopy = _.cloneDeep(imagesCopy);
+        setImages(tempImageCopy);
     };
 
     const addImage = () => {
