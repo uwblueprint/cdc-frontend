@@ -70,8 +70,9 @@ export default function JigsawPuzzle(props) {
 
     return (
         <div>
+            <br></br>
             <Typography component="div" variant="h5" className={classes.text}>
-                Upload Image
+                Jigsaw Image
             </Typography>
             {imgPreview !== "" ? (
                 <div>
@@ -102,6 +103,7 @@ export default function JigsawPuzzle(props) {
                     className={classes.uploadButton}
                     variant="contained"
                     color="primary"
+                    style={{ backgroundColor: "#364254" }}
                     component="span"
                 >
                     Upload

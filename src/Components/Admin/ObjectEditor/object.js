@@ -5,10 +5,12 @@ import Select from "react-select";
 import { Button, IconButton } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import { DeleteForever } from "@material-ui/icons";
+import Switch from "@material-ui/core/Switch";
 import TextPaneView from "../ObjectEditor/textpaneview";
 import VisualPaneView from "../ObjectEditor/visualpaneview";
 import UnorderedPuzzle from "../ObjectEditor/unorderedpuzzle";
 import KeypadPuzzle from "../ObjectEditor/keypadpuzzle";
+import { Colours } from "../../../styles/Constants.ts";
 
 import {
     getPuzzle,
@@ -65,6 +67,29 @@ const useStyles = makeStyles((theme) => ({
         padding: "16px 12px",
         backgroundColor: "#E2E5ED",
         borderRadius: "12px",
+    },
+    switch_track: {
+        backgroundColor: "lightgray",
+    },
+    switch_base: {
+        color: Colours.MainRed5,
+        "&.Mui-disabled": {
+            color: "gray",
+        },
+        "&.Mui-checked": {
+            color: Colours.MainRed5,
+        },
+        "&.Mui-checked + .MuiSwitch-track": {
+            backgroundColor: Colours.MainRed5,
+        },
+    },
+    switch_primary: {
+        "&.Mui-checked": {
+            color: "white",
+        },
+        "&.Mui-checked + .MuiSwitch-track": {
+            backgroundColor: "white",
+        },
     },
 }));
 
@@ -540,12 +565,22 @@ export default function ObjectEditor({
         >
             <div>
                 <label htmlFor="subscribeNews">Interactable?</label>
-                <input
-                    type="checkbox"
-                    value={isInteractable}
+                <Switch
                     checked={isInteractable}
-                    onChange={toggleButton}
-                ></input>
+                    onChange={() => {
+                        toggleButton();
+                    }}
+                    inputProps={{
+                        "aria-label": "controlled",
+                        height: 40,
+                    }}
+                    classes={{
+                        track: classes.switch_track,
+                        switchBase: classes.switch_base,
+                        colorPrimary: classes.switch_primary,
+                        colorSecondary: Colours.MainRed5,
+                    }}
+                />
             </div>
             {isInteractable ? (
                 header === "" ? (
@@ -569,12 +604,17 @@ export default function ObjectEditor({
                 )
             ) : null}
             {isInteractable ? (
+                <div style={{ marginBottom: "20px" }}>
+                    <b>Interaction Type</b>
+                </div>
+            ) : null}
+            {isInteractable ? (
                 <Select
                     value={puzzleTypeList.filter(
                         (option) => option.value === puzzleType
                     )}
                     options={puzzleTypeList}
-                    placeholder="Select puzzle type..."
+                    placeholder="Choose Interaction Type"
                     noResultsText="No puzzle types found"
                     searchable={true}
                     onChange={selectPuzzleType}
@@ -650,7 +690,10 @@ export default function ObjectEditor({
                 <KeypadPuzzle
                     savePass={savePass}
                     pass={
-                        origAnimJson?.blackboardData?.jsonData?.password
+                        origAnimJson?.blackboardData?.componentType !==
+                        "numpad-puzzle"
+                            ? ""
+                            : origAnimJson?.blackboardData?.jsonData?.password
                             ? origAnimJson?.blackboardData?.jsonData?.password
                             : ""
                     }
@@ -662,7 +705,10 @@ export default function ObjectEditor({
                 <KeypadPuzzle
                     savePass={savePass}
                     pass={
-                        origAnimJson?.blackboardData?.jsonData?.password
+                        origAnimJson?.blackboardData?.componentType !==
+                        "keyboard-puzzle"
+                            ? ""
+                            : origAnimJson?.blackboardData?.jsonData?.password
                             ? origAnimJson?.blackboardData?.jsonData?.password
                             : ""
                     }
@@ -672,8 +718,20 @@ export default function ObjectEditor({
             ) : null}
             {!isInteractable || puzzleType !== "" ? (
                 <div>
-                    <Button color="primary" onClick={handleSave}>
-                        Save
+                    <Button
+                        color="primary"
+                        onClick={handleSave}
+                        style={{
+                            background: Colours.MainRed5,
+                            color: "white",
+                            float: "right",
+                            position: "fixed",
+                            bottom: 0,
+                            right: 0,
+                            margin: 20,
+                        }}
+                    >
+                        Set Puzzle
                     </Button>
                 </div>
             ) : null}
