@@ -81,8 +81,9 @@ export default function VisualPaneView(props) {
 
     return (
         <div>
+            <br></br>
             <Typography component="div" variant="h5" className={classes.text}>
-                Upload Image
+                Image
             </Typography>
             {imageSrc ? (
                 <div>
@@ -99,6 +100,7 @@ export default function VisualPaneView(props) {
                         max-width={1000}
                         object-fit={"contain"}
                     ></img>
+                    <br></br>
                 </div>
             ) : null}
             <input
@@ -113,6 +115,7 @@ export default function VisualPaneView(props) {
                     className={classes.uploadButton}
                     variant="contained"
                     color="primary"
+                    style={{ backgroundColor: "#364254" }}
                     component="span"
                 >
                     Upload
