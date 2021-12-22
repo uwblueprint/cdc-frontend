@@ -71,7 +71,9 @@ export default function KeypadPuzzle(props) {
             {pass === "" ? (
                 <div>
                     <br></br>
-                    Alphanumeric Password
+                    {props.isNumpad
+                        ? "Numeric Password"
+                        : "Alphanumeric Password"}
                     <br></br>
                     {props.isNumpad ? (
                         <TextField

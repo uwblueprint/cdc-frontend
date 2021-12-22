@@ -688,7 +688,10 @@ export default function ObjectEditor({
                 <KeypadPuzzle
                     savePass={savePass}
                     pass={
-                        origAnimJson?.blackboardData?.jsonData?.password
+                        origAnimJson?.blackboardData?.componentType !==
+                        "numpad-puzzle"
+                            ? ""
+                            : origAnimJson?.blackboardData?.jsonData?.password
                             ? origAnimJson?.blackboardData?.jsonData?.password
                             : ""
                     }
@@ -700,7 +703,10 @@ export default function ObjectEditor({
                 <KeypadPuzzle
                     savePass={savePass}
                     pass={
-                        origAnimJson?.blackboardData?.jsonData?.password
+                        origAnimJson?.blackboardData?.componentType !==
+                        "keyboard-puzzle"
+                            ? ""
+                            : origAnimJson?.blackboardData?.jsonData?.password
                             ? origAnimJson?.blackboardData?.jsonData?.password
                             : ""
                     }
