@@ -723,7 +723,7 @@ export default function ObjectEditor({
                             margin: 20,
                         }}
                     >
-                        Save
+                        Set Puzzle
                     </Button>
                 </div>
             ) : null}
