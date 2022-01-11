@@ -55,7 +55,7 @@ export default function UploadAssetModal({
 }) {
     const classes = useStyles();
     const [assetName, setAssetName] = React.useState("");
-    const [objectType, setObjectType] = React.useState(ObjectTypes.NONE);
+    const [objectType, setObjectType] = React.useState(ObjectTypes.OBJECT);
     const [fileType, setFileType] = React.useState(FileTypes.NONE);
     const [assetByteArray, setAssetByteArray] = React.useState(null);
     const [fileName, setFileName] = React.useState("");
@@ -197,9 +197,6 @@ export default function UploadAssetModal({
                         >
                             <MenuItem value={ObjectTypes.OBJECT}>
                                 {ObjectTypes.OBJECT}
-                            </MenuItem>
-                            <MenuItem value={ObjectTypes.BACKGROUND}>
-                                {ObjectTypes.BACKGROUND}
                             </MenuItem>
                         </Select>
                     </FormControl>

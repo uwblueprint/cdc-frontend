@@ -1,7 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from "react-router-dom";
-import defaultImage from "../common/defaultImage.png";
+import defaultRoomImage from "../common/defaultRoomImage.png";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
@@ -184,7 +184,7 @@ export default function RoomCard({
                                   data.display_image_url +
                                   "?" +
                                   imageHash
-                                : defaultImage
+                                : defaultRoomImage
                         }
                         alt="Escape Room"
                     />
