@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import "@google/model-viewer";
+import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -14,6 +15,7 @@ import {
 } from "../../../lib/assetEndpoints";
 import { useErrorHandler } from "react-error-boundary";
 import SaveIcon from "@material-ui/icons/Save";
+import ArrowBack from "@material-ui/icons/ArrowBack";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
@@ -59,6 +61,7 @@ export default function AssetModelViewer({
     },
 }) {
     const classes = useStyles();
+    const history = useHistory();
     const handleError = useErrorHandler();
     const [asset, setAsset] = useState({});
     const [name, setName] = useState("");
@@ -176,16 +179,32 @@ export default function AssetModelViewer({
                 }}
                 anchor="left"
             >
-                <div className={classes.toolbar} />
+                <div className={classes.toolbar}>
+                    <ArrowBack
+                        style={{
+                            width: 50,
+                            height: 50,
+                            paddingTop: 15,
+                            paddingLeft: 10,
+                            cursor: "pointer",
+                        }}
+                        onClick={() => {
+                            history.push("/admin");
+                        }}
+                    />
+                </div>
                 <Divider />
-
                 <form
                     className={classes.textfields}
                     noValidate
                     onSubmit={updateAsset}
                     autoComplete="off"
                 >
-                    <Typography variant="h6" align="center">
+                    <Typography
+                        variant="h6"
+                        align="center"
+                        style={{ marginTop: 20 }}
+                    >
                         Asset Model Viewer
                     </Typography>
                     <TextField
@@ -228,6 +247,7 @@ export default function AssetModelViewer({
                         color="primary"
                         startIcon={<SaveIcon />}
                         disabled={!isEmpty(nameError)}
+                        style={{ maxWidth: 250, marginLeft: 15 }}
                     >
                         {buttonText}
                     </Button>
