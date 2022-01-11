@@ -78,6 +78,12 @@ const useStyles = makeStyles((theme) => ({
     },
     buttonContainer: {
         display: "flex",
+        justifyContent: "center",
+        marginTop: theme.spacing(1),
+        marginBottom: theme.spacing(1),
+    },
+    emptyRoomButtonContainer: {
+        display: "flex",
         minWidth: "400px",
         justifyContent: "center",
         marginTop: theme.spacing(1),
@@ -527,7 +533,7 @@ export default function EnvironmentEditor({
                             isIntroduction
                         />
                         <div>
-                            <span className={classes.buttonContainer}>
+                            <span className={classes.emptyRoomButtonContainer}>
                                 <Button
                                     startIcon={<AddIcon />}
                                     className={classes.button}
@@ -538,7 +544,7 @@ export default function EnvironmentEditor({
                                     </span>
                                 </Button>
                             </span>
-                            <span className={classes.buttonContainer}>
+                            <span className={classes.emptyRoomButtonContainer}>
                                 <Button
                                     startIcon={<AccountBalanceIcon />}
                                     className={classes.button}
