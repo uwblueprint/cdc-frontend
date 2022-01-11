@@ -261,7 +261,11 @@ export default function RoomModal({
     };
 
     const handleModalCloseClick = () => {
-        if (isShareAndPublish) {
+        if (
+            isShareAndPublish &&
+            (isPublished !== room.is_published ||
+                isPreviewable !== room.is_previewable)
+        ) {
             handleSubmit({
                 is_published: isPublished,
                 is_previewable: isPreviewable,
