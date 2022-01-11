@@ -1,6 +1,6 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import defaultSceneImage from "../common/defaultSceneImage.jpeg";
+import defaultSceneImage from "../common/defaultRoomImage.png";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import MoreVertIcon from "@material-ui/icons/MoreVert";

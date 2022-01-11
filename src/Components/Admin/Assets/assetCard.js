@@ -1,7 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from "react-router-dom";
-import defaultImage from "../common/defaultImage.png";
+import defaultAssetImage from "../common/defaultAssetImage.png";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
@@ -178,7 +178,7 @@ export default function AssetCard({ data, handleDeleteClick }) {
                             data.screenshot_url
                                 ? process.env.REACT_APP_ADMIN_ASSET_PREFIX +
                                   data.screenshot_url
-                                : defaultImage
+                                : defaultAssetImage
                         }
                         alt="Asset"
                     />
