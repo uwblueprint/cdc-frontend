@@ -234,7 +234,7 @@ export default function AssetModelViewer({
                             <MenuItem value={ObjectTypes.OBJECT}>
                                 {ObjectTypes.OBJECT}
                             </MenuItem>
-                            <MenuItem value={ObjectTypes.BACKGROUND}>
+                            <MenuItem value={ObjectTypes.BACKGROUND} disabled>
                                 {ObjectTypes.BACKGROUND}
                             </MenuItem>
                         </Select>
