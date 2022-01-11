@@ -292,6 +292,12 @@ export default function EnvironmentEditor({
             });
             for (let i = 0; i < transitions.length; i++) {
                 if (
+                    Object.prototype.hasOwnProperty.call(transitions[i], "link")
+                ) {
+                    transitionData[i].link = transitions[i].link;
+                }
+
+                if (
                     Object.prototype.hasOwnProperty.call(
                         transitions[i],
                         "previewUrl"

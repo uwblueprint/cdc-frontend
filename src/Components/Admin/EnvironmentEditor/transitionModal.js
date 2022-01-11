@@ -77,6 +77,19 @@ export default function TransitionModal({
         }
     };
 
+    const handleLinkChange = (event, index) => {
+        const linkInput = prompt("Enter url to link:", transitions[index].link);
+        if (linkInput !== null) {
+            const tempTransitions = _.cloneDeep(transitions);
+            if (linkInput === "") {
+                delete tempTransitions[index].link;
+            } else {
+                tempTransitions[index].link = linkInput;
+            }
+            setTransitions(tempTransitions);
+        }
+    };
+
     const reorderTransitions = (sourceIndex, destinationIndex) => {
         if (
             sourceIndex == null ||
@@ -216,6 +229,26 @@ export default function TransitionModal({
                                     </div>
                                 ) : null}
                             </div>
+                            <input
+                                type="button"
+                                value={
+                                    transition.link ? "Update link" : "Add link"
+                                }
+                                onClick={(e) => handleLinkChange(e, index)}
+                            />
+                            {transition.link && (
+                                <div>
+                                    <a href={transition.link}>
+                                        <Typography
+                                            component="div"
+                                            variant="p"
+                                            style={{ width: "100%" }}
+                                        >
+                                            {transition.link}
+                                        </Typography>
+                                    </a>
+                                </div>
+                            )}
                             <p>{transition.text}</p>
                             <IconButton onClick={() => onMoveUpClick(index)}>
                                 <KeyboardArrowUp />
