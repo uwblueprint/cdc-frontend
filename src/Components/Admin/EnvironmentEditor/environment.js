@@ -390,12 +390,21 @@ export default function EnvironmentEditor({
     };
 
     const onConclusionModalSubmit = async (
-        header_text,
-        paragraph_text,
-        share_link
+        new_header_text,
+        new_paragraph_text,
+        new_share_link
     ) => {
         setEditConclusionModalOpen(false);
-        // TODO: edit conclusion information on scenario level
+
+        const envData = environment;
+        const newConclusionData = {
+            header_text: new_header_text,
+            paragraph_text: new_paragraph_text,
+            share_link: new_share_link,
+        };
+        envData.conclusion_data = newConclusionData;
+        const response = await editScenario(envData, handleError);
+        setEnvironment(response.data);
     };
 
     const onDeleteButtonClick = (sceneId) => {
