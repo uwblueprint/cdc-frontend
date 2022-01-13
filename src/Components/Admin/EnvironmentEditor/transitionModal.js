@@ -238,7 +238,11 @@ export default function TransitionModal({
                             />
                             {transition.link && (
                                 <div>
-                                    <a href={transition.link}>
+                                    <a
+                                        href={transition.link}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
                                         <Typography
                                             component="div"
                                             variant="p"
