@@ -78,7 +78,10 @@ export default function TransitionModal({
     };
 
     const handleLinkChange = (event, index) => {
-        const linkInput = prompt("Enter url to link:", transitions[index].link);
+        const linkInput = prompt(
+            "Enter url to link (including http or https for it to work):",
+            transitions[index].link
+        );
         if (linkInput !== null) {
             const tempTransitions = _.cloneDeep(transitions);
             if (linkInput === "") {
