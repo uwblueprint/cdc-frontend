@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -28,6 +28,12 @@ export default function ConclusionModal({
     );
     const [shareLink, setShareLink] = useState(conclusionData.share_link);
     const originalConclusionData = _.cloneDeep(conclusionData);
+
+    useEffect(() => {
+        setHeaderText(conclusionData.header_text);
+        setParagraphText(conclusionData.paragraph_text);
+        setShareLink(conclusionData.share_link);
+    }, [conclusionData]);
 
     const handleHeaderTextChange = (event) => {
         const response = event.target.value;
@@ -69,7 +75,7 @@ export default function ConclusionModal({
                                 padding: "0px 10px",
                             },
                         }}
-                        placeholder="header-text"
+                        placeholder="The header text a student will see when finishing the escape room."
                     />
                 </div>
                 <div style={{ paddingBottom: 15 }}>
@@ -93,7 +99,7 @@ export default function ConclusionModal({
                                 padding: "0px 10px",
                             },
                         }}
-                        placeholder="header-text"
+                        placeholder="The paragraph text a student will see when finishing the escape room."
                     />
                 </div>
                 <div style={{ paddingBottom: 15 }}>
@@ -117,7 +123,7 @@ export default function ConclusionModal({
                                 padding: "0px 10px",
                             },
                         }}
-                        placeholder="header-text"
+                        placeholder="The link students will see when finishing the escape room."
                     />
                 </div>
             </DialogContent>
