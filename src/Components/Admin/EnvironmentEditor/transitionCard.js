@@ -43,6 +43,7 @@ const useStyles = makeStyles(() => ({
         borderRadius: 20,
         backgroundImage: `url(${ConclusionCardImage})`,
         backgroundSize: 205,
+        cursor: "pointer",
     },
 }));
 
@@ -68,7 +69,7 @@ export default function TransitionCard({
                     ? handleEditClick(-1)
                     : !isConclusion
                     ? handleEditClick(scene.id)
-                    : "";
+                    : handleEditClick();
             }}
         />
     );

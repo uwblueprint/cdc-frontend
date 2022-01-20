@@ -13,6 +13,7 @@ import SceneModal from "./sceneModal";
 import TemplateModal from "./templateModal";
 import TransitionCard from "./transitionCard";
 import TransitionModal from "./transitionModal";
+import ConclusionModal from "./conclusionModal";
 import DeleteModal from "../common/deleteModal";
 import {
     getScenario,
@@ -107,6 +108,11 @@ export default function EnvironmentEditor({
     const classes = useStyles();
     const handleError = useErrorHandler();
     const [environment, setEnvironment] = useState({});
+    const [conclusionData, setConclusionData] = useState({
+        header_text: "",
+        paragraph_text: "",
+        share_link: "",
+    });
     const [scenes, setScenes] = useState([]);
     const [createModalOpen, setCreateModalOpen] = useState(false);
     const [templateModalOpen, setTemplateModalOpen] = useState(false);
@@ -116,6 +122,9 @@ export default function EnvironmentEditor({
     const [deleteSceneId, setDeleteSceneId] = React.useState(null);
     const [editTransitionInfo, setEditTransitionInfo] = useState([]);
     const [editTransitionModalOpen, setEditTransitionModalOpen] = useState(
+        false
+    );
+    const [editConclusionModalOpen, setEditConclusionModalOpen] = useState(
         false
     );
     const [selectedTransitionId, setSelectedTransitionId] = useState(0);
@@ -143,6 +152,16 @@ export default function EnvironmentEditor({
 
         if (environment.scene_ids) {
             getSceneData();
+        }
+    }, [environment, handleError]);
+
+    useEffect(() => {
+        const getConclusionData = async () => {
+            setConclusionData(environment.conclusion_data);
+        };
+
+        if (environment.conclusion_data) {
+            getConclusionData();
         }
     }, [environment, handleError]);
 
@@ -254,6 +273,10 @@ export default function EnvironmentEditor({
         setEditTransitionModalOpen(true);
     };
 
+    const onConclusionEditClick = () => {
+        setEditConclusionModalOpen(true);
+    };
+
     const onEditModalClose = () => {
         setEditModalOpen(false);
         setEditSceneInfo({});
@@ -262,6 +285,10 @@ export default function EnvironmentEditor({
     const onTransitionModalClose = () => {
         setEditTransitionModalOpen(false);
         setEditTransitionInfo([]);
+    };
+
+    const onConclusionModalClose = () => {
+        setEditConclusionModalOpen(false);
     };
 
     const onEditModalSubmit = async (name, background_id, description) => {
@@ -360,6 +387,24 @@ export default function EnvironmentEditor({
             const response = await editScenario(envData, handleError);
             setEnvironment(response.data);
         }
+    };
+
+    const onConclusionModalSubmit = async (
+        new_header_text,
+        new_paragraph_text,
+        new_share_link
+    ) => {
+        setEditConclusionModalOpen(false);
+
+        const envData = environment;
+        const newConclusionData = {
+            header_text: new_header_text,
+            paragraph_text: new_paragraph_text,
+            share_link: new_share_link,
+        };
+        envData.conclusion_data = newConclusionData;
+        const response = await editScenario(envData, handleError);
+        setEnvironment(response.data);
     };
 
     const onDeleteButtonClick = (sceneId) => {
@@ -517,7 +562,7 @@ export default function EnvironmentEditor({
                             <TransitionCard
                                 className={classes.introContainer}
                                 scene={null}
-                                handleEditClick={() => {}}
+                                handleEditClick={onConclusionEditClick}
                                 isConclusion
                             />
                         </DragDropContext>
@@ -565,7 +610,7 @@ export default function EnvironmentEditor({
                         <TransitionCard
                             className={classes.introContainer}
                             scene={null}
-                            handleEditClick={() => {}}
+                            handleEditClick={onConclusionEditClick}
                             isConclusion
                         />
                     </div>
@@ -594,6 +639,12 @@ export default function EnvironmentEditor({
                 modalOpen={editTransitionModalOpen}
                 handleModalClose={onTransitionModalClose}
                 handleSubmit={onTransitionModalSubmit}
+            />
+            <ConclusionModal
+                conclusionData={conclusionData}
+                modalOpen={editConclusionModalOpen}
+                handleModalClose={onConclusionModalClose}
+                handleSubmit={onConclusionModalSubmit}
             />
             <DeleteModal
                 open={deleteModalOpen}

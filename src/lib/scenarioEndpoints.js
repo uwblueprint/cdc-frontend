@@ -52,6 +52,7 @@ export const editScenario = async (
         expected_solve_time,
         transitions,
         display_image_url,
+        conclusion_data,
     },
     handleError
 ) => {
@@ -66,6 +67,7 @@ export const editScenario = async (
             expected_solve_time,
             transitions,
             display_image_url,
+            conclusion_data,
         });
         return response;
     } catch (error) {
