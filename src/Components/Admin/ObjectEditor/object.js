@@ -20,12 +20,9 @@ import {
 import { createPresignedLinkAndUploadS3 } from "../../../lib/s3Utility";
 import JigsawPuzzle from "./jigsawpuzzle";
 import { httpPost } from "../../../lib/dataAccess";
-import MuiAlert from "@material-ui/lab/Alert";
+import Snackbar from "@mui/material/Snackbar";
+import SnackbarContent from "@material-ui/core/SnackbarContent";
 import _ from "lodash";
-
-function Alert(props) {
-    return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 const useStyles = makeStyles((theme) => ({
     page: {
@@ -178,16 +175,6 @@ export default function ObjectEditor({
         };
         if (isInteractable === null && Object.keys(origAnimJson).length === 0) {
             getPuzzleBody();
-        }
-        if (showSuccess) {
-            setTimeout(() => {
-                setShowSuccess(false);
-            }, 5000);
-        }
-        if (showError) {
-            setTimeout(() => {
-                setShowError(false);
-            }, 5000);
         }
     }, [
         sceneId,
@@ -558,6 +545,14 @@ export default function ObjectEditor({
         setHeader("");
     };
 
+    const handleSuccessSnackbarClose = () => {
+        setShowSuccess(false);
+    };
+
+    const handleErrorSnackbarClose = () => {
+        setShowError(false);
+    };
+
     return (
         <div
             className={classes.container}
@@ -736,9 +731,51 @@ export default function ObjectEditor({
                 </div>
             ) : null}
             {showSuccess ? (
-                <Alert severity="success">{successText}</Alert>
+                <Snackbar
+                    anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                    open={showSuccess}
+                    autoHideDuration={2000}
+                    onClose={handleSuccessSnackbarClose}
+                    style={{
+                        position: "flex",
+                        bottom: 25,
+                        right: 25,
+                        minWidth: "max-content",
+                        height: "fit-content",
+                    }}
+                >
+                    <SnackbarContent
+                        style={{
+                            backgroundColor: "#4CAF50",
+                            color: "white",
+                        }}
+                        message={<span>{successText}</span>}
+                    />
+                </Snackbar>
             ) : null}
-            {showError ? <Alert severity="error">{errorText}</Alert> : null}
+            {showError ? (
+                <Snackbar
+                    anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                    open={showError}
+                    autoHideDuration={2000}
+                    onClose={handleErrorSnackbarClose}
+                    style={{
+                        position: "flex",
+                        bottom: 25,
+                        right: 25,
+                        minWidth: "max-content",
+                        height: "fit-content",
+                    }}
+                >
+                    <SnackbarContent
+                        style={{
+                            backgroundColor: "#EC4E55",
+                            color: "white",
+                        }}
+                        message={<span>{errorText}</span>}
+                    />
+                </Snackbar>
+            ) : null}
         </div>
     );
 }
