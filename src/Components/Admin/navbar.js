@@ -16,9 +16,10 @@ import { useErrorHandler } from "react-error-boundary";
 import { httpGet } from "../../lib/dataAccess";
 import { auth } from "../../firebaseCredentials";
 import { UserContext } from "../../Providers/UserProviders";
-
 import "../../styles/index.css";
 import { Colours } from "../../styles/Constants.ts";
+import HoudiniLogoBlack from "../Images/houdini-logo-black.png";
+import HoudiniLogoRed from "../Images/houdini-logo-red.png";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -118,6 +119,12 @@ export default function Navbar({ home, search, color, roomName }) {
         <div className={classes.root}>
             <AppBar position="fixed" color={color}>
                 <Toolbar className={classes.toolbar}>
+                    <img
+                        src={home ? HoudiniLogoBlack : HoudiniLogoRed}
+                        alt="Application logo"
+                        style={{ height: 50, cursor: "pointer" }}
+                        onClick={handleHomeClick}
+                    />
                     {home && (
                         <>
                             <IconButton
