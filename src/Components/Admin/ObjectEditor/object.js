@@ -20,14 +20,9 @@ import {
 import { createPresignedLinkAndUploadS3 } from "../../../lib/s3Utility";
 import JigsawPuzzle from "./jigsawpuzzle";
 import { httpPost } from "../../../lib/dataAccess";
-import MuiAlert from "@material-ui/lab/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import SnackbarContent from "@material-ui/core/SnackbarContent";
 import _ from "lodash";
-
-function Alert(props) {
-    return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 const useStyles = makeStyles((theme) => ({
     page: {
@@ -550,8 +545,11 @@ export default function ObjectEditor({
         setHeader("");
     };
 
-    const handleSnackbarClose = () => {
+    const handleSuccessSnackbarClose = () => {
         setShowSuccess(false);
+    };
+
+    const handleErrorSnackbarClose = () => {
         setShowError(false);
     };
 
@@ -734,15 +732,16 @@ export default function ObjectEditor({
             ) : null}
             {showSuccess ? (
                 <Snackbar
-                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                    anchorOrigin={{ vertical: "top", horizontal: "right" }}
                     open={showSuccess}
                     autoHideDuration={2000}
-                    onClose={handleSnackbarClose}
+                    onClose={handleSuccessSnackbarClose}
                     style={{
                         position: "flex",
                         bottom: 25,
                         right: 25,
                         minWidth: "max-content",
+                        height: "fit-content",
                     }}
                 >
                     <SnackbarContent
@@ -756,15 +755,16 @@ export default function ObjectEditor({
             ) : null}
             {showError ? (
                 <Snackbar
-                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                    anchorOrigin={{ vertical: "top", horizontal: "right" }}
                     open={showError}
                     autoHideDuration={2000}
-                    onClose={handleSnackbarClose}
+                    onClose={handleErrorSnackbarClose}
                     style={{
                         position: "flex",
                         bottom: 25,
                         right: 25,
                         minWidth: "max-content",
+                        height: "fit-content",
                     }}
                 >
                     <SnackbarContent
