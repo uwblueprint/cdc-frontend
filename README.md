@@ -6,7 +6,7 @@
 
 ---
 
-# About Distress Centre Center
+# About Distress Centre Calgary
 
 The Distress Centre Calgary (DCC) is an organization dedicated towards providing crisis support for Calgary and southern Alberta residents. DCC provides various programs to reach all population segments who are in need of help, including a 24 hour crisis line and counselling. The organization has also provided several services for teenagers given the increasing prevalence of mental health issues among this population demographic.
 
