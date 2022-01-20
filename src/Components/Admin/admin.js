@@ -14,7 +14,6 @@ import Menu from "@material-ui/core/Menu";
 import Navbar from "./navbar.js";
 
 import EscapeRooms from "./Rooms/rooms.js";
-import Scenes from "./Scenes/scenes.js";
 import Assets from "./Assets/assets.js";
 import Statistics from "./Stats/stats.js";
 import RoomModal from "./Rooms/roomModal";
@@ -26,7 +25,6 @@ import {
     editScenario,
     deleteScenario,
 } from "../../lib/scenarioEndpoints";
-import { getAllScenes } from "../../lib/sceneEndpoints";
 import {
     getAllAssets,
     createAsset,
@@ -155,7 +153,6 @@ export default function Admin() {
         false
     );
     const [environments, setEnvironments] = React.useState([]);
-    const [scenes, setScenes] = React.useState([]);
     const [assets, setAssets] = React.useState([]);
     const [editRoom, setEditRoom] = React.useState({});
     const [deleteRoomId, setDeleteRoomId] = React.useState(null);
@@ -167,11 +164,6 @@ export default function Admin() {
         setEnvironments(data);
     };
 
-    const getAllScenesAction = async (handleError) => {
-        const data = await getAllScenes(handleError);
-        setScenes(data);
-    };
-
     const getAllAssetsAction = async (handleError) => {
         const data = await getAllAssets(handleError);
         setAssets(data);
@@ -180,8 +172,6 @@ export default function Admin() {
     useEffect(() => {
         if (value === "rooms") {
             getAllEnvironments(handleError);
-        } else if (value === "scenes") {
-            getAllScenesAction(handleError);
         } else if (value === "assets") {
             getAllAssetsAction(handleError);
         }
@@ -476,13 +466,6 @@ export default function Admin() {
                         />
                         <Tab
                             disableRipple
-                            className={getTabStyle(value === "scenes")}
-                            value="scenes"
-                            label="Scenes"
-                            {...TabHelper("scenes")}
-                        />
-                        <Tab
-                            disableRipple
                             className={getTabStyle(value === "assets")}
                             value="assets"
                             label="Object Assets"
@@ -509,13 +492,6 @@ export default function Admin() {
                                 handleShareAndPublishClick
                             }
                         />
-                    </TabPanel>
-                    <TabPanel
-                        className={classes.tabBackground}
-                        value={value}
-                        index="scenes"
-                    >
-                        <Scenes scenes={scenes} />
                     </TabPanel>
                     <TabPanel
                         className={classes.tabBackground}
