@@ -44,18 +44,22 @@ input[type="file"]::file-selector-button {
 input[type="file"]::file-selector-button:hover {
     background-color: #c61f27;
     border: 5px solid #c61f27;
+    cursor: pointer;
 }
 input[type="file"]::-ms-browse:hover {
     background-color: #c61f27;
     border: 5px solid #c61f27;
+    cursor: pointer;
 }
 
 input[type="file"]::-webkit-file-upload-button:hover {
     background-color: #c61f27;
     border: 5px solid #c61f27;
+    cursor: pointer;
 }
 
 input[type="file"]::file-selector-button:hover {
     background-color: #c61f27;
     border: 5px solid #c61f27;
+    cursor: pointer;
 }

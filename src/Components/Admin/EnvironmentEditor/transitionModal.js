@@ -33,7 +33,8 @@ const useStyles = makeStyles((theme) => ({
             backgroundColor: Colours.MainRed7,
             color: Colours.White,
         },
-        marginTop: "15px",
+        marginLeft: "15px",
+        marginTop: "5px",
         marginBottom: "5px",
         borderRadius: "5px",
         backgroundColor: Colours.MainRed5,
@@ -42,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
         textTransform: "capitalize",
     },
     textField: {
-        width: "500px",
+        width: "350px",
     },
 }));
 
@@ -179,7 +180,7 @@ export default function TransitionModal({
                     <AddIcon />
                 </IconButton>
             </DialogTitle>
-            <DialogContent>
+            <DialogContent style={{ width: 550 }}>
                 {transitions.map((transition, index) => {
                     return (
                         <div key={transition.id}>
@@ -238,38 +239,47 @@ export default function TransitionModal({
 
                                 <input
                                     accept=".jpg,.jpeg,.png"
-                                    style={{ width: "100%" }}
+                                    style={{ cursor: "pointer" }}
                                     type="file"
                                     onChange={(e) =>
                                         handleUploadFileChange(e, index)
                                     }
                                 />
                             </div>
-                            <TextField
-                                value={transition.link ? transition.link : null}
-                                onChange={(e) => handleLinkChange(e, index)}
-                                className={classes.textField}
-                                required
-                                error={Boolean(errors ? errors.name : false)}
-                                helperText={errors ? errors.name : false}
-                                variant="outlined"
-                                inputProps={{
-                                    style: {
-                                        padding: 10,
-                                    },
-                                }}
-                                placeholder="Enter url to link (including http or https)"
-                            />
-                            {transition.link && (
-                                <Button
-                                    className={classes.linkButton}
-                                    onClick={() =>
-                                        window.open(transition.link, "_blank")
+                            <div>
+                                <TextField
+                                    value={
+                                        transition.link ? transition.link : null
                                     }
-                                >
-                                    Test url
-                                </Button>
-                            )}
+                                    onChange={(e) => handleLinkChange(e, index)}
+                                    className={classes.textField}
+                                    required
+                                    error={Boolean(
+                                        errors ? errors.name : false
+                                    )}
+                                    helperText={errors ? errors.name : false}
+                                    variant="outlined"
+                                    inputProps={{
+                                        style: {
+                                            padding: 10,
+                                        },
+                                    }}
+                                    placeholder="Enter url to link (including http or https)"
+                                />
+                                {transition.link && (
+                                    <Button
+                                        className={classes.linkButton}
+                                        onClick={() =>
+                                            window.open(
+                                                transition.link,
+                                                "_blank"
+                                            )
+                                        }
+                                    >
+                                        Test URL
+                                    </Button>
+                                )}
+                            </div>
                             <p>{transition.text}</p>
                             <IconButton onClick={() => onMoveUpClick(index)}>
                                 <KeyboardArrowUp />
