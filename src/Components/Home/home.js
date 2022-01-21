@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
+import { useHistory } from "react-router-dom";
 import { Colours } from "../../styles/Constants.ts";
 
 const useStyles = makeStyles((theme) => ({
@@ -31,13 +32,18 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Home() {
     const classes = useStyles();
+    const history = useHistory();
+
+    useEffect(() => {
+        history.push("/login");
+    }, [history]);
 
     return (
         <Container component={"main"} maxWidth="xs">
             <CssBaseline />
             <div className={classes.page}>
                 <Typography component="div" variant="h5">
-                    Calgary Distress Centre 🤠
+                    Distress Centre Calgary 🤠
                 </Typography>
                 <Button
                     type="submit"
