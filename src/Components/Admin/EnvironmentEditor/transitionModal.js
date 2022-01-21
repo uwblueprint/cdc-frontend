@@ -3,6 +3,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/Dialog";
+import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { Button, IconButton } from "@material-ui/core";
 import {
@@ -12,6 +13,8 @@ import {
 } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
+import { Colours } from "../../../styles/Constants.ts";
+import "../../../styles/index.css";
 import _ from "lodash";
 
 const useStyles = makeStyles((theme) => ({
@@ -23,6 +26,24 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: "100%",
         color: "white",
         float: "right",
+    },
+    linkButton: {
+        color: Colours.White,
+        "&:hover": {
+            backgroundColor: Colours.MainRed7,
+            color: Colours.White,
+        },
+        marginLeft: "15px",
+        marginTop: "5px",
+        marginBottom: "5px",
+        borderRadius: "5px",
+        backgroundColor: Colours.MainRed5,
+        width: "128px",
+        height: "32px",
+        textTransform: "capitalize",
+    },
+    textField: {
+        width: "350px",
     },
 }));
 
@@ -78,10 +99,7 @@ export default function TransitionModal({
     };
 
     const handleLinkChange = (event, index) => {
-        const linkInput = prompt(
-            "Enter url to link (including http or https for it to work):",
-            transitions[index].link
-        );
+        const linkInput = event.target.value;
         if (linkInput !== null) {
             const tempTransitions = _.cloneDeep(transitions);
             if (linkInput === "") {
@@ -162,7 +180,7 @@ export default function TransitionModal({
                     <AddIcon />
                 </IconButton>
             </DialogTitle>
-            <DialogContent>
+            <DialogContent style={{ width: 550 }}>
                 {transitions.map((transition, index) => {
                     return (
                         <div key={transition.id}>
@@ -188,7 +206,12 @@ export default function TransitionModal({
                                         </Typography>
                                         <img
                                             src={transition.previewUrl}
-                                            width={500}
+                                            style={{
+                                                maxHeight: "200px",
+                                                maxWidth: "500px",
+                                                height: "auto",
+                                                width: "auto",
+                                            }}
                                             objectFit={"contain"}
                                         />
                                     </div>
@@ -203,59 +226,60 @@ export default function TransitionModal({
                                         </Typography>
                                         <img
                                             src={transition.imageSrc}
-                                            width={500}
+                                            style={{
+                                                maxHeight: "200px",
+                                                maxWidth: "500px",
+                                                height: "auto",
+                                                width: "auto",
+                                            }}
                                             objectFit={"contain"}
                                         />
                                     </div>
                                 ) : null}
+
                                 <input
                                     accept=".jpg,.jpeg,.png"
-                                    style={{ width: "100%" }}
+                                    style={{ cursor: "pointer" }}
                                     type="file"
                                     onChange={(e) =>
                                         handleUploadFileChange(e, index)
                                     }
                                 />
-                                {Object.prototype.hasOwnProperty.call(
-                                    transition,
-                                    "previewUrl"
-                                ) &&
-                                Object.prototype.hasOwnProperty.call(
-                                    transition,
-                                    "fileName"
-                                ) &&
-                                transition.previewUrl !== "" &&
-                                transition.fileName !== "" ? (
-                                    <div>
-                                        {transition.fileName} successfully
-                                        uploaded
-                                    </div>
-                                ) : null}
                             </div>
-                            <input
-                                type="button"
-                                value={
-                                    transition.link ? "Update link" : "Add link"
-                                }
-                                onClick={(e) => handleLinkChange(e, index)}
-                            />
-                            {transition.link && (
-                                <div>
-                                    <a
-                                        href={transition.link}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
+                            <div>
+                                <TextField
+                                    value={
+                                        transition.link ? transition.link : null
+                                    }
+                                    onChange={(e) => handleLinkChange(e, index)}
+                                    className={classes.textField}
+                                    required
+                                    error={Boolean(
+                                        errors ? errors.name : false
+                                    )}
+                                    helperText={errors ? errors.name : false}
+                                    variant="outlined"
+                                    inputProps={{
+                                        style: {
+                                            padding: 10,
+                                        },
+                                    }}
+                                    placeholder="Enter url to link (including http or https)"
+                                />
+                                {transition.link && (
+                                    <Button
+                                        className={classes.linkButton}
+                                        onClick={() =>
+                                            window.open(
+                                                transition.link,
+                                                "_blank"
+                                            )
+                                        }
                                     >
-                                        <Typography
-                                            component="div"
-                                            variant="p"
-                                            style={{ width: "100%" }}
-                                        >
-                                            {transition.link}
-                                        </Typography>
-                                    </a>
-                                </div>
-                            )}
+                                        Test URL
+                                    </Button>
+                                )}
+                            </div>
                             <p>{transition.text}</p>
                             <IconButton onClick={() => onMoveUpClick(index)}>
                                 <KeyboardArrowUp />
