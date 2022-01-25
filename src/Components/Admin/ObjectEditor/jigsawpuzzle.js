@@ -39,6 +39,7 @@ export default function JigsawPuzzle(props) {
     const handleError = useErrorHandler();
     const [base64String, setBase64String] = React.useState("");
     const [imgPreview, setImgPreview] = React.useState("");
+    const [name, setName] = React.useState(null);
 
     useEffect(() => {
         const uploadImage = async () => {
@@ -65,6 +66,7 @@ export default function JigsawPuzzle(props) {
         if (event.target.files && event.target.files[0]) {
             const file = event.target.files[0];
             await fileToBase64String(file, setBase64String);
+            setName(file.name);
         }
     };
 
