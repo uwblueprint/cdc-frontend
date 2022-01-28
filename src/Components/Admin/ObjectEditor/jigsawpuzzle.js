@@ -100,17 +100,35 @@ export default function JigsawPuzzle(props) {
                 type="file"
                 onChange={handleUploadFileChange}
             />
-            <label htmlFor="contained-button-file">
-                <Button
-                    className={classes.uploadButton}
-                    variant="contained"
-                    color="primary"
-                    style={{ backgroundColor: "#364254" }}
-                    component="span"
-                >
-                    Upload
-                </Button>
-            </label>
+            {name === null ? (
+                <label htmlFor="contained-button-file">
+                    <Button
+                        className={classes.uploadButton}
+                        variant="contained"
+                        color="primary"
+                        style={{ backgroundColor: "#364254" }}
+                        component="span"
+                    >
+                        Upload
+                    </Button>
+                </label>
+            ) : (
+                <label htmlFor="contained-button-file">
+                    <Button
+                        className={classes.uploadButton}
+                        variant="contained"
+                        color="primary"
+                        style={{ backgroundColor: "#D5E1EE", color: "black" }}
+                        component="span"
+                    >
+                        Change File
+                    </Button>
+                    <div>
+                        <br></br>
+                        {name}
+                    </div>
+                </label>
+            )}
         </div>
     );
 }
