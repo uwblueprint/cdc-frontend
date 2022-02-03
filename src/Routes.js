@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Route, Switch } from "react-router-dom";
 import Login from "./Components/Login/login";
 import Signup from "./Components/Login/signup";
@@ -12,13 +12,18 @@ import { UserContext } from "./Providers/UserProviders";
 import ClipLoader from "react-spinners/ClipLoader";
 
 export default function Routes() {
-    const { isLoading, user } = useContext(UserContext);
+    const { isLoading, user, reloadUser } = useContext(UserContext);
+    const [firstLoadComplete, setFirstLoadComplete] = useState(false);
 
     useEffect(() => {
         if (isLoading) {
             return;
         }
-    }, [isLoading]);
+        if (!firstLoadComplete) {
+            reloadUser();
+            setFirstLoadComplete(true);
+        }
+    }, [firstLoadComplete, isLoading, reloadUser]);
 
     return isLoading ? (
         <div
