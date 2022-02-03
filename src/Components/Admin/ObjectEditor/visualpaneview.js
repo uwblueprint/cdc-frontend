@@ -110,17 +110,31 @@ export default function VisualPaneView(props) {
                 type="file"
                 onChange={handleUploadFileChange}
             />
-            <label htmlFor="contained-button-file">
-                <Button
-                    className={classes.uploadButton}
-                    variant="contained"
-                    color="primary"
-                    style={{ backgroundColor: "#364254" }}
-                    component="span"
-                >
-                    Upload
-                </Button>
-            </label>
+            {!uploaded ? (
+                <label htmlFor="contained-button-file">
+                    <Button
+                        className={classes.uploadButton}
+                        variant="contained"
+                        color="primary"
+                        style={{ backgroundColor: "#364254" }}
+                        component="span"
+                    >
+                        Upload
+                    </Button>
+                </label>
+            ) : (
+                <label htmlFor="contained-button-file">
+                    <Button
+                        className={classes.uploadButton}
+                        variant="contained"
+                        color="primary"
+                        style={{ backgroundColor: "#D5E1EE", color: "black" }}
+                        component="span"
+                    >
+                        Change File
+                    </Button>
+                </label>
+            )}
             {uploaded ? <div>{name} successfully uploaded</div> : null}
             {caption === "" ? (
                 <div>

@@ -558,6 +558,7 @@ export default function ObjectEditor({
             className={classes.container}
             style={{ paddingLeft: "30px", paddingRight: "30px" }}
         >
+            <h1>Update Interactive Type</h1>
             <div>
                 <label htmlFor="subscribeNews">Interactable?</label>
                 <Switch
