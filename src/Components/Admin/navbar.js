@@ -79,7 +79,13 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Navbar({ home, search, color, roomName }) {
+export default function Navbar({
+    home,
+    search,
+    color,
+    roomName,
+    onSearchChange,
+}) {
     const classes = useStyles();
     const history = useHistory();
     const handleError = useErrorHandler();
@@ -150,6 +156,7 @@ export default function Navbar({ home, search, color, roomName }) {
                                     input: classes.inputInput,
                                 }}
                                 inputProps={{ "aria-label": "search" }}
+                                onChange={onSearchChange}
                             />
                         </div>
                     )}
