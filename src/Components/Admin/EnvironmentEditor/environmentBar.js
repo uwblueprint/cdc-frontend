@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -9,6 +9,10 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
+import { useErrorHandler } from "react-error-boundary";
+
+import RoomModal from "../Rooms/roomModal";
+import { editScenario } from "../../../lib/scenarioEndpoints";
 import { Colours } from "../../../styles/Constants.ts";
 import "../../../styles/index.css";
 
@@ -72,10 +76,22 @@ const useStyles = makeStyles((theme) => ({
 export default function EnvironmentBar({
     onCreateButtonClick,
     onTemplateButtonClick,
+    initialEnv,
 }) {
     const classes = useStyles();
-    const [menuAnchorEl, setMenuAnchorEl] = React.useState(null);
-    const [addMenuAnchorEl, setAddMenuAnchorEl] = React.useState(null);
+    const handleError = useErrorHandler();
+
+    const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+    const [addMenuAnchorEl, setAddMenuAnchorEl] = useState(null);
+    const [shareAndPublishModalOpen, setShareAndPublishModalOpen] = useState(
+        false
+    );
+    const [environment, setEnvironment] = useState({});
+
+    useEffect(() => {
+        setEnvironment(initialEnv);
+    }, [initialEnv]);
+
     const menuOpen = Boolean(menuAnchorEl);
     const addMenuOpen = Boolean(addMenuAnchorEl);
 
@@ -103,6 +119,37 @@ export default function EnvironmentBar({
     const handleTemplateButtonClick = () => {
         setAddMenuAnchorEl(null);
         onTemplateButtonClick();
+    };
+
+    const handleShareAndPublishClick = () => {
+        setShareAndPublishModalOpen(true);
+    };
+
+    const handleShareAndPublishClose = () => {
+        setShareAndPublishModalOpen(false);
+    };
+
+    const handleShareAndPublishSubmit = async ({
+        is_published,
+        is_previewable,
+    }) => {
+        setShareAndPublishModalOpen(false);
+        const resp = await editScenario(
+            {
+                id: environment.id,
+                name: environment.name,
+                friendly_name: environment.friendly_name,
+                description: environment.description,
+                scene_ids: environment.scene_ids,
+                is_published,
+                is_previewable,
+                expected_solve_time: environment.expected_solve_time,
+                display_image_url: environment.display_image_url,
+            },
+            handleError
+        );
+
+        setEnvironment(resp.data);
     };
 
     return (
@@ -168,7 +215,10 @@ export default function EnvironmentBar({
                         </Menu>
                     </div>
                     <div className={classes.buttonWrapperRight}>
-                        <Button className={classes.button}>
+                        <Button
+                            className={classes.button}
+                            onClick={handleShareAndPublishClick}
+                        >
                             Share & Publish
                         </Button>
                         <Button>
@@ -177,6 +227,13 @@ export default function EnvironmentBar({
                     </div>
                 </Toolbar>
             </AppBar>
+            <RoomModal
+                modalOpen={shareAndPublishModalOpen}
+                handleModalClose={handleShareAndPublishClose}
+                handleSubmit={handleShareAndPublishSubmit}
+                room={environment}
+                isShareAndPublish
+            />
         </div>
     );
 }
