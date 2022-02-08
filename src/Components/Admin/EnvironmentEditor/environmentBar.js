@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -79,6 +80,7 @@ export default function EnvironmentBar({
     initialEnv,
 }) {
     const classes = useStyles();
+    const history = useHistory();
     const handleError = useErrorHandler();
 
     const [menuAnchorEl, setMenuAnchorEl] = useState(null);
@@ -222,7 +224,16 @@ export default function EnvironmentBar({
                             Share & Publish
                         </Button>
                         <Button>
-                            <PlayArrowIcon className={classes.preview} />
+                            <a
+                                href={
+                                    process.env.REACT_APP_DEPLOYED_URL +
+                                    environment.friendly_name
+                                }
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <PlayArrowIcon className={classes.preview} />
+                            </a>
                         </Button>
                     </div>
                 </Toolbar>
