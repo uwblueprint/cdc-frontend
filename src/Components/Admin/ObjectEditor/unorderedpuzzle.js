@@ -219,6 +219,7 @@ export default function UnorderedPuzzle(props) {
                                 className={classes.uploadButton}
                                 variant="contained"
                                 color="primary"
+                                style={{ backgroundColor: "#364254" }}
                                 component="span"
                             >
                                 Upload
