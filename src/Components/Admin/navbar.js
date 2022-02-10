@@ -77,9 +77,21 @@ const useStyles = makeStyles((theme) => ({
             width: "579px",
         },
     },
+    menuHeader: {
+        color: Colours.Grey5,
+        marginLeft: "16px",
+        marginTop: "6px",
+        marginBottom: "6px",
+    },
 }));
 
-export default function Navbar({ home, search, color, roomName }) {
+export default function Navbar({
+    home,
+    search,
+    color,
+    roomName,
+    onSearchChange,
+}) {
     const classes = useStyles();
     const history = useHistory();
     const handleError = useErrorHandler();
@@ -150,6 +162,7 @@ export default function Navbar({ home, search, color, roomName }) {
                                     input: classes.inputInput,
                                 }}
                                 inputProps={{ "aria-label": "search" }}
+                                onChange={onSearchChange}
                             />
                         </div>
                     )}
@@ -180,7 +193,8 @@ export default function Navbar({ home, search, color, roomName }) {
                                 onClose={handleClose}
                                 className={classes.menu}
                             >
-                                <MenuItem onClick={handleClose}>
+                                <h3 className={classes.menuHeader}>Actions</h3>
+                                <MenuItem disabled onClick={handleClose}>
                                     Account Settings
                                 </MenuItem>
                                 <MenuItem onClick={handleLogout}>
