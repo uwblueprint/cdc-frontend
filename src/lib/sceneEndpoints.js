@@ -51,6 +51,7 @@ export const editScene = async (
         scale,
         rotation,
         background_id,
+        hints,
         camera_properties,
     },
     handleError
@@ -64,6 +65,7 @@ export const editScene = async (
             scale,
             rotation,
             background_id,
+            hints,
             camera_properties,
         });
         return response;

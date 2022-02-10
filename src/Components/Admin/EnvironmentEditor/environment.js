@@ -14,6 +14,7 @@ import TemplateModal from "./templateModal";
 import TransitionCard from "./transitionCard";
 import TransitionModal from "./transitionModal";
 import ConclusionModal from "./conclusionModal";
+import HintsModal from "./hintsModal";
 import DeleteModal from "../common/deleteModal";
 import {
     getScenario,
@@ -117,6 +118,7 @@ export default function EnvironmentEditor({
     const [createModalOpen, setCreateModalOpen] = useState(false);
     const [templateModalOpen, setTemplateModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
+    const [editHintsModalOpen, setEditHintsModalOpen] = useState(false);
     const [editSceneInfo, setEditSceneInfo] = useState({});
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [deleteSceneId, setDeleteSceneId] = React.useState(null);
@@ -263,6 +265,12 @@ export default function EnvironmentEditor({
         setEditModalOpen(true);
     };
 
+    const onEditHintsButtonClick = (sceneId) => {
+        const scene = scenes.find((scene) => scene.id === sceneId);
+        setEditSceneInfo(scene);
+        setEditHintsModalOpen(true);
+    };
+
     const onTransitionEditClick = (sceneId) => {
         const sceneIndex = environment.scene_ids.indexOf(sceneId);
         const allTransitions = environment.transitions;
@@ -279,6 +287,11 @@ export default function EnvironmentEditor({
 
     const onEditModalClose = () => {
         setEditModalOpen(false);
+        setEditSceneInfo({});
+    };
+
+    const onEditHintsModalClose = () => {
+        setEditHintsModalOpen(false);
         setEditSceneInfo({});
     };
 
@@ -303,6 +316,31 @@ export default function EnvironmentEditor({
                 scale: editSceneInfo.scale,
                 rotation: editSceneInfo.rotation,
                 background_id,
+                camera_properties: editSceneInfo.camera_properties,
+            },
+            handleError
+        );
+        const replaceIndex = scenes.findIndex(
+            (scene) => scene.id === editSceneInfo.id
+        );
+        const copiedScenes = [...scenes];
+        copiedScenes[replaceIndex] = resp.data;
+        setScenes(copiedScenes);
+    };
+
+    const onEditHintsModalSubmit = async (hints) => {
+        setEditHintsModalOpen(false);
+        const resp = await editScene(
+            {
+                id: editSceneInfo.id,
+                name: editSceneInfo.name,
+                description: editSceneInfo.description,
+                object_ids: editSceneInfo.object_ids,
+                position: editSceneInfo.position,
+                scale: editSceneInfo.scale,
+                rotation: editSceneInfo.rotation,
+                background_id: editSceneInfo.background_id,
+                hints,
                 camera_properties: editSceneInfo.camera_properties,
             },
             handleError
@@ -499,6 +537,9 @@ export default function EnvironmentEditor({
                                                                 handleEditClick={
                                                                     onEditButtonClick
                                                                 }
+                                                                handleEditHintsClick={
+                                                                    onEditHintsButtonClick
+                                                                }
                                                                 handleDeleteClick={
                                                                     onDeleteButtonClick
                                                                 }
@@ -628,6 +669,12 @@ export default function EnvironmentEditor({
                 handleModalClose={onEditModalClose}
                 handleSubmit={onEditModalSubmit}
                 isEdit
+            />
+            <HintsModal
+                originalHints={editSceneInfo.hints ? editSceneInfo.hints : []}
+                modalOpen={editHintsModalOpen}
+                handleModalClose={onEditHintsModalClose}
+                handleSubmit={onEditHintsModalSubmit}
             />
             <TemplateModal
                 modalOpen={templateModalOpen}

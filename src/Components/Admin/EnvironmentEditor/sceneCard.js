@@ -63,6 +63,7 @@ const useStyles = makeStyles(() => ({
 export default function SceneCard({
     scene,
     handleEditClick,
+    handleEditHintsClick,
     handleDeleteClick,
 }) {
     const classes = useStyles();
@@ -109,6 +110,15 @@ export default function SceneCard({
                     }}
                 >
                     Edit Metadata
+                </MenuItem>
+                <MenuItem
+                    className={classes.menuItem}
+                    onClick={() => {
+                        setAnchorEl(null);
+                        handleEditHintsClick(scene.id);
+                    }}
+                >
+                    Edit Scene Hints
                 </MenuItem>
                 <MenuItem className={classes.menuItem}>
                     <a
