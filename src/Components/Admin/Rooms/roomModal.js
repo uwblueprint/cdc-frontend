@@ -84,6 +84,7 @@ export default function RoomModal({
     room,
     isEdit,
     isShareAndPublish,
+    isEnvBar,
 }) {
     const classes = useStyles();
     const handleError = useErrorHandler();
@@ -271,7 +272,9 @@ export default function RoomModal({
                 is_previewable: isPreviewable,
             });
         }
-        resetFields();
+        if (!isEnvBar) {
+            resetFields();
+        }
         handleModalClose();
     };
 
@@ -341,7 +344,9 @@ export default function RoomModal({
             });
         }
 
-        resetFields();
+        if (!isEnvBar) {
+            resetFields();
+        }
     };
 
     const handleIsPublishedClick = () => {
