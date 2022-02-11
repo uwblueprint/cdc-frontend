@@ -477,7 +477,7 @@ export default function EnvironmentEditor({
                 <EnvironmentBar
                     onCreateButtonClick={onCreateButtonClick}
                     onTemplateButtonClick={onTemplateButtonClick}
-                    isEnvironment
+                    initialEnv={environment}
                 />
             </div>
             <div className={classes.container}>
