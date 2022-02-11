@@ -222,7 +222,16 @@ export default function EnvironmentBar({
                             Share & Publish
                         </Button>
                         <Button>
-                            <PlayArrowIcon className={classes.preview} />
+                            <a
+                                href={
+                                    process.env.REACT_APP_DEPLOYED_URL +
+                                    environment.friendly_name
+                                }
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <PlayArrowIcon className={classes.preview} />
+                            </a>
                         </Button>
                     </div>
                 </Toolbar>
