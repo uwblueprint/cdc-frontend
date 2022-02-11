@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { useHistory } from "react-router-dom";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import MenuIcon from "@material-ui/icons/Menu";
@@ -12,7 +13,8 @@ import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import { useErrorHandler } from "react-error-boundary";
 
 import RoomModal from "../Rooms/roomModal";
-import { editScenario } from "../../../lib/scenarioEndpoints";
+import DeleteModal from "../common/deleteModal";
+import { deleteScenario, editScenario } from "../../../lib/scenarioEndpoints";
 import { Colours } from "../../../styles/Constants.ts";
 import "../../../styles/index.css";
 
@@ -79,6 +81,7 @@ export default function EnvironmentBar({
     initialEnv,
 }) {
     const classes = useStyles();
+    const history = useHistory();
     const handleError = useErrorHandler();
 
     const [menuAnchorEl, setMenuAnchorEl] = useState(null);
@@ -86,6 +89,7 @@ export default function EnvironmentBar({
     const [shareAndPublishModalOpen, setShareAndPublishModalOpen] = useState(
         false
     );
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [environment, setEnvironment] = useState({});
 
     useEffect(() => {
@@ -119,6 +123,20 @@ export default function EnvironmentBar({
     const handleTemplateButtonClick = () => {
         setAddMenuAnchorEl(null);
         onTemplateButtonClick();
+    };
+
+    const handleDeleteRoomClick = () => {
+        setDeleteModalOpen(true);
+    };
+
+    const handleDeleteRoomCancel = () => {
+        setDeleteModalOpen(false);
+    };
+
+    const handleDeleteRoomSubmit = async () => {
+        await deleteScenario(environment.id, handleError);
+        history.push("/admin");
+        setDeleteModalOpen(false);
     };
 
     const handleShareAndPublishClick = () => {
@@ -180,9 +198,22 @@ export default function EnvironmentBar({
                             onClose={onMenuClose}
                         >
                             <h3 className={classes.menuHeader}>Menu</h3>
-                            <MenuItem>Rename Escape Room</MenuItem>
-                            <MenuItem>Copy Editor Link</MenuItem>
-                            <MenuItem>Delete</MenuItem>
+                            <MenuItem disabled>Rename Escape Room</MenuItem>
+                            <MenuItem
+                                onClick={() => {
+                                    setMenuAnchorEl(null);
+                                    navigator.clipboard.writeText(
+                                        process.env
+                                            .REACT_APP_ADMIN_DEPLOYED_URL +
+                                            `admin/environment/${environment.id}`
+                                    );
+                                }}
+                            >
+                                Copy Editor Link
+                            </MenuItem>
+                            <MenuItem onClick={handleDeleteRoomClick}>
+                                Delete
+                            </MenuItem>
                         </Menu>
                         <Button
                             startIcon={<AddIcon className={classes.add} />}
@@ -243,6 +274,13 @@ export default function EnvironmentBar({
                 room={environment}
                 isShareAndPublish
                 isEnvBar
+            />
+            <DeleteModal
+                open={deleteModalOpen}
+                title="Delete Room"
+                confirmMessage="Are you sure you want to delete this room?"
+                handleClose={handleDeleteRoomCancel}
+                handleSubmit={handleDeleteRoomSubmit}
             />
         </div>
     );
