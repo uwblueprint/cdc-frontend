@@ -273,6 +273,7 @@ export default function EnvironmentBar({
                 handleSubmit={handleShareAndPublishSubmit}
                 room={environment}
                 isShareAndPublish
+                isEnvBar
             />
             <DeleteModal
                 open={deleteModalOpen}

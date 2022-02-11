@@ -77,6 +77,12 @@ const useStyles = makeStyles((theme) => ({
             width: "579px",
         },
     },
+    menuHeader: {
+        color: Colours.Grey5,
+        marginLeft: "16px",
+        marginTop: "6px",
+        marginBottom: "6px",
+    },
 }));
 
 export default function Navbar({
@@ -187,7 +193,8 @@ export default function Navbar({
                                 onClose={handleClose}
                                 className={classes.menu}
                             >
-                                <MenuItem onClick={handleClose}>
+                                <h3 className={classes.menuHeader}>Actions</h3>
+                                <MenuItem disabled onClick={handleClose}>
                                     Account Settings
                                 </MenuItem>
                                 <MenuItem onClick={handleLogout}>

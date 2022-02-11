@@ -131,6 +131,12 @@ const useStyles = makeStyles((theme) => ({
     tabBackground: {
         width: "1000px",
     },
+    menuHeader: {
+        color: Colours.Grey5,
+        marginLeft: "16px",
+        marginTop: "6px",
+        marginBottom: "6px",
+    },
 }));
 
 export default function Admin() {
@@ -399,13 +405,14 @@ export default function Admin() {
                         open={open}
                         onClose={handleAddButtonClose}
                     >
+                        <h3 className={classes.menuHeader}>New</h3>
                         <MenuItem
                             onClick={() => {
                                 setAnchorEl(null);
                                 setUploadAssetModalOpen(true);
                             }}
                         >
-                            New Object Asset
+                            Object Asset
                         </MenuItem>
                         <MenuItem
                             onClick={() => {
@@ -413,7 +420,7 @@ export default function Admin() {
                                 setCreateModalOpen(true);
                             }}
                         >
-                            New Escape Room
+                            Escape Room
                         </MenuItem>
                     </Menu>
                     <RoomModal
