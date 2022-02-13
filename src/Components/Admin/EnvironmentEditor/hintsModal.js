@@ -125,7 +125,7 @@ export default function HintsModal({
                     <AddIcon />
                 </IconButton>
             </DialogTitle>
-            <DialogContent style={{ width: 550 }}>
+            <DialogContent style={{ width: 600 }}>
                 {hints.map((hint, index) => {
                     return (
                         <div key={index}>
