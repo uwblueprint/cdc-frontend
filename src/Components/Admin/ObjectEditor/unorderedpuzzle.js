@@ -70,7 +70,6 @@ export default function UnorderedPuzzle(props) {
         }
 
         const populateImages = async () => {
-            console.log("here");
             let newImages = [];
             newImages = images;
             let xTarg = 0;
