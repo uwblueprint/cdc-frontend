@@ -120,6 +120,7 @@ export default function EnvironmentEditor({
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [editHintsModalOpen, setEditHintsModalOpen] = useState(false);
     const [editSceneInfo, setEditSceneInfo] = useState({});
+    const [editHintsInfo, setEditHintsInfo] = useState({});
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [deleteSceneId, setDeleteSceneId] = React.useState(null);
     const [editTransitionInfo, setEditTransitionInfo] = useState([]);
@@ -267,7 +268,7 @@ export default function EnvironmentEditor({
 
     const onEditHintsButtonClick = (sceneId) => {
         const scene = scenes.find((scene) => scene.id === sceneId);
-        setEditSceneInfo(scene);
+        setEditHintsInfo(scene);
         setEditHintsModalOpen(true);
     };
 
@@ -292,7 +293,7 @@ export default function EnvironmentEditor({
 
     const onEditHintsModalClose = () => {
         setEditHintsModalOpen(false);
-        setEditSceneInfo({});
+        setEditHintsInfo({});
     };
 
     const onTransitionModalClose = () => {
@@ -332,21 +333,21 @@ export default function EnvironmentEditor({
         setEditHintsModalOpen(false);
         const resp = await editScene(
             {
-                id: editSceneInfo.id,
-                name: editSceneInfo.name,
-                description: editSceneInfo.description,
-                object_ids: editSceneInfo.object_ids,
-                position: editSceneInfo.position,
-                scale: editSceneInfo.scale,
-                rotation: editSceneInfo.rotation,
-                background_id: editSceneInfo.background_id,
+                id: editHintsInfo.id,
+                name: editHintsInfo.name,
+                description: editHintsInfo.description,
+                object_ids: editHintsInfo.object_ids,
+                position: editHintsInfo.position,
+                scale: editHintsInfo.scale,
+                rotation: editHintsInfo.rotation,
+                background_id: editHintsInfo.background_id,
                 hints,
-                camera_properties: editSceneInfo.camera_properties,
+                camera_properties: editHintsInfo.camera_properties,
             },
             handleError
         );
         const replaceIndex = scenes.findIndex(
-            (scene) => scene.id === editSceneInfo.id
+            (scene) => scene.id === editHintsInfo.id
         );
         const copiedScenes = [...scenes];
         copiedScenes[replaceIndex] = resp.data;
@@ -671,7 +672,7 @@ export default function EnvironmentEditor({
                 isEdit
             />
             <HintsModal
-                originalHints={editSceneInfo.hints ? editSceneInfo.hints : []}
+                originalHints={editHintsInfo.hints ? editHintsInfo.hints : []}
                 modalOpen={editHintsModalOpen}
                 handleModalClose={onEditHintsModalClose}
                 handleSubmit={onEditHintsModalSubmit}
