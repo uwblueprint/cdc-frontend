@@ -312,7 +312,7 @@ export default function ObjectEditor({
         setImages([...images, {}]);
     };
 
-    const deleteImage = (index) => {
+    const deleteImage = (index, isOrdered) => {
         const imagePrefix = process.env.REACT_APP_ADMIN_ASSET_PREFIX;
         if (
             images[index].imageSrc &&
@@ -324,6 +324,11 @@ export default function ObjectEditor({
         }
         const tempImages = images;
         tempImages.splice(index, 1);
+        if (isOrdered) {
+            for (let i = 0; i < tempImages.length; i++) {
+                tempImages[i].xTarget = -2.5 + 1.25 * i;
+            }
+        }
         setImages(tempImages);
     };
 
@@ -441,6 +446,8 @@ export default function ObjectEditor({
                         }
 
                         if (
+                            origAnimJson.blackboardData?.componentType !==
+                                "keypad" &&
                             origAnimJson.blackboardData?.jsonData?.images &&
                             i <
                                 origAnimJson.blackboardData.jsonData.images
@@ -558,6 +565,7 @@ export default function ObjectEditor({
             className={classes.container}
             style={{ paddingLeft: "30px", paddingRight: "30px" }}
         >
+            <h1>Update Interactive Type</h1>
             <div>
                 <label htmlFor="subscribeNews">Interactable?</label>
                 <Switch
@@ -673,6 +681,8 @@ export default function ObjectEditor({
                 <UnorderedPuzzle
                     saveImageN={saveImageN}
                     saveImages={saveImages}
+                    addImage={addImage}
+                    deleteImage={deleteImage}
                     images={
                         origAnimJson?.blackboardData?.jsonData?.useTargets ===
                         true
@@ -680,15 +690,21 @@ export default function ObjectEditor({
                             : []
                     }
                     isUnordered={false}
-                    imagesLen={5}
+                    imagesLen={
+                        origAnimJson?.blackboardData?.jsonData?.useTargets ===
+                        true
+                            ? origAnimJson.blackboardData.jsonData.images.length
+                            : 2
+                    }
+                    classes={classes}
                 />
             ) : null}
             {isInteractable && puzzleType === "numpad-puzzle" ? (
                 <KeypadPuzzle
                     savePass={savePass}
                     pass={
-                        origAnimJson?.blackboardData?.componentType !==
-                        "numpad-puzzle"
+                        origAnimJson?.blackboardData?.jsonData?.model !==
+                        "numpad"
                             ? ""
                             : origAnimJson?.blackboardData?.jsonData?.password
                             ? origAnimJson?.blackboardData?.jsonData?.password
@@ -702,8 +718,8 @@ export default function ObjectEditor({
                 <KeypadPuzzle
                     savePass={savePass}
                     pass={
-                        origAnimJson?.blackboardData?.componentType !==
-                        "keyboard-puzzle"
+                        origAnimJson?.blackboardData?.jsonData?.model !==
+                        "basic"
                             ? ""
                             : origAnimJson?.blackboardData?.jsonData?.password
                             ? origAnimJson?.blackboardData?.jsonData?.password
