@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Container from "@material-ui/core/Container";
@@ -131,32 +131,34 @@ const useStyles = makeStyles((theme) => ({
     tabBackground: {
         width: "1000px",
     },
+    menuHeader: {
+        color: Colours.Grey5,
+        marginLeft: "16px",
+        marginTop: "6px",
+        marginBottom: "6px",
+    },
 }));
 
 export default function Admin() {
     const classes = useStyles();
     const handleError = useErrorHandler();
 
-    const [value, setValue] = React.useState("rooms");
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const [createModalOpen, setCreateModalOpen] = React.useState(false);
-    const [editModalOpen, setEditModalOpen] = React.useState(false);
-    const [
-        shareAndPublishModalOpen,
-        setShareAndPublishModalOpen,
-    ] = React.useState(false);
-    const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
-    const [uploadAssetModalOpen, setUploadAssetModalOpen] = React.useState(
+    const [value, setValue] = useState("rooms");
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [createModalOpen, setCreateModalOpen] = useState(false);
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const [shareAndPublishModalOpen, setShareAndPublishModalOpen] = useState(
         false
     );
-    const [deleteAssetModalOpen, setDeleteAssetModalOpen] = React.useState(
-        false
-    );
-    const [environments, setEnvironments] = React.useState([]);
-    const [assets, setAssets] = React.useState([]);
-    const [editRoom, setEditRoom] = React.useState({});
-    const [deleteRoomId, setDeleteRoomId] = React.useState(null);
-    const [deleteAssetId, setDeleteAssetId] = React.useState(null);
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [uploadAssetModalOpen, setUploadAssetModalOpen] = useState(false);
+    const [deleteAssetModalOpen, setDeleteAssetModalOpen] = useState(false);
+    const [environments, setEnvironments] = useState([]);
+    const [assets, setAssets] = useState([]);
+    const [editRoom, setEditRoom] = useState({});
+    const [deleteRoomId, setDeleteRoomId] = useState(null);
+    const [deleteAssetId, setDeleteAssetId] = useState(null);
+    const [searchWord, setSearchWord] = useState("");
     const open = Boolean(anchorEl);
 
     const getAllEnvironments = async (handleError) => {
@@ -368,11 +370,19 @@ export default function Admin() {
         setDeleteAssetModalOpen(false);
     };
 
+    const onSearchChange = (event) => {
+        setSearchWord(event.target.value);
+    };
+
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
             <div className={classes.paper}>
-                <Navbar search color="primary" />
+                <Navbar
+                    search
+                    color="primary"
+                    onSearchChange={onSearchChange}
+                />
                 <div className={classes.root}>
                     <IconButton
                         className={classes.addButton}
@@ -395,13 +405,14 @@ export default function Admin() {
                         open={open}
                         onClose={handleAddButtonClose}
                     >
+                        <h3 className={classes.menuHeader}>New</h3>
                         <MenuItem
                             onClick={() => {
                                 setAnchorEl(null);
                                 setUploadAssetModalOpen(true);
                             }}
                         >
-                            New Object Asset
+                            Object Asset
                         </MenuItem>
                         <MenuItem
                             onClick={() => {
@@ -409,7 +420,7 @@ export default function Admin() {
                                 setCreateModalOpen(true);
                             }}
                         >
-                            New Escape Room
+                            Escape Room
                         </MenuItem>
                     </Menu>
                     <RoomModal
@@ -485,7 +496,11 @@ export default function Admin() {
                         index="rooms"
                     >
                         <EscapeRooms
-                            environments={environments}
+                            environments={environments.filter((env) => {
+                                return env.name
+                                    .toLowerCase()
+                                    .includes(searchWord.toLowerCase());
+                            })}
                             handleEditRoomClick={handleEditRoomClick}
                             handleDeleteRoomClick={handleDeleteRoomClick}
                             handleShareAndPublishClick={
@@ -499,7 +514,11 @@ export default function Admin() {
                         index="assets"
                     >
                         <Assets
-                            assets={assets}
+                            assets={assets.filter((asset) => {
+                                return asset.name
+                                    .toLowerCase()
+                                    .includes(searchWord.toLowerCase());
+                            })}
                             handleDeleteAssetClick={handleDeleteAssetClick}
                         />
                     </TabPanel>

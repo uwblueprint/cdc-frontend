@@ -36,6 +36,7 @@ export default function Assets({ assets, handleDeleteAssetClick }) {
                 Your assets
             </Typography>
             <div className={classes.page}>
+                <span>{assets.length === 0 ? <p>No assets</p> : null}</span>
                 <Grid
                     container
                     item

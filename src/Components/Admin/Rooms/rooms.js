@@ -42,6 +42,9 @@ export default function EscapeRooms({
                 Your escape rooms
             </Typography>
             <div className={classes.page}>
+                <span>
+                    {environments.length === 0 ? <p>No escape rooms</p> : null}
+                </span>
                 <Grid
                     container
                     item

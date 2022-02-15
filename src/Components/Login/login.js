@@ -105,7 +105,12 @@ export default function Login() {
 
         setAllErrors(errors);
         if (!errors.email && !errors.login) {
-            history.push("/admin");
+            const pathname = window.location.pathname;
+            if (pathname.startsWith("/admin")) {
+                history.push(pathname);
+            } else {
+                history.push("/admin");
+            }
         }
     }
 
