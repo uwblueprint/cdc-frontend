@@ -71,11 +71,7 @@ export default function HintsModal({
         const newHint = event.target.value;
         if (newHint !== null) {
             const tempHints = _.cloneDeep(hints);
-            if (newHint === "") {
-                delete tempHints[index];
-            } else {
-                tempHints[index] = newHint;
-            }
+            tempHints[index] = newHint;
             setHints(tempHints);
         }
     };
