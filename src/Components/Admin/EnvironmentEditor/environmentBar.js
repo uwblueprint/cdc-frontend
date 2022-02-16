@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { useHistory } from "react-router-dom";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import MenuIcon from "@material-ui/icons/Menu";
@@ -9,6 +10,11 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
+import { useErrorHandler } from "react-error-boundary";
+
+import RoomModal from "../Rooms/roomModal";
+import DeleteModal from "../common/deleteModal";
+import { deleteScenario, editScenario } from "../../../lib/scenarioEndpoints";
 import { Colours } from "../../../styles/Constants.ts";
 import "../../../styles/index.css";
 
@@ -72,10 +78,24 @@ const useStyles = makeStyles((theme) => ({
 export default function EnvironmentBar({
     onCreateButtonClick,
     onTemplateButtonClick,
+    initialEnv,
 }) {
     const classes = useStyles();
-    const [menuAnchorEl, setMenuAnchorEl] = React.useState(null);
-    const [addMenuAnchorEl, setAddMenuAnchorEl] = React.useState(null);
+    const history = useHistory();
+    const handleError = useErrorHandler();
+
+    const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+    const [addMenuAnchorEl, setAddMenuAnchorEl] = useState(null);
+    const [shareAndPublishModalOpen, setShareAndPublishModalOpen] = useState(
+        false
+    );
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [environment, setEnvironment] = useState({});
+
+    useEffect(() => {
+        setEnvironment(initialEnv);
+    }, [initialEnv]);
+
     const menuOpen = Boolean(menuAnchorEl);
     const addMenuOpen = Boolean(addMenuAnchorEl);
 
@@ -103,6 +123,51 @@ export default function EnvironmentBar({
     const handleTemplateButtonClick = () => {
         setAddMenuAnchorEl(null);
         onTemplateButtonClick();
+    };
+
+    const handleDeleteRoomClick = () => {
+        setDeleteModalOpen(true);
+    };
+
+    const handleDeleteRoomCancel = () => {
+        setDeleteModalOpen(false);
+    };
+
+    const handleDeleteRoomSubmit = async () => {
+        await deleteScenario(environment.id, handleError);
+        history.push("/admin");
+        setDeleteModalOpen(false);
+    };
+
+    const handleShareAndPublishClick = () => {
+        setShareAndPublishModalOpen(true);
+    };
+
+    const handleShareAndPublishClose = () => {
+        setShareAndPublishModalOpen(false);
+    };
+
+    const handleShareAndPublishSubmit = async ({
+        is_published,
+        is_previewable,
+    }) => {
+        setShareAndPublishModalOpen(false);
+        const resp = await editScenario(
+            {
+                id: environment.id,
+                name: environment.name,
+                friendly_name: environment.friendly_name,
+                description: environment.description,
+                scene_ids: environment.scene_ids,
+                is_published,
+                is_previewable,
+                expected_solve_time: environment.expected_solve_time,
+                display_image_url: environment.display_image_url,
+            },
+            handleError
+        );
+
+        setEnvironment(resp.data);
     };
 
     return (
@@ -133,9 +198,22 @@ export default function EnvironmentBar({
                             onClose={onMenuClose}
                         >
                             <h3 className={classes.menuHeader}>Menu</h3>
-                            <MenuItem>Rename Escape Room</MenuItem>
-                            <MenuItem>Copy Editor Link</MenuItem>
-                            <MenuItem>Delete</MenuItem>
+                            <MenuItem disabled>Rename Escape Room</MenuItem>
+                            <MenuItem
+                                onClick={() => {
+                                    setMenuAnchorEl(null);
+                                    navigator.clipboard.writeText(
+                                        process.env
+                                            .REACT_APP_ADMIN_DEPLOYED_URL +
+                                            `admin/environment/${environment.id}`
+                                    );
+                                }}
+                            >
+                                Copy Editor Link
+                            </MenuItem>
+                            <MenuItem onClick={handleDeleteRoomClick}>
+                                Delete
+                            </MenuItem>
                         </Menu>
                         <Button
                             startIcon={<AddIcon className={classes.add} />}
@@ -168,15 +246,42 @@ export default function EnvironmentBar({
                         </Menu>
                     </div>
                     <div className={classes.buttonWrapperRight}>
-                        <Button className={classes.button}>
+                        <Button
+                            className={classes.button}
+                            onClick={handleShareAndPublishClick}
+                        >
                             Share & Publish
                         </Button>
                         <Button>
-                            <PlayArrowIcon className={classes.preview} />
+                            <a
+                                href={
+                                    process.env.REACT_APP_DEPLOYED_URL +
+                                    environment.friendly_name
+                                }
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <PlayArrowIcon className={classes.preview} />
+                            </a>
                         </Button>
                     </div>
                 </Toolbar>
             </AppBar>
+            <RoomModal
+                modalOpen={shareAndPublishModalOpen}
+                handleModalClose={handleShareAndPublishClose}
+                handleSubmit={handleShareAndPublishSubmit}
+                room={environment}
+                isShareAndPublish
+                isEnvBar
+            />
+            <DeleteModal
+                open={deleteModalOpen}
+                title="Delete Room"
+                confirmMessage="Are you sure you want to delete this room?"
+                handleClose={handleDeleteRoomCancel}
+                handleSubmit={handleDeleteRoomSubmit}
+            />
         </div>
     );
 }
