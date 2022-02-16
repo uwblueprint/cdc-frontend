@@ -311,7 +311,7 @@ export default function TransitionModal({
                                             padding: 10,
                                         },
                                     }}
-                                    placeholder="Hint text"
+                                    placeholder="Enter transition text"
                                     multiline
                                 />
                             </div>
