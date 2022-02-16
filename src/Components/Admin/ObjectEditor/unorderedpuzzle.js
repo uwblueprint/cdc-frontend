@@ -11,6 +11,7 @@ import {
     KeyboardArrowDown,
     KeyboardArrowUp,
 } from "@material-ui/icons";
+import _ from "lodash";
 
 const useStyles = makeStyles((theme) => ({
     textField: {
@@ -46,11 +47,11 @@ export default function UnorderedPuzzle(props) {
     useEffect(() => {
         const handleUploadImageSubmit = async (imageByteArray) => {
             const blob = new Blob([imageByteArray], { type: type });
-            const imagesCopy = images;
+            const imagesCopy = _.cloneDeep(images);
             imagesCopy[curIndex].imageSrc = URL.createObjectURL(blob);
             imagesCopy[curIndex].imgArr = imageByteArray;
             imagesCopy[curIndex].type = type;
-            setImages(JSON.parse(JSON.stringify(imagesCopy)));
+            setImages(imagesCopy);
             props.saveImageN(
                 curIndex,
                 imageByteArray,
@@ -86,8 +87,8 @@ export default function UnorderedPuzzle(props) {
             while (imagesLen < newImages.length) {
                 newImages.pop();
             }
-            props.saveImages(JSON.parse(JSON.stringify(newImages)));
-            setImages(JSON.parse(JSON.stringify(newImages)));
+            props.saveImages(newImages);
+            setImages(newImages);
             setImagesLen(0);
             setUploaded(false);
         };
@@ -159,15 +160,15 @@ export default function UnorderedPuzzle(props) {
     };
 
     const deleteImage = (index) => {
-        const tempImages = JSON.parse(JSON.stringify(images));
+        const tempImages = images;
         tempImages.splice(index, 1);
         if (!isUnordered) {
             for (let i = 0; i < tempImages.length; i++) {
                 tempImages[i].xTarget = -2.5 + 1.25 * i;
             }
         }
+        props.saveImages(tempImages);
         setImages(tempImages);
-        props.deleteImage(index, !isUnordered);
         setUploaded(false);
     };
 

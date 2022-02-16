@@ -188,6 +188,12 @@ export default function ObjectEditor({
 
     const selectPuzzleType = (obj) => {
         if (obj) {
+            if (puzzleType === "unordered-puzzle" && obj.value !== puzzleType) {
+                setImages([{}, {}]);
+            }
+            if (puzzleType === "ordered-puzzle" && obj.value !== puzzleType) {
+                setImages([{}, {}]);
+            }
             setPuzzleType(obj.value);
             if (
                 obj.value === "unordered-puzzle" &&
@@ -296,7 +302,7 @@ export default function ObjectEditor({
     };
 
     const saveImageN = (index, imgArr, type, imgBlob) => {
-        const imagesCopy = images;
+        const imagesCopy = _.cloneDeep(images);
         imagesCopy[index].imageSrc = imgBlob;
         imagesCopy[index].imgArr = imgArr;
         imagesCopy[index].type = type;
@@ -332,7 +338,7 @@ export default function ObjectEditor({
         setImages(tempImages);
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         const animCopy = animationsJson;
         if (isInteractable && header !== "") {
             animCopy.blackboardData.blackboardText = header;
@@ -389,6 +395,13 @@ export default function ObjectEditor({
         setAnimationsJson(animCopy);
 
         const savePuzzle = async () => {
+            if (imagesList.length > 0) {
+                await deletePuzzleImages(
+                    { sceneId, objectId, imagesList },
+                    handleError
+                );
+                setImagesList([]);
+            }
             const animCopy = animationsJson;
             if (isInteractable && puzzleType === "visual-pane") {
                 let response = null;
@@ -498,13 +511,6 @@ export default function ObjectEditor({
                 { sceneId, objectId, isInteractable, animationsJson },
                 handleError
             );
-            if (imagesList.length > 0) {
-                await deletePuzzleImages(
-                    { sceneId, objectId, imagesList },
-                    handleError
-                );
-                setImagesList([]);
-            }
         };
         if (
             isInteractable &&
@@ -515,7 +521,7 @@ export default function ObjectEditor({
             setShowError(true);
             return;
         }
-        savePuzzle();
+        await savePuzzle();
         setSuccessText(
             "Saved puzzle CRUD changes for object with id: " + objectId
         );
