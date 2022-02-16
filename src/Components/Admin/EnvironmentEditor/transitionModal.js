@@ -42,8 +42,11 @@ const useStyles = makeStyles((theme) => ({
         height: "32px",
         textTransform: "capitalize",
     },
+    linkField: {
+        width: "325px",
+    },
     textField: {
-        width: "350px",
+        width: "475px",
     },
 }));
 
@@ -107,6 +110,15 @@ export default function TransitionModal({
             } else {
                 tempTransitions[index].link = linkInput;
             }
+            setTransitions(tempTransitions);
+        }
+    };
+
+    const handleTextChange = (event, index) => {
+        const newText = event.target.value;
+        if (newText !== null) {
+            const tempTransitions = _.cloneDeep(transitions);
+            tempTransitions[index].text = newText;
             setTransitions(tempTransitions);
         }
     };
@@ -188,13 +200,15 @@ export default function TransitionModal({
                                 Transition {index + 1} of {transitions.length}
                             </h4>
                             <div>
-                                <Typography
-                                    component="div"
-                                    variant="h5"
-                                    style={{ width: "100%" }}
+                                <p
+                                    style={{
+                                        width: "fit-content",
+                                        marginBottom: 0,
+                                        paddingRight: 20,
+                                    }}
                                 >
-                                    Upload Image
-                                </Typography>
+                                    Transition Image:
+                                </p>
                                 {transition.previewUrl ? (
                                     <div>
                                         <Typography
@@ -239,20 +253,26 @@ export default function TransitionModal({
 
                                 <input
                                     accept=".jpg,.jpeg,.png"
-                                    style={{ cursor: "pointer" }}
+                                    style={{
+                                        cursor: "pointer",
+                                        marginTop: -5,
+                                    }}
                                     type="file"
                                     onChange={(e) =>
                                         handleUploadFileChange(e, index)
                                     }
                                 />
                             </div>
-                            <div>
+                            <div style={{ paddingBottom: 10 }}>
+                                <p style={{ marginBottom: 0 }}>
+                                    Transition Link:
+                                </p>
                                 <TextField
                                     value={
                                         transition.link ? transition.link : null
                                     }
                                     onChange={(e) => handleLinkChange(e, index)}
-                                    className={classes.textField}
+                                    className={classes.linkField}
                                     required
                                     error={Boolean(
                                         errors ? errors.name : false
@@ -266,21 +286,35 @@ export default function TransitionModal({
                                     }}
                                     placeholder="Enter url to link (including http or https)"
                                 />
-                                {transition.link && (
-                                    <Button
-                                        className={classes.linkButton}
-                                        onClick={() =>
-                                            window.open(
-                                                transition.link,
-                                                "_blank"
-                                            )
-                                        }
-                                    >
-                                        Test URL
-                                    </Button>
-                                )}
+                                <Button
+                                    className={classes.linkButton}
+                                    onClick={() =>
+                                        window.open(transition.link, "_blank")
+                                    }
+                                    disabled={!transition.link}
+                                >
+                                    Test URL
+                                </Button>
                             </div>
-                            <p>{transition.text}</p>
+                            <div>
+                                <p style={{ marginBottom: 0 }}>
+                                    Transition Text:
+                                </p>
+                                <TextField
+                                    value={transition.text}
+                                    onChange={(e) => handleTextChange(e, index)}
+                                    className={classes.textField}
+                                    required
+                                    variant="outlined"
+                                    inputProps={{
+                                        style: {
+                                            padding: 10,
+                                        },
+                                    }}
+                                    placeholder="Enter transition text"
+                                    multiline
+                                />
+                            </div>
                             <IconButton onClick={() => onMoveUpClick(index)}>
                                 <KeyboardArrowUp />
                             </IconButton>
