@@ -194,6 +194,24 @@ export default function ObjectEditor({
             if (puzzleType === "ordered-puzzle" && obj.value !== puzzleType) {
                 setImages([{}, {}]);
             }
+            if (puzzleType !== obj.value && obj.value === "ordered-puzzle") {
+                const imagesCopy =
+                    origAnimJson?.blackboardData?.jsonData?.useTargets === true
+                        ? origAnimJson.blackboardData.jsonData.images
+                        : [];
+                setImages(imagesCopy);
+            }
+            if (puzzleType !== obj.value && obj.value === "unordered-puzzle") {
+                const imagesCopy =
+                    origAnimJson?.blackboardData?.jsonData?.useTargets === false
+                        ? JSON.parse(
+                              JSON.stringify(
+                                  origAnimJson.blackboardData.jsonData.images
+                              )
+                          )
+                        : [{}, {}];
+                setImages(imagesCopy);
+            }
             setPuzzleType(obj.value);
             if (
                 obj.value === "unordered-puzzle" &&
