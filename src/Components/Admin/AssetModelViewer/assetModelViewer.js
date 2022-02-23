@@ -230,6 +230,7 @@ export default function AssetModelViewer({
                             id="demo-simple-select-helper"
                             value={objectType}
                             onChange={handleObjectTypeChange}
+                            disabled={objectType === ObjectTypes.BACKGROUND}
                         >
                             <MenuItem value={ObjectTypes.OBJECT}>
                                 {ObjectTypes.OBJECT}
