@@ -11,6 +11,7 @@ import VisualPaneView from "../ObjectEditor/visualpaneview";
 import UnorderedPuzzle from "../ObjectEditor/unorderedpuzzle";
 import KeypadPuzzle from "../ObjectEditor/keypadpuzzle";
 import { Colours } from "../../../styles/Constants.ts";
+import TextField from "@material-ui/core/TextField";
 
 import {
     getPuzzle,
@@ -348,11 +349,11 @@ export default function ObjectEditor({
         }
         const tempImages = images;
         tempImages.splice(index, 1);
-        if (isOrdered) {
-            for (let i = 0; i < tempImages.length; i++) {
-                tempImages[i].xTarget = -2.5 + 1.25 * i;
-            }
-        }
+        // if (isOrdered) {
+        //     for (let i = 0; i < tempImages.length; i++) {
+        //         tempImages[i].xTarget = -2.5 + 1.25 * i;
+        //     }
+        // }
         setImages(tempImages);
     };
 
@@ -584,6 +585,13 @@ export default function ObjectEditor({
         setShowError(false);
     };
 
+    const handleTextChange = (event) => {
+        const newText = event.target.value;
+        if (newText !== null) {
+            setHeader(newText);
+        }
+    };
+
     return (
         <div
             className={classes.container}
@@ -623,7 +631,15 @@ export default function ObjectEditor({
                     </div>
                 ) : (
                     <div>
-                        Header: {header}
+                        Header:
+                        <TextField
+                            value={header}
+                            onChange={(e) => handleTextChange(e)}
+                            required
+                            variant="outlined"
+                            placeholder="Enter transition text"
+                            multiline
+                        />
                         <IconButton onClick={() => deleteHeader()}>
                             <DeleteForever />
                         </IconButton>

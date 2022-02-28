@@ -73,16 +73,9 @@ export default function UnorderedPuzzle(props) {
         const populateImages = async () => {
             let newImages = [];
             newImages = images;
-            let xTarg = 0;
-            if (!isUnordered) {
-                xTarg = -2.5;
-            }
             while (imagesLen > newImages.length) {
-                const tempImage = { xTarget: xTarg, yTarget: 0, imageSrc: "" };
+                const tempImage = { imageSrc: "" };
                 newImages.push(tempImage);
-                if (!isUnordered) {
-                    xTarg += 1.25;
-                }
             }
             while (imagesLen < newImages.length) {
                 newImages.pop();
@@ -134,10 +127,10 @@ export default function UnorderedPuzzle(props) {
         }
 
         const reorderedList = reorder(sourceIndex, destinationIndex);
-        const temp = reorderedList[sourceIndex].xTarget;
-        reorderedList[sourceIndex].xTarget =
-            reorderedList[destinationIndex].xTarget;
-        reorderedList[destinationIndex].xTarget = temp;
+        // const temp = reorderedList[sourceIndex].xTarget;
+        // reorderedList[sourceIndex].xTarget =
+        //     reorderedList[destinationIndex].xTarget;
+        // reorderedList[destinationIndex].xTarget = temp;
         props.saveImages([...reorderedList]);
         setImages([...reorderedList]);
     };
@@ -162,11 +155,11 @@ export default function UnorderedPuzzle(props) {
     const deleteImage = (index) => {
         const tempImages = images;
         tempImages.splice(index, 1);
-        if (!isUnordered) {
-            for (let i = 0; i < tempImages.length; i++) {
-                tempImages[i].xTarget = -2.5 + 1.25 * i;
-            }
-        }
+        // if (!isUnordered) {
+        //     for (let i = 0; i < tempImages.length; i++) {
+        //         tempImages[i].xTarget = -2.5 + 1.25 * i;
+        //     }
+        // }
         props.saveImages(tempImages);
         setImages(tempImages);
         setUploaded(false);
