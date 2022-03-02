@@ -27,12 +27,16 @@ export default function ConclusionModal({
         conclusionData.paragraph_text
     );
     const [shareLink, setShareLink] = useState(conclusionData.share_link);
+    const [externalLink, setExternalLink] = useState(
+        conclusionData.external_link
+    );
     const originalConclusionData = _.cloneDeep(conclusionData);
 
     useEffect(() => {
         setHeaderText(conclusionData.header_text);
         setParagraphText(conclusionData.paragraph_text);
         setShareLink(conclusionData.share_link);
+        setExternalLink(conclusionData.external_link);
     }, [conclusionData]);
 
     const handleHeaderTextChange = (event) => {
@@ -48,6 +52,11 @@ export default function ConclusionModal({
     const handleShareLinkChange = (event) => {
         const response = event.target.value;
         setShareLink(response);
+    };
+
+    const handleExternalLinkChange = (event) => {
+        const response = event.target.value;
+        setExternalLink(response);
     };
 
     return (
@@ -126,6 +135,30 @@ export default function ConclusionModal({
                         placeholder="The link students will see when finishing the escape room."
                     />
                 </div>
+                <div style={{ paddingBottom: 15 }}>
+                    <Typography
+                        style={{
+                            fontSize: 20,
+                            lineHeight: "27px",
+                        }}
+                    >
+                        Feedback Link
+                    </Typography>
+                    <TextField
+                        value={externalLink}
+                        className={classes.textField}
+                        onChange={handleExternalLinkChange}
+                        required
+                        variant="outlined"
+                        multiline
+                        inputProps={{
+                            style: {
+                                padding: "0px 10px",
+                            },
+                        }}
+                        placeholder="The feedback form link students can use to submit feedback."
+                    />
+                </div>
             </DialogContent>
             <DialogActions>
                 <Button
@@ -133,6 +166,7 @@ export default function ConclusionModal({
                         setHeaderText(originalConclusionData.header_text);
                         setParagraphText(originalConclusionData.paragraph_text);
                         setShareLink(originalConclusionData.share_link);
+                        setExternalLink(originalConclusionData.external_link);
                         handleModalClose();
                     }}
                 >
@@ -141,7 +175,12 @@ export default function ConclusionModal({
                 <Button
                     color="primary"
                     onClick={() =>
-                        handleSubmit(headerText, paragraphText, shareLink)
+                        handleSubmit(
+                            headerText,
+                            paragraphText,
+                            shareLink,
+                            externalLink
+                        )
                     }
                 >
                     Save
