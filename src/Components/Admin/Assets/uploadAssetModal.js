@@ -61,19 +61,19 @@ export default function UploadAssetModal({
     const [fileName, setFileName] = React.useState("");
     const [errors, setErrors] = React.useState({
         name: "",
-        objectType: "Select an object type",
+        objectType: "",
         fileType: "Select a file type",
         assetBlob: "Upload a file",
     });
 
     const clearFields = () => {
         setAssetName("");
-        setObjectType(ObjectTypes.NONE);
+        setObjectType(ObjectTypes.OBJECT);
         setFileType(FileTypes.NONE);
         setAssetByteArray(null);
         setErrors({
             name: "",
-            objectType: "Select an object type",
+            objectType: "",
             fileType: "Select a file type",
             assetBlob: "Upload a file",
         });
@@ -99,9 +99,17 @@ export default function UploadAssetModal({
         switch (event.target.value) {
             case ObjectTypes.OBJECT:
                 setObjectType(ObjectTypes.OBJECT);
+                setErrors({
+                    ...errors,
+                    objectType: "",
+                });
                 break;
             case ObjectTypes.BACKGROUND:
                 setObjectType(ObjectTypes.BACKGROUND);
+                setErrors({
+                    ...errors,
+                    objectType: "",
+                });
                 break;
             default:
                 setObjectType(ObjectTypes.NONE);
@@ -261,14 +269,24 @@ export default function UploadAssetModal({
                         {" "}
                         {errors.assetBlob
                             ? errors.assetBlob
-                            : "File uploaded: " + fileName}{" "}
+                            : "File attached: " + fileName}{" "}
                     </FormHelperText>
                 </div>
             </DialogContent>
             <DialogActions className={classes.buttonContainer}>
-                <Button onClick={handleModalClose}> Cancel </Button>
                 <Button
-                    onClick={handleModalSubmitClick}
+                    onClick={() => {
+                        clearFields();
+                        handleModalClose();
+                    }}
+                >
+                    {"Cancel"}
+                </Button>
+                <Button
+                    onClick={() => {
+                        handleModalClose();
+                        handleModalSubmitClick();
+                    }}
                     disabled={!isValidInput()}
                 >
                     {"Create"}
