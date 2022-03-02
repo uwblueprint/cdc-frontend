@@ -251,7 +251,7 @@ export default function UploadAssetModal({
                         Upload Asset
                     </Typography>
                     <input
-                        accept={fileType}
+                        accept={"." + fileType}
                         className={classes.input}
                         id="contained-button-file"
                         type="file"

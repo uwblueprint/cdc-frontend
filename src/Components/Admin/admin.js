@@ -471,7 +471,6 @@ export default function Admin() {
                     />
                     <Snackbar
                         open={assetSnackbarOpen}
-                        autoHideDuration={6000}
                         onClose={handleAssetSnackbarClose}
                     >
                         <Alert
