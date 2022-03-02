@@ -262,19 +262,29 @@ export default function RoomModal({
     };
 
     const handleModalCloseClick = () => {
+        if (!isEnvBar) {
+            resetFields();
+        }
+
+        if (isEnvBar) {
+            setIsPublished(room.is_published);
+            setIsPreviewable(room.is_previewable);
+        }
+
+        handleModalClose();
+    };
+
+    const handleShareAndPublishSubmit = () => {
         if (
-            isShareAndPublish &&
-            (isPublished !== room.is_published ||
-                isPreviewable !== room.is_previewable)
+            isPublished !== room.is_published ||
+            isPreviewable !== room.is_previewable
         ) {
             handleSubmit({
                 is_published: isPublished,
                 is_previewable: isPreviewable,
             });
         }
-        if (!isEnvBar) {
-            resetFields();
-        }
+
         handleModalClose();
     };
 
@@ -738,7 +748,20 @@ export default function RoomModal({
                         {pageNum === 1 ? "Next" : isEdit ? "Save" : "Create"}
                     </Button>
                 </DialogActions>
-            ) : null}
+            ) : (
+                <DialogActions className={classes.buttonContainer}>
+                    <Button
+                        onClick={handleShareAndPublishSubmit}
+                        disabled={
+                            isPublished === room.is_published &&
+                            isPreviewable === room.is_previewable
+                        }
+                        className={classes.createButton}
+                    >
+                        Save
+                    </Button>
+                </DialogActions>
+            )}
         </Dialog>
     );
 }
