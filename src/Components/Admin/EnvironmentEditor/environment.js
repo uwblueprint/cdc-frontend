@@ -113,6 +113,7 @@ export default function EnvironmentEditor({
         header_text: "",
         paragraph_text: "",
         share_link: "",
+        external_link: "",
     });
     const [scenes, setScenes] = useState([]);
     const [createModalOpen, setCreateModalOpen] = useState(false);
@@ -431,7 +432,8 @@ export default function EnvironmentEditor({
     const onConclusionModalSubmit = async (
         new_header_text,
         new_paragraph_text,
-        new_share_link
+        new_share_link,
+        new_external_link
     ) => {
         setEditConclusionModalOpen(false);
 
@@ -440,6 +442,7 @@ export default function EnvironmentEditor({
             header_text: new_header_text,
             paragraph_text: new_paragraph_text,
             share_link: new_share_link,
+            external_link: new_external_link,
         };
         envData.conclusion_data = newConclusionData;
         const response = await editScenario(envData, handleError);
