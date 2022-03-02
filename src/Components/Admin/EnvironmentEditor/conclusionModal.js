@@ -156,7 +156,7 @@ export default function ConclusionModal({
                                 padding: "0px 10px",
                             },
                         }}
-                        placeholder="The external link students will can go to after the room is done."
+                        placeholder="The feedback form link students can use to submit feedback."
                     />
                 </div>
             </DialogContent>
