@@ -135,7 +135,6 @@ export default function VisualPaneView(props) {
                     </Button>
                 </label>
             )}
-            {uploaded ? <div>{name} successfully uploaded</div> : null}
             {caption === "" ? (
                 <div>
                     Add Caption
@@ -155,6 +154,7 @@ export default function VisualPaneView(props) {
                     </IconButton>
                 </div>
             )}
+            {uploaded ? <div>{name} successfully uploaded</div> : null}
         </div>
     );
 }

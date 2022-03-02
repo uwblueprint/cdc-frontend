@@ -155,11 +155,6 @@ export default function UnorderedPuzzle(props) {
     const deleteImage = (index) => {
         const tempImages = images;
         tempImages.splice(index, 1);
-        // if (!isUnordered) {
-        //     for (let i = 0; i < tempImages.length; i++) {
-        //         tempImages[i].xTarget = -2.5 + 1.25 * i;
-        //     }
-        // }
         props.saveImages(tempImages);
         setImages(tempImages);
         setUploaded(false);

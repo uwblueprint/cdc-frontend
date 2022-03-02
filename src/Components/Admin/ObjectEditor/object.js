@@ -102,6 +102,7 @@ export default function ObjectEditor({
     const [animationsJson, setAnimationsJson] = useState({});
     const [origAnimJson, setOrigAnimJson] = useState({});
     const [isInteractable, setIsInteractable] = useState(null);
+    const [isLastPuzzle, setIsLastPuzzle] = useState(null);
     const [header, setHeader] = useState("");
     const [images, setImages] = useState([{}, {}]);
     const [imagesList, setImagesList] = useState([]);
@@ -189,6 +190,9 @@ export default function ObjectEditor({
 
     const selectPuzzleType = (obj) => {
         if (obj) {
+            if (obj.value !== puzzleType) {
+                setIsLastPuzzle(false);
+            }
             if (puzzleType === "unordered-puzzle" && obj.value !== puzzleType) {
                 setImages([{}, {}]);
             }
@@ -199,7 +203,7 @@ export default function ObjectEditor({
                 const imagesCopy =
                     origAnimJson?.blackboardData?.jsonData?.useTargets === true
                         ? origAnimJson.blackboardData.jsonData.images
-                        : [];
+                        : [{}, {}];
                 setImages(imagesCopy);
             }
             if (puzzleType !== obj.value && obj.value === "unordered-puzzle") {
@@ -228,18 +232,35 @@ export default function ObjectEditor({
                 origAnimJson.blackboardData?.jsonData?.useTargets === true
             ) {
                 setAnimationsJson(JSON.parse(JSON.stringify(origAnimJson)));
+                setIsLastPuzzle(
+                    origAnimJson?.blackboardData?.jsonData?.is_last_object
+                );
             } else if (
                 obj.value === "numpad-puzzle" &&
                 origAnimJson.blackboardData?.componentType === "keypad" &&
                 origAnimJson.blackboardData?.jsonData?.model === "numpad"
             ) {
                 setAnimationsJson(JSON.parse(JSON.stringify(origAnimJson)));
+                setIsLastPuzzle(
+                    origAnimJson?.blackboardData?.jsonData?.is_last_object
+                );
             } else if (
                 obj.value === "keyboard-puzzle" &&
                 origAnimJson.blackboardData?.componentType === "keypad" &&
                 origAnimJson.blackboardData?.jsonData?.model === "basic"
             ) {
                 setAnimationsJson(JSON.parse(JSON.stringify(origAnimJson)));
+                setIsLastPuzzle(
+                    origAnimJson?.blackboardData?.jsonData?.is_last_object
+                );
+            } else if (
+                obj.value === "jigsaw-puzzle" &&
+                origAnimJson.blackboardData?.componentType === "jigsaw-puzzle"
+            ) {
+                setAnimationsJson(JSON.parse(JSON.stringify(origAnimJson)));
+                setIsLastPuzzle(
+                    origAnimJson?.blackboardData?.jsonData?.is_last_object
+                );
             } else if (
                 obj.value !== "unordered-puzzle" &&
                 obj.value !== "ordered-puzzle" &&
@@ -258,7 +279,6 @@ export default function ObjectEditor({
                     animCopy.blackboardData.jsonData.position = [0, 0, 5];
                 } else if (obj.value === "visual-pane") {
                     animCopy.blackboardData.jsonData.position = [0, 0, 0];
-                    animCopy.blackboardData.jsonData.scaleBy = 10;
                 } else if (obj.value === "unordered-puzzle") {
                     animCopy.blackboardData.componentType = "ordered-puzzle";
                     animCopy.blackboardData.jsonData.useTargets = false;
@@ -267,18 +287,21 @@ export default function ObjectEditor({
                 } else if (obj.value === "ordered-puzzle") {
                     animCopy.blackboardData.jsonData.useTargets = true;
                     animCopy.blackboardData.jsonData.randomizePos = true;
+                    animCopy.blackboardData.jsonData.is_last_object = false;
                     animCopy.blackboardData.draggable = true;
-                    animCopy.blackboardData.jsonData.scaleBy = 3;
                 } else if (obj.value === "numpad-puzzle") {
                     animCopy.blackboardData.componentType = "keypad";
                     animCopy.blackboardData.jsonData.model = "numpad";
-                    animCopy.blackboardData.jsonData.is_last_object = true;
+                    animCopy.blackboardData.jsonData.is_last_object = false;
                     animCopy.blackboardData.jsonData.password = "";
                 } else if (obj.value === "keyboard-puzzle") {
                     animCopy.blackboardData.componentType = "keypad";
                     animCopy.blackboardData.jsonData.model = "basic";
-                    animCopy.blackboardData.jsonData.is_last_object = true;
+                    animCopy.blackboardData.jsonData.is_last_object = false;
                     animCopy.blackboardData.jsonData.password = "";
+                } else if (obj.value === "jigsaw-puzzle") {
+                    animCopy.blackboardData.componentType = "jigsaw-puzzle";
+                    animCopy.blackboardData.jsonData.is_last_object = false;
                 }
                 if (obj.value !== "ordered-puzzle") {
                     setImages([{}, {}]);
@@ -337,7 +360,7 @@ export default function ObjectEditor({
         setImages([...images, {}]);
     };
 
-    const deleteImage = (index, isOrdered) => {
+    const deleteImage = (index) => {
         const imagePrefix = process.env.REACT_APP_ADMIN_ASSET_PREFIX;
         if (
             images[index].imageSrc &&
@@ -349,11 +372,6 @@ export default function ObjectEditor({
         }
         const tempImages = images;
         tempImages.splice(index, 1);
-        // if (isOrdered) {
-        //     for (let i = 0; i < tempImages.length; i++) {
-        //         tempImages[i].xTarget = -2.5 + 1.25 * i;
-        //     }
-        // }
         setImages(tempImages);
     };
 
@@ -480,6 +498,8 @@ export default function ObjectEditor({
                         if (
                             origAnimJson.blackboardData?.componentType !==
                                 "keypad" &&
+                            origAnimJson.blackboardData?.componentType !==
+                                "jigsaw-puzzle" &&
                             origAnimJson.blackboardData?.jsonData?.images &&
                             i <
                                 origAnimJson.blackboardData.jsonData.images
@@ -516,7 +536,11 @@ export default function ObjectEditor({
                     JSON.stringify(images)
                 );
             }
-            if (isInteractable && puzzleType === "jigsaw-puzzle") {
+            if (
+                isInteractable &&
+                puzzleType === "jigsaw-puzzle" &&
+                animCopy.blackboardData.jsonData.b64string
+            ) {
                 const baseEndpoint = process.env.REACT_APP_ADMIN_BASE_ENDPOINT;
                 const response = await httpPost(baseEndpoint + `jigsaw`, {
                     encoded_image: animCopy.blackboardData.jsonData.b64string,
@@ -554,6 +578,13 @@ export default function ObjectEditor({
             setAnimationsJson(JSON.parse(JSON.stringify(origAnimJson)));
         }
         setIsInteractable(!isInteractable);
+    };
+
+    const toggleButton2 = () => {
+        const animCopy = _.cloneDeep(animationsJson);
+        animCopy.blackboardData.jsonData.is_last_object = !isLastPuzzle;
+        setAnimationsJson(animCopy);
+        setIsLastPuzzle(!isLastPuzzle);
     };
 
     const addHeader = () => {
@@ -665,6 +696,31 @@ export default function ObjectEditor({
                     />
                 </div>
             ) : null}
+            {isInteractable &&
+            (puzzleType === "jigsaw-puzzle" ||
+                puzzleType === "ordered-puzzle" ||
+                puzzleType === "keyboard-puzzle" ||
+                puzzleType === "numpad-puzzle") ? (
+                <div>
+                    <label htmlFor="subscribeNews">Last Puzzle?</label>
+                    <Switch
+                        checked={isLastPuzzle}
+                        onChange={() => {
+                            toggleButton2();
+                        }}
+                        inputProps={{
+                            "aria-label": "controlled",
+                            height: 40,
+                        }}
+                        classes={{
+                            track: classes.switch_track,
+                            switchBase: classes.switch_base,
+                            colorPrimary: classes.switch_primary,
+                            colorSecondary: Colours.MainRed5,
+                        }}
+                    />
+                </div>
+            ) : null}
             {isInteractable && puzzleType === "text-pane" ? (
                 <TextPaneView
                     saveTexts={saveTexts}
@@ -769,7 +825,7 @@ export default function ObjectEditor({
                     classes={classes}
                 />
             ) : null}
-            {!isInteractable || puzzleType !== "" ? (
+            {!isInteractable ? (
                 <div>
                     <Button
                         color="primary"
@@ -783,6 +839,7 @@ export default function ObjectEditor({
                             right: 0,
                             margin: 20,
                         }}
+                        disabled={puzzleType !== ""}
                     >
                         Set Puzzle
                     </Button>
