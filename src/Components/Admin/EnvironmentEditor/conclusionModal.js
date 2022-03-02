@@ -142,7 +142,7 @@ export default function ConclusionModal({
                             lineHeight: "27px",
                         }}
                     >
-                        External Link
+                        Feedback Link
                     </Typography>
                     <TextField
                         value={externalLink}
