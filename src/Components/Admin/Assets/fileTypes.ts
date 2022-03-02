@@ -1,5 +1,5 @@
 export enum FileTypes {
-    GLTF = "gltf",
-    GLB = "glb",
+    GLTF = ".gltf",
+    GLB = ".glb",
     NONE = "none",
 }

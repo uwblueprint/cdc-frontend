@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
@@ -54,12 +54,12 @@ export default function UploadAssetModal({
     handleSubmit,
 }) {
     const classes = useStyles();
-    const [assetName, setAssetName] = React.useState("");
-    const [objectType, setObjectType] = React.useState(ObjectTypes.OBJECT);
-    const [fileType, setFileType] = React.useState(FileTypes.NONE);
-    const [assetByteArray, setAssetByteArray] = React.useState(null);
-    const [fileName, setFileName] = React.useState("");
-    const [errors, setErrors] = React.useState({
+    const [assetName, setAssetName] = useState("");
+    const [objectType, setObjectType] = useState(ObjectTypes.OBJECT);
+    const [fileType, setFileType] = useState(FileTypes.NONE);
+    const [assetByteArray, setAssetByteArray] = useState(null);
+    const [fileName, setFileName] = useState("");
+    const [errors, setErrors] = useState({
         name: "",
         objectType: "",
         fileType: "Select a file type",
@@ -122,7 +122,9 @@ export default function UploadAssetModal({
     };
 
     const handleFileTypeChange = (event) => {
-        setErrors({ ...errors, fileType: "" });
+        setErrors({ ...errors, fileType: "", assetBlob: "Upload a file" });
+        setAssetByteArray(null);
+        setFileName(null);
 
         switch (event.target.value) {
             case FileTypes.GLTF:
@@ -141,8 +143,8 @@ export default function UploadAssetModal({
     };
 
     const handleUploadFileChange = (event) => {
-        setErrors({ ...errors, assetBlob: "" });
         if (event.target.files && event.target.files[0]) {
+            setErrors({ ...errors, assetBlob: "" });
             const file = event.target.files[0];
             fileToByteArray(file, setAssetByteArray);
 
@@ -249,11 +251,12 @@ export default function UploadAssetModal({
                         Upload Asset
                     </Typography>
                     <input
-                        accept=".glb,.gltf"
+                        accept={fileType}
                         className={classes.input}
                         id="contained-button-file"
                         type="file"
                         onChange={handleUploadFileChange}
+                        disabled={fileType === FileTypes.NONE}
                     />
                     <label htmlFor="contained-button-file">
                         <Button
@@ -261,6 +264,7 @@ export default function UploadAssetModal({
                             variant="contained"
                             color="primary"
                             component="span"
+                            disabled={fileType === FileTypes.NONE}
                         >
                             Upload
                         </Button>
