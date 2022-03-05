@@ -19,13 +19,17 @@ import _ from "lodash";
 
 const useStyles = makeStyles((theme) => ({
     addButton: {
-        marginTop: theme.spacing(0.5),
+        marginTop: theme.spacing(-0.5),
+        marginLeft: theme.spacing(2),
         width: "20px",
         height: "20px",
-        background: "#B9BECE",
+        backgroundColor: Colours.MainRed5,
         borderRadius: "100%",
-        color: "white",
-        float: "right",
+        color: Colours.White,
+        "&:hover": {
+            backgroundColor: Colours.MainRed7,
+            color: Colours.White,
+        },
     },
     linkButton: {
         color: Colours.White,
@@ -57,6 +61,7 @@ export default function TransitionModal({
     originalTransitions,
 }) {
     const classes = useStyles();
+    const [allowSave, setAllowSave] = React.useState([]);
     const [transitions, setTransitions] = React.useState([]);
     const [imagesToDelete, setImagesToDelete] = React.useState([]);
 
@@ -143,7 +148,7 @@ export default function TransitionModal({
 
     const addTransition = () => {
         const newTransition = {
-            text: prompt("Enter the text for the transition: "),
+            text: "",
         };
 
         setTransitions([...transitions, newTransition]);
@@ -342,6 +347,10 @@ export default function TransitionModal({
                 </Button>
                 <Button
                     color="primary"
+                    disabled={transitions.some(
+                        (transition) =>
+                            transition.text === null || transition.text === ""
+                    )}
                     onClick={() => handleSubmit(transitions, imagesToDelete)}
                 >
                     Save
