@@ -23,18 +23,16 @@ import InputLabel from "@material-ui/core/InputLabel";
 import { ObjectTypes } from "./objectTypes.ts";
 import { createPresignedLinkAndUploadS3 } from "../../../lib/s3Utility";
 
-const drawerWidth = 17;
-
 const useStyles = makeStyles((theme) => ({
     root: {
         display: "flex",
     },
     drawer: {
-        width: drawerWidth + "vw",
+        width: 250,
         flexShrink: 0,
     },
     drawerPaper: {
-        width: drawerWidth + "vw",
+        width: 250,
     },
     // necessary for content to be below navbar
     toolbar: theme.mixins.toolbar,
@@ -46,12 +44,12 @@ const useStyles = makeStyles((theme) => ({
     textfields: {
         "& .MuiTextField-root": {
             margin: theme.spacing(2),
-            width: "15vw",
+            width: 220,
         },
     },
     formControl: {
         margin: theme.spacing(2),
-        width: "15vw",
+        width: 220,
     },
 }));
 
@@ -248,7 +246,7 @@ export default function AssetModelViewer({
                         color="primary"
                         startIcon={<SaveIcon />}
                         disabled={!isEmpty(nameError)}
-                        style={{ maxWidth: 250, marginLeft: 15 }}
+                        style={{ maxWidth: 220, marginLeft: 15 }}
                     >
                         {buttonText}
                     </Button>
@@ -265,7 +263,7 @@ export default function AssetModelViewer({
                     environment-image="neutral"
                     auto-rotate
                     camera-controls
-                    style={{ width: 100 - drawerWidth + "vw", height: "80vh" }}
+                    style={{ width: "calc(95vw - 250px)", height: "80vh" }}
                 ></model-viewer>
             </main>
         </div>

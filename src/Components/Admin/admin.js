@@ -11,8 +11,10 @@ import AddIcon from "@material-ui/icons/Add";
 import IconButton from "@material-ui/core/IconButton";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
-import Navbar from "./navbar.js";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
 
+import Navbar from "./navbar.js";
 import EscapeRooms from "./Rooms/rooms.js";
 import Assets from "./Assets/assets.js";
 import Statistics from "./Stats/stats.js";
@@ -33,6 +35,10 @@ import {
 import { useErrorHandler } from "react-error-boundary";
 import { createPresignedLinkAndUploadS3 } from "../../lib/s3Utility";
 import { Colours } from "../../styles/Constants.ts";
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -159,6 +165,7 @@ export default function Admin() {
     const [deleteRoomId, setDeleteRoomId] = useState(null);
     const [deleteAssetId, setDeleteAssetId] = useState(null);
     const [searchWord, setSearchWord] = useState("");
+    const [assetSnackbarOpen, setAssetSnackbarOpen] = useState(false);
     const open = Boolean(anchorEl);
 
     const getAllEnvironments = async (handleError) => {
@@ -330,6 +337,8 @@ export default function Admin() {
         object_type,
         asset
     ) => {
+        setAssetSnackbarOpen(true);
+
         const response = await createPresignedLinkAndUploadS3(
             { file_type: file_type, type: "asset", file_content: asset },
             handleError
@@ -346,7 +355,11 @@ export default function Admin() {
         );
 
         setAssets([...assets, responseAssetCreation.data]);
-        setUploadAssetModalOpen(false);
+        setAssetSnackbarOpen(false);
+    };
+
+    const handleAssetSnackbarClose = () => {
+        setAssetSnackbarOpen(false);
     };
 
     const handleDeleteAssetClick = (assetId) => {
@@ -456,6 +469,18 @@ export default function Admin() {
                         handleModalClose={handleUploadAssetClose}
                         handleSubmit={handleUploadAssetSubmit}
                     />
+                    <Snackbar
+                        open={assetSnackbarOpen}
+                        onClose={handleAssetSnackbarClose}
+                    >
+                        <Alert
+                            onClose={handleAssetSnackbarClose}
+                            severity="success"
+                            sx={{ width: "100%" }}
+                        >
+                            Asset Upload started, will take a minute to show up.
+                        </Alert>
+                    </Snackbar>
                     <DeleteModal
                         open={deleteAssetModalOpen}
                         title="Delete Asset"
