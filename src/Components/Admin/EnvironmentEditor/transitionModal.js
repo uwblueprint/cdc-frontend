@@ -61,7 +61,6 @@ export default function TransitionModal({
     originalTransitions,
 }) {
     const classes = useStyles();
-    const [allowSave, setAllowSave] = React.useState([]);
     const [transitions, setTransitions] = React.useState([]);
     const [imagesToDelete, setImagesToDelete] = React.useState([]);
 
