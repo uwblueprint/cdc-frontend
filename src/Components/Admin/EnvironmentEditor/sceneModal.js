@@ -115,6 +115,7 @@ export default function SceneModal({
 
         if (!error) {
             handleSubmit(sceneName, parseInt(backgroundId), description);
+            handleModalCloseClick();
         }
     };
 
@@ -190,7 +191,16 @@ export default function SceneModal({
                 <Button onClick={handleModalCloseClick}> Cancel </Button>
                 <Button
                     onClick={handleModalSubmitClick}
-                    disabled={!sceneName || !description || !backgroundId}
+                    disabled={
+                        !sceneName ||
+                        !description ||
+                        !backgroundId ||
+                        (errors
+                            ? errors.name ||
+                              errors.description ||
+                              errors.backgroundId
+                            : false)
+                    }
                 >
                     {isEdit ? "Edit" : "Create"}
                 </Button>
