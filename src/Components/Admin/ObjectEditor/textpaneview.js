@@ -35,7 +35,7 @@ export default function TextPaneView(props) {
 
     const addText = () => {
         const newText = {
-            text: prompt("Enter the text for the puzzle: "),
+            text: "sample text",
             index: texts.length,
         };
 

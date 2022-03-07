@@ -69,18 +69,11 @@ export default function KeypadPuzzle(props) {
     };
 
     const addErrorMsg = () => {
-        const newText = {
-            text: prompt("Enter the text for the error message: "),
-        };
-
-        if (newText.text) {
-            setErrorMsg(newText.text);
-            props.setErrorMsg(newText.text);
-        }
+        setErrorMsg("");
     };
 
     const deleteErrorMsg = () => {
-        setErrorMsg("");
+        setErrorMsg(null);
         props.setErrorMsg("");
     };
 
@@ -138,7 +131,7 @@ export default function KeypadPuzzle(props) {
                     </IconButton>
                 </div>
             )}
-            {errorMsg === "" ? (
+            {errorMsg === null ? (
                 <div>
                     Add Error Message
                     <IconButton

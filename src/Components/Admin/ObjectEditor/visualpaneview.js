@@ -66,18 +66,11 @@ export default function VisualPaneView(props) {
     };
 
     const addCaption = () => {
-        const newText = {
-            text: prompt("Enter the text for the puzzle: "),
-        };
-
-        if (newText.text) {
-            setCaption(newText.text);
-            props.saveCaption(newText.text);
-        }
+        setCaption("");
     };
 
     const deleteCaption = () => {
-        setCaption("");
+        setCaption(null);
         props.saveCaption("");
     };
 
@@ -145,7 +138,7 @@ export default function VisualPaneView(props) {
                     </Button>
                 </label>
             )}
-            {caption === "" ? (
+            {caption === null ? (
                 <div>
                     Add Caption
                     <IconButton

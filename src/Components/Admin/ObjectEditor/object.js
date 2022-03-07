@@ -602,24 +602,11 @@ export default function ObjectEditor({
     };
 
     const addHeader = () => {
-        const newText = {
-            text: prompt("Enter the text for the header: "),
-        };
-
-        if (newText.text) {
-            if (newText.text.length <= 100) {
-                setHeader(newText.text);
-            } else {
-                setErrorText(
-                    "Error: Maximum header text length is 100 characters"
-                );
-                setShowError(true);
-            }
-        }
+        setHeader("");
     };
 
     const deleteHeader = () => {
-        setHeader("");
+        setHeader(null);
     };
 
     const handleSuccessSnackbarClose = () => {
@@ -663,7 +650,7 @@ export default function ObjectEditor({
                 />
             </div>
             {isInteractable ? (
-                header === "" ? (
+                header === null ? (
                     <div>
                         Add Header
                         <IconButton
@@ -738,7 +725,11 @@ export default function ObjectEditor({
             {isInteractable && puzzleType === "text-pane" ? (
                 <TextPaneView
                     saveTexts={saveTexts}
-                    texts={origAnimJson?.blackboardData?.jsonData?.data}
+                    texts={
+                        origAnimJson?.blackboardData?.jsonData?.data
+                            ? origAnimJson?.blackboardData?.jsonData?.data
+                            : []
+                    }
                     classes={classes}
                 />
             ) : null}
@@ -749,7 +740,7 @@ export default function ObjectEditor({
                     caption={
                         origAnimJson?.blackboardData?.jsonData?.caption
                             ? origAnimJson?.blackboardData?.jsonData?.caption
-                            : ""
+                            : null
                     }
                     src={origAnimJson?.blackboardData?.jsonData?.imageSrc}
                 />
