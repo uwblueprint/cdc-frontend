@@ -11,12 +11,18 @@ import Menu from "@material-ui/core/Menu";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import { useErrorHandler } from "react-error-boundary";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
 
 import RoomModal from "../Rooms/roomModal";
 import DeleteModal from "../common/deleteModal";
 import { deleteScenario, editScenario } from "../../../lib/scenarioEndpoints";
 import { Colours } from "../../../styles/Constants.ts";
 import "../../../styles/index.css";
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -91,6 +97,7 @@ export default function EnvironmentBar({
     );
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [environment, setEnvironment] = useState({});
+    const [shareSnackbarOpen, setShareSnackbarOpen] = useState(false);
 
     useEffect(() => {
         setEnvironment(initialEnv);
@@ -151,6 +158,7 @@ export default function EnvironmentBar({
         is_published,
         is_previewable,
     }) => {
+        setShareSnackbarOpen(true);
         setShareAndPublishModalOpen(false);
         const resp = await editScenario(
             {
@@ -168,6 +176,10 @@ export default function EnvironmentBar({
         );
 
         setEnvironment(resp.data);
+    };
+
+    const handleShareSnackbarClose = () => {
+        setShareSnackbarOpen(false);
     };
 
     return (
@@ -275,6 +287,28 @@ export default function EnvironmentBar({
                 isShareAndPublish
                 isEnvBar
             />
+            <Snackbar
+                open={shareSnackbarOpen}
+                autoHideDuration={5000}
+                onClose={handleShareSnackbarClose}
+            >
+                <Alert
+                    onClose={handleShareSnackbarClose}
+                    severity="success"
+                    sx={{ width: "100%" }}
+                >
+                    {"Share & Publish changes made to room"}
+                    {environment.scene_ids?.length === 0 ? (
+                        <>
+                            <br />
+                            <span>
+                                Note: There are no rooms in this environment, so
+                                users will see nothing
+                            </span>
+                        </>
+                    ) : null}
+                </Alert>
+            </Snackbar>
             <DeleteModal
                 open={deleteModalOpen}
                 title="Delete Room"
