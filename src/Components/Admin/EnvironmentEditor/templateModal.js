@@ -78,7 +78,12 @@ export default function TemplateModal({
             </DialogContent>
             <DialogActions className={classes.buttonContainer}>
                 <Button onClick={handleModalCloseClick}>Cancel</Button>
-                <Button onClick={handleModalSubmitClick}>Submit</Button>
+                <Button
+                    onClick={handleModalSubmitClick}
+                    disabled={sceneId === null}
+                >
+                    Submit
+                </Button>
             </DialogActions>
         </Dialog>
     );
