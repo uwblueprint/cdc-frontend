@@ -166,6 +166,7 @@ export default function Admin() {
     const [deleteAssetId, setDeleteAssetId] = useState(null);
     const [searchWord, setSearchWord] = useState("");
     const [assetSnackbarOpen, setAssetSnackbarOpen] = useState(false);
+    const [shareSnackbarOpen, setShareSnackbarOpen] = useState(false);
     const open = Boolean(anchorEl);
 
     const getAllEnvironments = async (handleError) => {
@@ -274,6 +275,7 @@ export default function Admin() {
         is_previewable,
     }) => {
         setEditModalOpen(false);
+        setShareSnackbarOpen(true);
         const resp = await editScenario(
             {
                 id: editRoom.id,
@@ -387,6 +389,10 @@ export default function Admin() {
         setSearchWord(event.target.value);
     };
 
+    const handleShareSnackbarClose = () => {
+        setShareSnackbarOpen(false);
+    };
+
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
@@ -457,6 +463,28 @@ export default function Admin() {
                         room={editRoom}
                         isShareAndPublish
                     />
+                    <Snackbar
+                        open={shareSnackbarOpen}
+                        autoHideDuration={5000}
+                        onClose={handleShareSnackbarClose}
+                    >
+                        <Alert
+                            onClose={handleShareSnackbarClose}
+                            severity="success"
+                            sx={{ width: "100%" }}
+                        >
+                            {"Share & Publish changes made to room"}
+                            {editRoom.scene_ids?.length === 0 ? (
+                                <>
+                                    <br />
+                                    <span>
+                                        Note: There are no rooms in this
+                                        environment, so users will see nothing
+                                    </span>
+                                </>
+                            ) : null}
+                        </Alert>
+                    </Snackbar>
                     <DeleteModal
                         open={deleteModalOpen}
                         title="Delete Room"
