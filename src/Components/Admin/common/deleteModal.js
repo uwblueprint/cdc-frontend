@@ -23,7 +23,6 @@ const useStyles = makeStyles(() => ({
         fontStyle: "normal",
         fontWeight: "normal",
         fontSize: "20px",
-        lineHeight: "27px",
         color: Colours.Grey8,
     },
     yesButton: {
@@ -53,7 +52,7 @@ const useStyles = makeStyles(() => ({
 
 function NewlineText(string) {
     return string.split("\n").map((str, index) => (
-        <p style={{ fontSize: 14, lineHeight: "16px" }} key={index}>
+        <p style={{ fontSize: 14, lineHeight: "24px" }} key={index}>
             {str}
         </p>
     ));
@@ -69,7 +68,7 @@ export default function DeleteModal({
     const classes = useStyles();
     return (
         <Dialog open={open} onClose={handleClose}>
-            <DialogContent style={{ width: 408, height: 133 }}>
+            <DialogContent style={{ width: 408, height: 150 }}>
                 <DialogTitle
                     style={{
                         borderBottom: "1px solid #D5E1EE",
