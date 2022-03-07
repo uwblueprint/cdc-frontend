@@ -4,6 +4,7 @@ import { DeleteForever } from "@material-ui/icons";
 import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import MuiAlert from "@material-ui/lab/Alert";
+import AddIcon from "@material-ui/icons/Add";
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -21,6 +22,7 @@ export default function KeypadPuzzle(props) {
     const classes = useStyles();
     const [tempPass, setTempPass] = useState(props.pass);
     const [pass, setPass] = useState(props.pass);
+    const [errorMsg, setErrorMsg] = useState(props.errorMsg);
     const [showSavePass, setSavePass] = useState(false);
     const [showError, setShowError] = useState(false);
     const [errorText, setErrorText] = useState("");
@@ -37,14 +39,14 @@ export default function KeypadPuzzle(props) {
     };
 
     const numpadOnChange = (e) => {
-        const re = /^[0-9]{1,7}$/;
+        const re = /^[.0-9]{1,8}$/;
         if (e.target.value === "" || re.test(e.target.value)) {
             setTempPass(e.target.value);
             setShowError(false);
             setSavePass(true);
         } else {
             setErrorText(
-                "Error: Password must be at most 7 characters and only consist of numbers"
+                "Error: Password must be at most 8 characters and only consist of numbers or a decimal"
             );
             setShowError(true);
             setSavePass(false);
@@ -66,6 +68,30 @@ export default function KeypadPuzzle(props) {
         }
     };
 
+    const addErrorMsg = () => {
+        const newText = {
+            text: prompt("Enter the text for the error message: "),
+        };
+
+        if (newText.text) {
+            setErrorMsg(newText.text);
+            props.setErrorMsg(newText.text);
+        }
+    };
+
+    const deleteErrorMsg = () => {
+        setErrorMsg("");
+        props.setErrorMsg("");
+    };
+
+    const handleTextChange = (event) => {
+        const newText = event.target.value;
+        if (newText !== null) {
+            setErrorMsg(newText);
+            props.setErrorMsg(newText);
+        }
+    };
+
     return (
         <div>
             {pass === "" ? (
@@ -79,7 +105,7 @@ export default function KeypadPuzzle(props) {
                         <TextField
                             inputProps={{
                                 className: classes.input,
-                                pattern: "[0-9]{1,7}",
+                                pattern: "[.0-9]{1,8}",
                             }}
                             onChange={numpadOnChange}
                         />
@@ -95,7 +121,11 @@ export default function KeypadPuzzle(props) {
                     ) : null}
                     <br></br>
                     {showSavePass ? (
-                        <Button color="primary" onClick={() => savePass()}>
+                        <Button
+                            color="primary"
+                            onClick={() => savePass()}
+                            disabled={tempPass === ""}
+                        >
                             Save Password
                         </Button>
                     ) : null}
@@ -104,6 +134,34 @@ export default function KeypadPuzzle(props) {
                 <div>
                     Password: {pass}
                     <IconButton onClick={() => deletePass()}>
+                        <DeleteForever />
+                    </IconButton>
+                </div>
+            )}
+            {errorMsg === "" ? (
+                <div>
+                    Add Error Message
+                    <IconButton
+                        className={classes.addButton}
+                        aria-label="add"
+                        onClick={addErrorMsg}
+                    >
+                        <AddIcon />
+                    </IconButton>
+                </div>
+            ) : (
+                <div>
+                    <br></br>
+                    Error Message:
+                    <TextField
+                        value={errorMsg}
+                        onChange={(e) => handleTextChange(e)}
+                        required
+                        variant="outlined"
+                        placeholder="Enter transition text"
+                        multiline
+                    />
+                    <IconButton onClick={() => deleteErrorMsg()}>
                         <DeleteForever />
                     </IconButton>
                 </div>

@@ -325,7 +325,21 @@ export default function ObjectEditor({
 
     const saveCaption = (caption) => {
         const animCopy = animationsJson;
-        animCopy.blackboardData.jsonData.caption = caption;
+        if (caption === "") {
+            delete animCopy.blackboardData.jsonData.caption;
+        } else {
+            animCopy.blackboardData.jsonData.caption = caption;
+        }
+        setAnimationsJson(animCopy);
+    };
+
+    const setErrorMsg = (errorMsg) => {
+        const animCopy = animationsJson;
+        if (errorMsg === "") {
+            delete animCopy.blackboardData.jsonData.errorMsg;
+        } else {
+            animCopy.blackboardData.jsonData.errorMsg = errorMsg;
+        }
         setAnimationsJson(animCopy);
     };
 
@@ -724,7 +738,7 @@ export default function ObjectEditor({
             {isInteractable && puzzleType === "text-pane" ? (
                 <TextPaneView
                     saveTexts={saveTexts}
-                    texts={animationsJson.blackboardData.jsonData.data}
+                    texts={origAnimJson?.blackboardData?.jsonData?.data}
                     classes={classes}
                 />
             ) : null}
@@ -733,17 +747,17 @@ export default function ObjectEditor({
                     saveImage={saveImage}
                     saveCaption={saveCaption}
                     caption={
-                        animationsJson.blackboardData.jsonData.caption
-                            ? animationsJson.blackboardData.jsonData.caption
+                        origAnimJson?.blackboardData?.jsonData?.caption
+                            ? origAnimJson?.blackboardData?.jsonData?.caption
                             : ""
                     }
-                    src={animationsJson.blackboardData.jsonData.imageSrc}
+                    src={origAnimJson?.blackboardData?.jsonData?.imageSrc}
                 />
             ) : null}
             {isInteractable && puzzleType === "jigsaw-puzzle" ? (
                 <JigsawPuzzle
                     saveJigsawImages={saveJigsawImages}
-                    images={animationsJson.blackboardData.jsonData.images}
+                    images={origAnimJson?.blackboardData?.jsonData?.images}
                 />
             ) : null}
             {isInteractable && puzzleType === "unordered-puzzle" ? (
@@ -798,6 +812,12 @@ export default function ObjectEditor({
             {isInteractable && puzzleType === "numpad-puzzle" ? (
                 <KeypadPuzzle
                     savePass={savePass}
+                    setErrorMsg={setErrorMsg}
+                    errorMsg={
+                        origAnimJson?.blackboardData?.jsonData?.errorMsg
+                            ? origAnimJson.blackboardData.jsonData.errorMsg
+                            : ""
+                    }
                     pass={
                         origAnimJson?.blackboardData?.jsonData?.model !==
                         "numpad"
@@ -813,6 +833,12 @@ export default function ObjectEditor({
             {isInteractable && puzzleType === "keyboard-puzzle" ? (
                 <KeypadPuzzle
                     savePass={savePass}
+                    setErrorMsg={setErrorMsg}
+                    errorMsg={
+                        origAnimJson?.blackboardData?.jsonData?.errorMsg
+                            ? origAnimJson.blackboardData.jsonData.errorMsg
+                            : ""
+                    }
                     pass={
                         origAnimJson?.blackboardData?.jsonData?.model !==
                         "basic"

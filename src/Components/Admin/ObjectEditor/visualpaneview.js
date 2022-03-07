@@ -78,12 +78,14 @@ export default function VisualPaneView(props) {
 
     const deleteCaption = () => {
         setCaption("");
+        props.saveCaption("");
     };
 
     const handleTextChange = (event) => {
         const newText = event.target.value;
         if (newText !== null) {
             setCaption(newText);
+            props.saveCaption(newText);
         }
     };
 
