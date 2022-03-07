@@ -63,6 +63,7 @@ export default function AssetModelViewer({
     const handleError = useErrorHandler();
     const [asset, setAsset] = useState({});
     const [name, setName] = useState("");
+    const [origName, setOrigName] = useState("");
     const [nameError, setNameError] = useState("");
     const [objectType, setObjectType] = useState(ObjectTypes.NONE);
     const [buttonText, setButtonText] = useState("Save");
@@ -74,6 +75,7 @@ export default function AssetModelViewer({
         const getObjectAsset = async () => {
             const data = await getAsset(assetId, handleError);
             setName(data.name);
+            setOrigName(data.name);
 
             switch (data.obj_type) {
                 case ObjectTypes.OBJECT:
@@ -162,8 +164,8 @@ export default function AssetModelViewer({
         editAsset(assetId, name, objectType, asset.s3_key, handleError);
     }
 
-    const isEmpty = (error) => {
-        return error === "";
+    const canSave = (error) => {
+        return error === "" && name !== origName;
     };
 
     return (
@@ -211,7 +213,7 @@ export default function AssetModelViewer({
                         value={name}
                         onChange={handleNameChange}
                         variant="outlined"
-                        error={!isEmpty(nameError)}
+                        error={!canSave(nameError)}
                         helperText={nameError}
                     />
 
@@ -245,7 +247,7 @@ export default function AssetModelViewer({
                         variant="contained"
                         color="primary"
                         startIcon={<SaveIcon />}
-                        disabled={!isEmpty(nameError)}
+                        disabled={!canSave(nameError)}
                         style={{ maxWidth: 220, marginLeft: 15 }}
                     >
                         {buttonText}
