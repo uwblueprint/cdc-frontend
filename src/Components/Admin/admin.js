@@ -512,7 +512,7 @@ export default function Admin() {
                     <DeleteModal
                         open={deleteAssetModalOpen}
                         title="Delete Asset"
-                        confirmMessage="Are you sure you want to delete this asset?"
+                        confirmMessage="Are you sure you want to delete this asset? It will delete ALL objects using this asset."
                         handleClose={handleDeleteAssetCancel}
                         handleSubmit={handleDeleteAssetSubmit}
                     />
