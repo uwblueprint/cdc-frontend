@@ -83,12 +83,14 @@ export default function UploadAssetModal({
         const response = event.target.value;
         setAssetName(response);
         setErrors({ ...errors, name: "" });
-        const reg = new RegExp(/^[a-zA-Z0-9 _-]{1,50}$/).test(response);
+        const reg = new RegExp(/^[:()'?!.",a-zA-Z0-9 _-]{1,50}$/).test(
+            response
+        );
         if (!reg) {
             setErrors({
                 ...errors,
                 name:
-                    "1-50 characters allowed (alphanumeric, dashes, or spaces)",
+                    "1-50 characters allowed (alphanumeric (a-z, A-Z, 0-9), dashes (- and _), punctuation (:()'?!,.\"), and spaces)",
             });
         }
     };
