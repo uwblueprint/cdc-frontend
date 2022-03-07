@@ -18,13 +18,17 @@ import _ from "lodash";
 
 const useStyles = makeStyles((theme) => ({
     addButton: {
-        marginTop: theme.spacing(0.5),
+        marginTop: theme.spacing(-0.5),
+        marginLeft: theme.spacing(2),
         width: "20px",
         height: "20px",
-        background: "#B9BECE",
+        backgroundColor: Colours.MainRed5,
         borderRadius: "100%",
-        color: "white",
-        float: "right",
+        color: Colours.White,
+        "&:hover": {
+            backgroundColor: Colours.MainRed7,
+            color: Colours.White,
+        },
     },
     linkButton: {
         color: Colours.White,
@@ -91,7 +95,7 @@ export default function HintsModal({
     };
 
     const addHint = () => {
-        const newHint = prompt("Enter hint text: ");
+        const newHint = "";
         setHints([...hints, newHint]);
     };
 
@@ -140,7 +144,11 @@ export default function HintsModal({
                                             padding: 10,
                                         },
                                     }}
-                                    placeholder="Hint text"
+                                    placeholder={
+                                        index + 1 !== hints.length
+                                            ? "Hint text"
+                                            : "Solution to the room"
+                                    }
                                     multiline
                                 />
                             </div>
@@ -169,7 +177,13 @@ export default function HintsModal({
                 >
                     Cancel
                 </Button>
-                <Button color="primary" onClick={() => handleSubmit(hints)}>
+                <Button
+                    color="primary"
+                    disabled={hints.some(
+                        (hint) => hint === null || hint === ""
+                    )}
+                    onClick={() => handleSubmit(hints)}
+                >
                     Save
                 </Button>
             </DialogActions>
