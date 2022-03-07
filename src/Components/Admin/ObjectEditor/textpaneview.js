@@ -6,6 +6,7 @@ import {
     KeyboardArrowDown,
     KeyboardArrowUp,
 } from "@material-ui/icons";
+import TextField from "@material-ui/core/TextField";
 
 export default function TextPaneView(props) {
     const [texts, setTexts] = useState(props.texts);
@@ -59,6 +60,16 @@ export default function TextPaneView(props) {
         props.saveTexts(tempTexts);
     };
 
+    const handleTextChange = (event, index) => {
+        const newText = event.target.value;
+        if (newText !== null) {
+            const tempTexts = JSON.parse(JSON.stringify(texts));
+            tempTexts[index].text = newText;
+            setTexts(tempTexts);
+            props.saveTexts(tempTexts);
+        }
+    };
+
     return (
         <div>
             <div>
@@ -78,7 +89,14 @@ export default function TextPaneView(props) {
                             <h4>
                                 Text {index + 1} of {texts.length}
                             </h4>
-                            <p>{item.text}</p>
+                            <TextField
+                                value={item.text}
+                                onChange={(e) => handleTextChange(e, index)}
+                                required
+                                variant="outlined"
+                                placeholder="Enter transition text"
+                                multiline
+                            />
                             <IconButton onClick={() => onMoveUpClick(index)}>
                                 <KeyboardArrowUp />
                             </IconButton>

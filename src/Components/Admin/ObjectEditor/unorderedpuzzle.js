@@ -127,10 +127,6 @@ export default function UnorderedPuzzle(props) {
         }
 
         const reorderedList = reorder(sourceIndex, destinationIndex);
-        // const temp = reorderedList[sourceIndex].xTarget;
-        // reorderedList[sourceIndex].xTarget =
-        //     reorderedList[destinationIndex].xTarget;
-        // reorderedList[destinationIndex].xTarget = temp;
         props.saveImages([...reorderedList]);
         setImages([...reorderedList]);
     };

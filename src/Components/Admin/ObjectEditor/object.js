@@ -825,7 +825,7 @@ export default function ObjectEditor({
                     classes={classes}
                 />
             ) : null}
-            {!isInteractable ? (
+            {isInteractable ? (
                 <div>
                     <Button
                         color="primary"
@@ -839,7 +839,7 @@ export default function ObjectEditor({
                             right: 0,
                             margin: 20,
                         }}
-                        disabled={puzzleType !== ""}
+                        disabled={puzzleType === ""}
                     >
                         Set Puzzle
                     </Button>

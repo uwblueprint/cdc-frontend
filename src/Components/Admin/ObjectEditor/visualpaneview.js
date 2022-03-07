@@ -7,6 +7,7 @@ import { IconButton } from "@material-ui/core";
 import { fileToByteArray } from "../../../lib/s3Utility";
 import { makeStyles } from "@material-ui/core/styles";
 import { DeleteForever } from "@material-ui/icons";
+import TextField from "@material-ui/core/TextField";
 
 const useStyles = makeStyles((theme) => ({
     textField: {
@@ -79,6 +80,13 @@ export default function VisualPaneView(props) {
         setCaption("");
     };
 
+    const handleTextChange = (event) => {
+        const newText = event.target.value;
+        if (newText !== null) {
+            setCaption(newText);
+        }
+    };
+
     return (
         <div>
             <br></br>
@@ -148,7 +156,16 @@ export default function VisualPaneView(props) {
                 </div>
             ) : (
                 <div>
-                    Caption: {caption}
+                    <br></br>
+                    Caption:
+                    <TextField
+                        value={caption}
+                        onChange={(e) => handleTextChange(e)}
+                        required
+                        variant="outlined"
+                        placeholder="Enter transition text"
+                        multiline
+                    />
                     <IconButton onClick={() => deleteCaption()}>
                         <DeleteForever />
                     </IconButton>
