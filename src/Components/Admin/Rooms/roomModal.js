@@ -190,10 +190,10 @@ export default function RoomModal({
         setRoomName(response);
         setErrors({ ...errors, name: "" });
         const reg = new RegExp(/^[:()'?!.",a-zA-Z0-9 _-]{1,}$/).test(response);
-        if (response.length > 2000) {
+        if (response.length > 50) {
             setErrors({
                 ...errors,
-                name: "Name cannot exceed 2000 characters",
+                name: "Name cannot exceed 50 characters",
             });
         }
         if (!reg) {
