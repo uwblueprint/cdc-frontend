@@ -54,26 +54,23 @@ export default function UploadAssetModal({
     handleSubmit,
 }) {
     const classes = useStyles();
+    const objectType = ObjectTypes.OBJECT;
     const [assetName, setAssetName] = useState("");
-    const [objectType, setObjectType] = useState(ObjectTypes.OBJECT);
     const [fileType, setFileType] = useState(FileTypes.NONE);
     const [assetByteArray, setAssetByteArray] = useState(null);
     const [fileName, setFileName] = useState("");
     const [errors, setErrors] = useState({
         name: "",
-        objectType: "",
         fileType: "Select a file type",
         assetBlob: "Upload a file",
     });
 
     const clearFields = () => {
         setAssetName("");
-        setObjectType(ObjectTypes.OBJECT);
         setFileType(FileTypes.NONE);
         setAssetByteArray(null);
         setErrors({
             name: "",
-            objectType: "",
             fileType: "Select a file type",
             assetBlob: "Upload a file",
         });
@@ -83,43 +80,19 @@ export default function UploadAssetModal({
         const response = event.target.value;
         setAssetName(response);
         setErrors({ ...errors, name: "" });
-        const reg = new RegExp(/^[:()'?!.",a-zA-Z0-9 _-]{1,50}$/).test(
-            response
-        );
+        const reg = new RegExp(/^[:()'?!.",a-zA-Z0-9 _-]{1,}$/).test(response);
+        if (response.length > 50) {
+            setErrors({
+                ...errors,
+                name: "Name cannot exceed 50 characters",
+            });
+        }
         if (!reg) {
             setErrors({
                 ...errors,
                 name:
-                    "1-50 characters allowed (alphanumeric (a-z, A-Z, 0-9), dashes (- and _), punctuation (:()'?!,.\"), and spaces)",
+                    "Only characters allowed are alphanumeric (a-z, A-Z, 0-9), dashes (- and _), punctuation (:()'?!,.\"), and spaces",
             });
-        }
-    };
-
-    const handleObjectTypeChange = (event) => {
-        setErrors({ ...errors, objectType: "" });
-
-        switch (event.target.value) {
-            case ObjectTypes.OBJECT:
-                setObjectType(ObjectTypes.OBJECT);
-                setErrors({
-                    ...errors,
-                    objectType: "",
-                });
-                break;
-            case ObjectTypes.BACKGROUND:
-                setObjectType(ObjectTypes.BACKGROUND);
-                setErrors({
-                    ...errors,
-                    objectType: "",
-                });
-                break;
-            default:
-                setObjectType(ObjectTypes.NONE);
-                setErrors({
-                    ...errors,
-                    objectType:
-                        "Object type must be either object or background",
-                });
         }
     };
 
@@ -165,7 +138,6 @@ export default function UploadAssetModal({
     const isValidInput = () => {
         return (
             errors.name === "" &&
-            errors.objectType === "" &&
             errors.fileType === "" &&
             errors.assetBlob === "" &&
             assetName.length > 0
@@ -192,30 +164,6 @@ export default function UploadAssetModal({
                         error={Boolean(errors ? errors.name : false)}
                         helperText={errors ? errors.name : false}
                     />
-                </div>
-                <div>
-                    <FormControl
-                        variant="outlined"
-                        className={classes.formControl}
-                    >
-                        <Typography component="div" variant="h5">
-                            Object Type:
-                        </Typography>
-                        <Select
-                            labelId="objectTypeTextField"
-                            value={objectType}
-                            onChange={handleObjectTypeChange}
-                            displayEmpty
-                        >
-                            <MenuItem value={ObjectTypes.OBJECT}>
-                                {ObjectTypes.OBJECT}
-                            </MenuItem>
-                        </Select>
-                    </FormControl>
-                    <FormHelperText>
-                        {" "}
-                        {errors.objectType ? errors.objectType : ""}{" "}
-                    </FormHelperText>
                 </div>
                 <div>
                     <FormControl

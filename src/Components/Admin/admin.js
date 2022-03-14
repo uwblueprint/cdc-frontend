@@ -156,12 +156,15 @@ export default function Admin() {
     const [shareAndPublishModalOpen, setShareAndPublishModalOpen] = useState(
         false
     );
+    const [recentIsPublished, setRecentIsPublished] = useState(false);
+    const [recentIsPreviewable, setRecentIsPreviewable] = useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [uploadAssetModalOpen, setUploadAssetModalOpen] = useState(false);
     const [deleteAssetModalOpen, setDeleteAssetModalOpen] = useState(false);
     const [environments, setEnvironments] = useState([]);
     const [assets, setAssets] = useState([]);
     const [editRoom, setEditRoom] = useState({});
+    const [mostRecentRoom, setMostRecentRoom] = useState({});
     const [deleteRoomId, setDeleteRoomId] = useState(null);
     const [deleteAssetId, setDeleteAssetId] = useState(null);
     const [searchWord, setSearchWord] = useState("");
@@ -235,6 +238,7 @@ export default function Admin() {
             (environment) => environment.id === roomId
         );
         setEditRoom(room);
+        setMostRecentRoom(room);
         setShareAndPublishModalOpen(true);
     };
 
@@ -274,6 +278,8 @@ export default function Admin() {
         is_published,
         is_previewable,
     }) => {
+        setRecentIsPublished(is_published);
+        setRecentIsPreviewable(is_previewable);
         setEditModalOpen(false);
         setShareSnackbarOpen(true);
         const resp = await editScenario(
@@ -474,7 +480,8 @@ export default function Admin() {
                             sx={{ width: "100%" }}
                         >
                             {"Share & Publish changes made to room"}
-                            {editRoom.scene_ids?.length === 0 ? (
+                            {mostRecentRoom.scene_ids?.length === 0 &&
+                            (recentIsPublished || recentIsPreviewable) ? (
                                 <>
                                     <br />
                                     <span>

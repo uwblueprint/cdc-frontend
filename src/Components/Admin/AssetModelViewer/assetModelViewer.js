@@ -125,18 +125,19 @@ export default function AssetModelViewer({
     }, [assetId, handleError, modelViewerRef]);
 
     const handleNameChange = (event) => {
-        const reg = new RegExp(/^[a-zA-Z0-9 _-]{1,50}$/).test(
-            event.target.value
-        );
+        const response = event.target.value;
+        setName(response);
+        setNameError("");
+
+        const reg = new RegExp(/^[:()'?!.",a-zA-Z0-9 _-]{1,}$/).test(response);
+        if (response.length > 50) {
+            setNameError("Name cannot exceed 50 characters");
+        }
         if (!reg) {
             setNameError(
-                "Maximum of 50 characters allowed (alphanumeric, dashes, or spaces)"
+                "Only characters allowed are alphanumeric (a-z, A-Z, 0-9), dashes (- and _), punctuation (:()'?!,.\"), and spaces"
             );
-        } else {
-            setNameError("");
         }
-
-        setName(event.target.value);
     };
 
     const handleObjectTypeChange = (event) => {
@@ -162,6 +163,7 @@ export default function AssetModelViewer({
             setButtonText("Save");
         }, 2000);
         editAsset(assetId, name, objectType, asset.s3_key, handleError);
+        setOrigName(name);
     }
 
     const canSave = (error) => {
