@@ -12,7 +12,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { useErrorHandler } from "react-error-boundary";
 import { Button, IconButton } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-
+import { deleteTransitionImages } from "../../../lib/scenarioEndpoints";
 import { createPresignedLinkAndUploadS3 } from "../../../lib/s3Utility";
 import { Colours } from "../../../styles/Constants.ts";
 
@@ -161,15 +161,7 @@ export default function RoomModal({
     ) => {
         let body = {};
 
-        // if editting an existing room, include s3Key in body
-        if (room && room.display_image_url) {
-            body = {
-                file_type: fileType,
-                type: "image",
-                file_content: display_image,
-                s3Key: room.display_image_url,
-            };
-        } else if (display_image) {
+        if (display_image) {
             body = {
                 file_type: fileType,
                 type: "image",
@@ -317,7 +309,14 @@ export default function RoomModal({
         );
 
         if (isEdit && !error) {
-            let display_image_url = room.display_image_url;
+            let display_image_url = "";
+            await deleteTransitionImages(
+                {
+                    scenarioId: room.id,
+                    imagesList: [room.display_image_url],
+                },
+                handleError
+            );
             if (fileName !== "") {
                 display_image_url = await handleUploadDisplayImageSubmit(
                     fileName,
