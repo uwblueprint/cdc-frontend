@@ -126,7 +126,6 @@ export default function RoomCard({
     const history = useHistory();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [isHighlighted, setIsHighlighted] = React.useState(false);
-    const imageHash = Date.now();
 
     const handleMenuClick = (event) => {
         setAnchorEl(event.currentTarget);
