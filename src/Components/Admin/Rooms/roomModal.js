@@ -309,14 +309,16 @@ export default function RoomModal({
         );
 
         if (isEdit && !error) {
-            let display_image_url = "";
-            await deleteTransitionImages(
-                {
-                    scenarioId: room.id,
-                    imagesList: [room.display_image_url],
-                },
-                handleError
-            );
+            let display_image_url = room.display_image_url;
+            if (room && room.display_image_url && fileName !== "") {
+                await deleteTransitionImages(
+                    {
+                        scenarioId: room.id,
+                        imagesList: [room.display_image_url],
+                    },
+                    handleError
+                );
+            }
             if (fileName !== "") {
                 display_image_url = await handleUploadDisplayImageSubmit(
                     fileName,
