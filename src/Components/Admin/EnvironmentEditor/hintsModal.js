@@ -130,7 +130,9 @@ export default function HintsModal({
                     return (
                         <div key={index}>
                             <h4>
-                                Hint {index + 1} of {hints.length}
+                                {index + 1 !== hints.length
+                                    ? "Hint " + (index + 1)
+                                    : "Solution"}
                             </h4>
                             <div>
                                 <TextField
