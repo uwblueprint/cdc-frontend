@@ -103,7 +103,8 @@ export default function ObjectEditor({
     const [origAnimJson, setOrigAnimJson] = useState({});
     const [isInteractable, setIsInteractable] = useState(null);
     const [isLastPuzzle, setIsLastPuzzle] = useState(null);
-    const [header, setHeader] = useState("");
+    const [header, setHeader] = useState(null);
+    const [caption, setCaption] = useState(null);
     const [images, setImages] = useState([{}, {}]);
     const [imagesList, setImagesList] = useState([]);
     const [showSuccess, setShowSuccess] = useState(false);
@@ -127,6 +128,11 @@ export default function ObjectEditor({
             const data = await getPuzzle(sceneId, objectId, handleError);
             setOrigAnimJson(JSON.parse(JSON.stringify(data.animations_json)));
             setAnimationsJson(JSON.parse(JSON.stringify(data.animations_json)));
+            const oldCaption =
+                data.animations_json.blackboardData?.jsonData?.caption;
+            if (oldCaption) {
+                setCaption(oldCaption);
+            }
             if (Object.keys(data.animations_json).length === 0) {
                 setIsInteractable(false);
             } else {
@@ -183,6 +189,7 @@ export default function ObjectEditor({
         objectId,
         isInteractable,
         origAnimJson,
+        setCaption,
         showSuccess,
         showError,
         handleError,
@@ -343,9 +350,8 @@ export default function ObjectEditor({
         setAnimationsJson(animCopy);
     };
 
-    const saveImage = (caption, imgArr, type) => {
+    const saveImage = (imgArr, type) => {
         const animCopy = animationsJson;
-        animCopy.blackboardData.jsonData.caption = caption;
         animCopy.blackboardData.jsonData.imgArr = imgArr;
         animCopy.blackboardData.jsonData.type = type;
         setAnimationsJson(animCopy);
@@ -398,6 +404,16 @@ export default function ObjectEditor({
                 delete animCopy.blackboardData.blackboardText;
             }
         }
+        if (isInteractable && caption !== "") {
+            animCopy.blackboardData.jsonData.caption = caption;
+        } else {
+            if (animCopy.blackboardData?.jsonData?.caption) {
+                delete animCopy.blackboardData.jsonData.caption;
+            }
+        }
+        if (isInteractable && puzzleType === "text-pane") {
+            delete animCopy.blackboardData?.jsonData?.caption;
+        }
         if (
             (isInteractable && puzzleType === "ordered-puzzle") ||
             (isInteractable && puzzleType === "unordered-puzzle")
@@ -443,6 +459,26 @@ export default function ObjectEditor({
             }
             animCopy.blackboardData.jsonData.images = images;
         }
+        if (isInteractable && puzzleType === "visual-pane") {
+            if (
+                !animCopy.blackboardData?.jsonData?.image &&
+                !animCopy.blackboardData?.jsonData?.imgArr
+            ) {
+                setErrorText("Error: No image selected");
+                setShowError(true);
+                return;
+            }
+        }
+        if (isInteractable && puzzleType === "jigsaw-puzzle") {
+            if (
+                !animCopy.blackboardData?.jsonData?.images &&
+                !animCopy.blackboardData?.jsonData?.b64string
+            ) {
+                setErrorText("Error: No image selected");
+                setShowError(true);
+                return;
+            }
+        }
         setAnimationsJson(animCopy);
 
         const savePuzzle = async () => {
@@ -457,7 +493,6 @@ export default function ObjectEditor({
             if (isInteractable && puzzleType === "visual-pane") {
                 let response = null;
                 const imagePrefix = process.env.REACT_APP_ADMIN_ASSET_PREFIX;
-
                 if (origAnimJson.blackboardData?.jsonData?.imageSrc) {
                     response = await createPresignedLinkAndUploadS3(
                         {
@@ -624,6 +659,21 @@ export default function ObjectEditor({
         }
     };
 
+    const addCaption = () => {
+        setCaption("");
+    };
+
+    const deleteCaption = () => {
+        setCaption(null);
+    };
+
+    const handleCaptionChange = (event) => {
+        const newText = event.target.value;
+        if (newText !== null) {
+            setCaption(newText);
+        }
+    };
+
     return (
         <div
             className={classes.container}
@@ -649,35 +699,33 @@ export default function ObjectEditor({
                     }}
                 />
             </div>
-            {isInteractable ? (
-                header === null ? (
-                    <div>
-                        Add Header
-                        <IconButton
-                            className={classes.addButton}
-                            aria-label="add"
-                            onClick={addHeader}
-                        >
-                            <AddIcon />
-                        </IconButton>
-                    </div>
-                ) : (
-                    <div>
-                        Header:
-                        <TextField
-                            value={header}
-                            onChange={(e) => handleTextChange(e)}
-                            required
-                            variant="outlined"
-                            placeholder="Enter transition text"
-                            multiline
-                        />
-                        <IconButton onClick={() => deleteHeader()}>
-                            <DeleteForever />
-                        </IconButton>
-                    </div>
-                )
-            ) : null}
+            {!isInteractable || puzzleType === "" ? null : header === null ? (
+                <div>
+                    Add Header
+                    <IconButton
+                        className={classes.addButton}
+                        aria-label="add"
+                        onClick={addHeader}
+                    >
+                        <AddIcon />
+                    </IconButton>
+                </div>
+            ) : (
+                <div>
+                    Header:
+                    <TextField
+                        value={header}
+                        onChange={(e) => handleTextChange(e)}
+                        required
+                        variant="outlined"
+                        placeholder="Enter transition text"
+                        multiline
+                    />
+                    <IconButton onClick={() => deleteHeader()}>
+                        <DeleteForever />
+                    </IconButton>
+                </div>
+            )}
             {isInteractable ? (
                 <div style={{ marginBottom: "20px" }}>
                     <b>Interaction Type</b>
@@ -748,7 +796,11 @@ export default function ObjectEditor({
             {isInteractable && puzzleType === "jigsaw-puzzle" ? (
                 <JigsawPuzzle
                     saveJigsawImages={saveJigsawImages}
-                    images={origAnimJson?.blackboardData?.jsonData?.images}
+                    images={
+                        origAnimJson?.blackboardData?.jsonData?.images
+                            ? origAnimJson?.blackboardData?.jsonData?.images
+                            : null
+                    }
                 />
             ) : null}
             {isInteractable && puzzleType === "unordered-puzzle" ? (
@@ -812,10 +864,10 @@ export default function ObjectEditor({
                     pass={
                         origAnimJson?.blackboardData?.jsonData?.model !==
                         "numpad"
-                            ? ""
+                            ? null
                             : origAnimJson?.blackboardData?.jsonData?.password
                             ? origAnimJson?.blackboardData?.jsonData?.password
-                            : ""
+                            : null
                     }
                     isNumpad={true}
                     classes={classes}
@@ -833,29 +885,71 @@ export default function ObjectEditor({
                     pass={
                         origAnimJson?.blackboardData?.jsonData?.model !==
                         "basic"
-                            ? ""
+                            ? null
                             : origAnimJson?.blackboardData?.jsonData?.password
                             ? origAnimJson?.blackboardData?.jsonData?.password
-                            : ""
+                            : null
                     }
                     isNumpad={false}
                     classes={classes}
                 />
             ) : null}
+            {!isInteractable ||
+            puzzleType === "" ||
+            puzzleType === "text-pane" ? null : caption === null ? (
+                <div>
+                    Add Caption
+                    <IconButton
+                        className={classes.addButton}
+                        aria-label="add"
+                        onClick={addCaption}
+                    >
+                        <AddIcon />
+                    </IconButton>
+                </div>
+            ) : (
+                <div>
+                    <br></br>
+                    Caption:
+                    <TextField
+                        value={caption}
+                        onChange={(e) => handleCaptionChange(e)}
+                        required
+                        variant="outlined"
+                        placeholder="Enter transition text"
+                        multiline
+                    />
+                    <IconButton onClick={() => deleteCaption()}>
+                        <DeleteForever />
+                    </IconButton>
+                </div>
+            )}
             {isInteractable ? (
                 <div>
                     <Button
                         color="primary"
                         onClick={handleSave}
-                        style={{
-                            background: Colours.MainRed5,
-                            color: "white",
-                            float: "right",
-                            position: "fixed",
-                            bottom: 0,
-                            right: 0,
-                            margin: 20,
-                        }}
+                        style={
+                            puzzleType !== ""
+                                ? {
+                                      background: Colours.MainRed5,
+                                      color: "white",
+                                      float: "right",
+                                      position: "fixed",
+                                      bottom: 0,
+                                      right: 0,
+                                      margin: 20,
+                                  }
+                                : {
+                                      background: Colours.Grey5,
+                                      color: "white",
+                                      float: "right",
+                                      position: "fixed",
+                                      bottom: 0,
+                                      right: 0,
+                                      margin: 20,
+                                  }
+                        }
                         disabled={puzzleType === ""}
                     >
                         Set Puzzle

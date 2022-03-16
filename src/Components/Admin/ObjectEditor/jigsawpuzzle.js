@@ -92,7 +92,66 @@ export default function JigsawPuzzle(props) {
                         object-fit={"contain"}
                     ></img>
                 </div>
-            ) : null}
+            ) : (
+                <div>
+                    <img
+                        src={props.images[0]}
+                        height={80}
+                        max-width={1000}
+                        object-fit={"contain"}
+                    ></img>
+                    <img
+                        src={props.images[1]}
+                        height={80}
+                        max-width={1000}
+                        object-fit={"contain"}
+                    ></img>
+                    <img
+                        src={props.images[2]}
+                        height={80}
+                        max-width={1000}
+                        object-fit={"contain"}
+                    ></img>
+                    <br></br>
+                    <img
+                        src={props.images[3]}
+                        height={80}
+                        max-width={1000}
+                        object-fit={"contain"}
+                    ></img>
+                    <img
+                        src={props.images[4]}
+                        height={80}
+                        max-width={1000}
+                        object-fit={"contain"}
+                    ></img>
+                    <img
+                        src={props.images[5]}
+                        height={80}
+                        max-width={1000}
+                        object-fit={"contain"}
+                    ></img>
+                    <br></br>
+                    <img
+                        src={props.images[6]}
+                        height={80}
+                        max-width={1000}
+                        object-fit={"contain"}
+                    ></img>
+                    <img
+                        src={props.images[7]}
+                        height={80}
+                        max-width={1000}
+                        object-fit={"contain"}
+                    ></img>
+                    <img
+                        src={props.images[8]}
+                        height={80}
+                        max-width={1000}
+                        object-fit={"contain"}
+                    ></img>
+                </div>
+            )}
             <input
                 accept=".jpg,.jpeg,.png"
                 className={classes.input}
@@ -100,7 +159,7 @@ export default function JigsawPuzzle(props) {
                 type="file"
                 onChange={handleUploadFileChange}
             />
-            {name === null ? (
+            {name === null && props.images === null ? (
                 <label htmlFor="contained-button-file">
                     <Button
                         className={classes.uploadButton}

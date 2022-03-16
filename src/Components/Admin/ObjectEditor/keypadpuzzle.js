@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, IconButton } from "@material-ui/core";
+import { IconButton } from "@material-ui/core";
 import { DeleteForever } from "@material-ui/icons";
 import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
@@ -20,51 +20,44 @@ const useStyles = makeStyles(() => ({
 
 export default function KeypadPuzzle(props) {
     const classes = useStyles();
-    const [tempPass, setTempPass] = useState(props.pass);
     const [pass, setPass] = useState(props.pass);
     const [errorMsg, setErrorMsg] = useState(props.errorMsg);
-    const [showSavePass, setSavePass] = useState(false);
     const [showError, setShowError] = useState(false);
     const [errorText, setErrorText] = useState("");
 
-    const deletePass = () => {
-        props.savePass("");
-        setPass("");
-        setSavePass(false);
-    };
-
-    const savePass = () => {
-        props.savePass(tempPass);
-        setPass(tempPass);
-    };
-
     const numpadOnChange = (e) => {
         const re = /^[.0-9]{1,8}$/;
-        if (e.target.value === "" || re.test(e.target.value)) {
-            setTempPass(e.target.value);
+        if (re.test(e.target.value)) {
+            props.savePass(e.target.value);
+            setPass(e.target.value);
             setShowError(false);
-            setSavePass(true);
         } else {
             setErrorText(
                 "Error: Password must be at most 8 characters and only consist of numbers or a decimal"
             );
             setShowError(true);
-            setSavePass(false);
         }
     };
 
     const keyboardOnChange = (e) => {
         const re = /^[0-9a-zA-Z]{1,16}$/;
-        if (e.target.value === "" || re.test(e.target.value)) {
-            setTempPass(e.target.value);
+        if (re.test(e.target.value)) {
+            props.savePass(e.target.value);
+            setPass(e.target.value);
             setShowError(false);
-            setSavePass(true);
         } else {
             setErrorText(
                 "Error: Password must be at most 16 characters and must be alphanumeric"
             );
             setShowError(true);
-            setSavePass(false);
+        }
+    };
+
+    const addPass = () => {
+        if (props.isNumpad) {
+            setPass("123");
+        } else {
+            setPass("abc123");
         }
     };
 
@@ -87,50 +80,62 @@ export default function KeypadPuzzle(props) {
 
     return (
         <div>
-            {pass === "" ? (
-                <div>
-                    <br></br>
-                    {props.isNumpad
-                        ? "Numeric Password"
-                        : "Alphanumeric Password"}
-                    <br></br>
-                    {props.isNumpad ? (
-                        <TextField
-                            inputProps={{
-                                className: classes.input,
-                                pattern: "[.0-9]{1,8}",
-                            }}
-                            onChange={numpadOnChange}
-                        />
-                    ) : null}
-                    {!props.isNumpad ? (
-                        <TextField
-                            inputProps={{
-                                className: classes.input,
-                                pattern: "[0-9a-zA-Z]{1,16}",
-                            }}
-                            onChange={keyboardOnChange}
-                        />
-                    ) : null}
-                    <br></br>
-                    {showSavePass ? (
-                        <Button
-                            color="primary"
-                            onClick={() => savePass()}
-                            disabled={tempPass === ""}
+            <div>
+                <br></br>
+                {props.isNumpad ? "Numeric Password" : "Alphanumeric Password"}
+                <br></br>
+                {!props.isNumpad ? null : pass !== null ? (
+                    <TextField
+                        value={pass}
+                        required
+                        variant="outlined"
+                        placeholder="Enter transition text"
+                        multiline
+                        inputProps={{
+                            className: classes.input,
+                            pattern: "[.0-9]{1,8}",
+                        }}
+                        onChange={numpadOnChange}
+                    />
+                ) : (
+                    <div>
+                        Add Password
+                        <IconButton
+                            className={classes.addButton}
+                            aria-label="add"
+                            onClick={addPass}
                         >
-                            Save Password
-                        </Button>
-                    ) : null}
-                </div>
-            ) : (
-                <div>
-                    Password: {pass}
-                    <IconButton onClick={() => deletePass()}>
-                        <DeleteForever />
-                    </IconButton>
-                </div>
-            )}
+                            <AddIcon />
+                        </IconButton>
+                    </div>
+                )}
+                {props.isNumpad ? null : pass !== null ? (
+                    <TextField
+                        value={pass}
+                        required
+                        variant="outlined"
+                        placeholder="Enter transition text"
+                        multiline
+                        inputProps={{
+                            className: classes.input,
+                            pattern: "[0-9a-zA-Z]{1,16}",
+                        }}
+                        onChange={keyboardOnChange}
+                    />
+                ) : (
+                    <div>
+                        Add Password
+                        <IconButton
+                            className={classes.addButton}
+                            aria-label="add"
+                            onClick={addPass}
+                        >
+                            <AddIcon />
+                        </IconButton>
+                    </div>
+                )}
+                <br></br>
+            </div>
             {errorMsg === null ? (
                 <div>
                     Add Error Message

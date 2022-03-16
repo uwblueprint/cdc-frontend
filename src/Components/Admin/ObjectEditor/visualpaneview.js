@@ -2,12 +2,8 @@ import React, { useEffect } from "react";
 import { useErrorHandler } from "react-error-boundary";
 import { Button } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
-import AddIcon from "@material-ui/icons/Add";
-import { IconButton } from "@material-ui/core";
 import { fileToByteArray } from "../../../lib/s3Utility";
 import { makeStyles } from "@material-ui/core/styles";
-import { DeleteForever } from "@material-ui/icons";
-import TextField from "@material-ui/core/TextField";
 
 const useStyles = makeStyles((theme) => ({
     textField: {
@@ -34,7 +30,6 @@ export default function VisualPaneView(props) {
     const [name, setName] = React.useState(null);
     const [type, setType] = React.useState(null);
     const [imageByteArray, setImageByteArray] = React.useState(null);
-    const [caption, setCaption] = React.useState(props.caption);
     const [uploaded, setUploaded] = React.useState(false);
     const [imageSrc, setImageSrc] = React.useState(props.src);
 
@@ -42,7 +37,7 @@ export default function VisualPaneView(props) {
         const handleUploadImageSubmit = async (imageByteArray) => {
             const blob = new Blob([imageByteArray], { type: "" });
             setImageSrc(URL.createObjectURL(blob));
-            props.saveImage(caption, imageByteArray, type);
+            props.saveImage(imageByteArray, type);
         };
 
         const uploadImage = async () => {
@@ -54,7 +49,7 @@ export default function VisualPaneView(props) {
         if (imageByteArray !== null) {
             uploadImage();
         }
-    }, [type, imageByteArray, caption, props, handleError]);
+    }, [type, imageByteArray, props, handleError]);
 
     const handleUploadFileChange = async (event) => {
         if (event.target.files && event.target.files[0]) {
@@ -62,23 +57,6 @@ export default function VisualPaneView(props) {
             await fileToByteArray(file, setImageByteArray);
             setName(file.name);
             setType(file.type.replace("image/", ""));
-        }
-    };
-
-    const addCaption = () => {
-        setCaption("");
-    };
-
-    const deleteCaption = () => {
-        setCaption(null);
-        props.saveCaption("");
-    };
-
-    const handleTextChange = (event) => {
-        const newText = event.target.value;
-        if (newText !== null) {
-            setCaption(newText);
-            props.saveCaption(newText);
         }
     };
 
@@ -137,34 +115,6 @@ export default function VisualPaneView(props) {
                         Change File
                     </Button>
                 </label>
-            )}
-            {caption === null ? (
-                <div>
-                    Add Caption
-                    <IconButton
-                        className={classes.addButton}
-                        aria-label="add"
-                        onClick={addCaption}
-                    >
-                        <AddIcon />
-                    </IconButton>
-                </div>
-            ) : (
-                <div>
-                    <br></br>
-                    Caption:
-                    <TextField
-                        value={caption}
-                        onChange={(e) => handleTextChange(e)}
-                        required
-                        variant="outlined"
-                        placeholder="Enter transition text"
-                        multiline
-                    />
-                    <IconButton onClick={() => deleteCaption()}>
-                        <DeleteForever />
-                    </IconButton>
-                </div>
             )}
             {uploaded ? <div>{name} successfully uploaded</div> : null}
         </div>
