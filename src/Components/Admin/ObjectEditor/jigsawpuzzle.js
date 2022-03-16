@@ -92,7 +92,7 @@ export default function JigsawPuzzle(props) {
                         object-fit={"contain"}
                     ></img>
                 </div>
-            ) : (
+            ) : props.images ? (
                 <div>
                     <img
                         src={props.images[0]}
@@ -151,7 +151,7 @@ export default function JigsawPuzzle(props) {
                         object-fit={"contain"}
                     ></img>
                 </div>
-            )}
+            ) : null}
             <input
                 accept=".jpg,.jpeg,.png"
                 className={classes.input}

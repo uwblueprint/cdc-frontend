@@ -128,10 +128,15 @@ export default function ObjectEditor({
             const data = await getPuzzle(sceneId, objectId, handleError);
             setOrigAnimJson(JSON.parse(JSON.stringify(data.animations_json)));
             setAnimationsJson(JSON.parse(JSON.stringify(data.animations_json)));
-            const oldCaption =
-                data.animations_json.blackboardData?.jsonData?.caption;
-            if (oldCaption) {
-                setCaption(oldCaption);
+            if (data.animations_json.blackboardData?.jsonData?.caption) {
+                setCaption(
+                    data.animations_json.blackboardData.jsonData.caption
+                );
+            }
+            if (data.animations_json.blackboardData?.blackboardParagraph) {
+                setCaption(
+                    data.animations_json.blackboardData.blackboardParagraph
+                );
             }
             if (Object.keys(data.animations_json).length === 0) {
                 setIsInteractable(false);
@@ -397,18 +402,27 @@ export default function ObjectEditor({
 
     const handleSave = async () => {
         const animCopy = animationsJson;
-        if (isInteractable && header !== "") {
+        if (isInteractable && header !== "" && header !== null) {
             animCopy.blackboardData.blackboardText = header;
         } else {
             if (animCopy.blackboardData?.blackboardText) {
                 delete animCopy.blackboardData.blackboardText;
             }
         }
-        if (isInteractable && caption !== "") {
-            animCopy.blackboardData.jsonData.caption = caption;
+        if (isInteractable && caption !== "" && caption !== null) {
+            if (puzzleType === "visual-pane") {
+                animCopy.blackboardData.jsonData.caption = caption;
+                delete animCopy.blackboardData.blackboardParagraph;
+            } else {
+                animCopy.blackboardData.blackboardParagraph = caption;
+                delete animCopy.blackboardData.jsonData.caption;
+            }
         } else {
             if (animCopy.blackboardData?.jsonData?.caption) {
                 delete animCopy.blackboardData.jsonData.caption;
+            }
+            if (animCopy.blackboardData?.blackboardParagraph) {
+                delete animCopy.blackboardData.blackboardParagraph;
             }
         }
         if (isInteractable && puzzleType === "text-pane") {
