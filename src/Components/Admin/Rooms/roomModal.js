@@ -12,7 +12,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { useErrorHandler } from "react-error-boundary";
 import { Button, IconButton } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-
+import { deleteTransitionImages } from "../../../lib/scenarioEndpoints";
 import { createPresignedLinkAndUploadS3 } from "../../../lib/s3Utility";
 import { Colours } from "../../../styles/Constants.ts";
 
@@ -143,9 +143,8 @@ export default function RoomModal({
             const file = event.target.files[0];
             const name = file.name;
             const lastDot = name.lastIndexOf(".");
-            const split = name.split(lastDot);
-            const fileName = split[0];
-            const fileType = split[1];
+            const fileName = name.slice(0, lastDot);
+            const fileType = name.slice(lastDot + 1);
 
             setFileName(fileName);
             setFileType(fileType);
@@ -157,22 +156,14 @@ export default function RoomModal({
 
     const handleUploadDisplayImageSubmit = async (
         name,
-        file_type,
+        fileType,
         display_image
     ) => {
         let body = {};
 
-        // if editting an existing room, include s3Key in body
-        if (room && room.display_image_url) {
+        if (display_image) {
             body = {
-                file_type: file_type,
-                type: "image",
-                file_content: display_image,
-                s3Key: room.display_image_url,
-            };
-        } else if (display_image) {
-            body = {
-                file_type: file_type,
+                file_type: fileType,
                 type: "image",
                 file_content: display_image,
             };
@@ -190,7 +181,7 @@ export default function RoomModal({
         const response = event.target.value;
         setRoomName(response);
         setErrors({ ...errors, name: "" });
-        const reg = new RegExp(/^[a-zA-Z0-9 _-]{1,}$/).test(response);
+        const reg = new RegExp(/^[:()'?!.",a-zA-Z0-9 _-]{1,}$/).test(response);
         if (response.length > 50) {
             setErrors({
                 ...errors,
@@ -201,7 +192,7 @@ export default function RoomModal({
             setErrors({
                 ...errors,
                 name:
-                    "Only characters allowed are alphanumeric (a-z, A-Z, 0-9), dashes (- and _), and spaces",
+                    "Only characters allowed are alphanumeric (a-z, A-Z, 0-9), dashes (- and _), punctuation (:()'?!,.\"), and spaces",
             });
         }
     };
@@ -230,7 +221,7 @@ export default function RoomModal({
         const response = event.target.value;
         setRoomDescription(response);
         setErrors({ ...errors, description: "" });
-        const reg = new RegExp(/^[?!.,a-zA-Z0-9 _-]{1,}$/).test(response);
+        const reg = new RegExp(/^[:()'?!.",a-zA-Z0-9 _-]{1,}$/).test(response);
         if (response.length > 2000) {
             setErrors({
                 ...errors,
@@ -241,7 +232,7 @@ export default function RoomModal({
             setErrors({
                 ...errors,
                 description:
-                    "Only characters allowed are alphanumeric (a-z, A-Z, 0-9), dashes (- and _), punctuation (?!.,), and spaces",
+                    "Only characters allowed are alphanumeric (a-z, A-Z, 0-9), dashes (- and _), punctuation (:()'?!,.\"), and spaces",
             });
         }
     };
@@ -262,19 +253,29 @@ export default function RoomModal({
     };
 
     const handleModalCloseClick = () => {
+        if (!isEnvBar) {
+            resetFields();
+        }
+
+        if (isEnvBar) {
+            setIsPublished(room.is_published);
+            setIsPreviewable(room.is_previewable);
+        }
+
+        handleModalClose();
+    };
+
+    const handleShareAndPublishSubmit = () => {
         if (
-            isShareAndPublish &&
-            (isPublished !== room.is_published ||
-                isPreviewable !== room.is_previewable)
+            isPublished !== room.is_published ||
+            isPreviewable !== room.is_previewable
         ) {
             handleSubmit({
                 is_published: isPublished,
                 is_previewable: isPreviewable,
             });
         }
-        if (!isEnvBar) {
-            resetFields();
-        }
+
         handleModalClose();
     };
 
@@ -309,6 +310,15 @@ export default function RoomModal({
 
         if (isEdit && !error) {
             let display_image_url = room.display_image_url;
+            if (room && room.display_image_url && fileName !== "") {
+                await deleteTransitionImages(
+                    {
+                        scenarioId: room.id,
+                        imagesList: [room.display_image_url],
+                    },
+                    handleError
+                );
+            }
             if (fileName !== "") {
                 display_image_url = await handleUploadDisplayImageSubmit(
                     fileName,
@@ -728,17 +738,37 @@ export default function RoomModal({
                                   }
                         }
                         disabled={
-                            pageNum === 1 &&
-                            (roomName === "" ||
-                                roomDescription === "" ||
-                                friendlyName === "")
+                            (pageNum === 1 &&
+                                (roomName === "" ||
+                                    roomDescription === "" ||
+                                    friendlyName === "")) ||
+                            (errors
+                                ? errors.name ||
+                                  errors.friendlyName ||
+                                  errors.description ||
+                                  errors.solveTime ||
+                                  errors.assetUpload
+                                : false)
                         }
                         className={classes.createButton}
                     >
                         {pageNum === 1 ? "Next" : isEdit ? "Save" : "Create"}
                     </Button>
                 </DialogActions>
-            ) : null}
+            ) : (
+                <DialogActions className={classes.buttonContainer}>
+                    <Button
+                        onClick={handleShareAndPublishSubmit}
+                        disabled={
+                            isPublished === room.is_published &&
+                            isPreviewable === room.is_previewable
+                        }
+                        className={classes.createButton}
+                    >
+                        Save
+                    </Button>
+                </DialogActions>
+            )}
         </Dialog>
     );
 }

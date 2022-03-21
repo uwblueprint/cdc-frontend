@@ -126,7 +126,6 @@ export default function RoomCard({
     const history = useHistory();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [isHighlighted, setIsHighlighted] = React.useState(false);
-    const imageHash = Date.now();
 
     const handleMenuClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -181,9 +180,7 @@ export default function RoomCard({
                         src={
                             data.display_image_url
                                 ? process.env.REACT_APP_ADMIN_ASSET_PREFIX +
-                                  data.display_image_url +
-                                  "?" +
-                                  imageHash
+                                  data.display_image_url
                                 : defaultRoomImage
                         }
                         alt="Escape Room"

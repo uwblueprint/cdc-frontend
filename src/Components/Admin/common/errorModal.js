@@ -42,13 +42,21 @@ export default function ErrorModal({ error, resetErrorBoundary }) {
             <DialogContent>{code}</DialogContent>
             <DialogContent>{message}</DialogContent>
             <DialogActions className={classes.buttonContainer}>
-                <Button
-                    onClick={() => {
-                        // TODO: send email to us
-                    }}
+                <a
+                    href={
+                        "mailto:" +
+                        process.env.REACT_APP_EMAIL +
+                        "?subject=[DCC] Error&body=Code: " +
+                        code +
+                        "%0D%0A Message: " +
+                        message
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ textDecoration: "none" }}
                 >
-                    Report
-                </Button>
+                    <Button>Report</Button>
+                </a>
                 <Button
                     onClick={() => {
                         // 403, signout, go to /login route

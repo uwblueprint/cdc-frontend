@@ -19,13 +19,17 @@ import _ from "lodash";
 
 const useStyles = makeStyles((theme) => ({
     addButton: {
-        marginTop: theme.spacing(0.5),
+        marginTop: theme.spacing(-0.5),
+        marginLeft: theme.spacing(2),
         width: "20px",
         height: "20px",
-        background: "#B9BECE",
+        backgroundColor: Colours.MainRed5,
         borderRadius: "100%",
-        color: "white",
-        float: "right",
+        color: Colours.White,
+        "&:hover": {
+            backgroundColor: Colours.MainRed7,
+            color: Colours.White,
+        },
     },
     linkButton: {
         color: Colours.White,
@@ -42,8 +46,11 @@ const useStyles = makeStyles((theme) => ({
         height: "32px",
         textTransform: "capitalize",
     },
+    linkField: {
+        width: "325px",
+    },
     textField: {
-        width: "350px",
+        width: "475px",
     },
 }));
 
@@ -111,6 +118,15 @@ export default function TransitionModal({
         }
     };
 
+    const handleTextChange = (event, index) => {
+        const newText = event.target.value;
+        if (newText !== null) {
+            const tempTransitions = _.cloneDeep(transitions);
+            tempTransitions[index].text = newText;
+            setTransitions(tempTransitions);
+        }
+    };
+
     const reorderTransitions = (sourceIndex, destinationIndex) => {
         if (
             sourceIndex == null ||
@@ -131,7 +147,7 @@ export default function TransitionModal({
 
     const addTransition = () => {
         const newTransition = {
-            text: prompt("Enter the text for the transition: "),
+            text: "",
         };
 
         setTransitions([...transitions, newTransition]);
@@ -188,13 +204,15 @@ export default function TransitionModal({
                                 Transition {index + 1} of {transitions.length}
                             </h4>
                             <div>
-                                <Typography
-                                    component="div"
-                                    variant="h5"
-                                    style={{ width: "100%" }}
+                                <p
+                                    style={{
+                                        width: "fit-content",
+                                        marginBottom: 0,
+                                        paddingRight: 20,
+                                    }}
                                 >
-                                    Upload Image
-                                </Typography>
+                                    Transition Image:
+                                </p>
                                 {transition.previewUrl ? (
                                     <div>
                                         <Typography
@@ -239,20 +257,26 @@ export default function TransitionModal({
 
                                 <input
                                     accept=".jpg,.jpeg,.png"
-                                    style={{ cursor: "pointer" }}
+                                    style={{
+                                        cursor: "pointer",
+                                        marginTop: -5,
+                                    }}
                                     type="file"
                                     onChange={(e) =>
                                         handleUploadFileChange(e, index)
                                     }
                                 />
                             </div>
-                            <div>
+                            <div style={{ paddingBottom: 10 }}>
+                                <p style={{ marginBottom: 0 }}>
+                                    Transition Link:
+                                </p>
                                 <TextField
                                     value={
                                         transition.link ? transition.link : null
                                     }
                                     onChange={(e) => handleLinkChange(e, index)}
-                                    className={classes.textField}
+                                    className={classes.linkField}
                                     required
                                     error={Boolean(
                                         errors ? errors.name : false
@@ -266,21 +290,35 @@ export default function TransitionModal({
                                     }}
                                     placeholder="Enter url to link (including http or https)"
                                 />
-                                {transition.link && (
-                                    <Button
-                                        className={classes.linkButton}
-                                        onClick={() =>
-                                            window.open(
-                                                transition.link,
-                                                "_blank"
-                                            )
-                                        }
-                                    >
-                                        Test URL
-                                    </Button>
-                                )}
+                                <Button
+                                    className={classes.linkButton}
+                                    onClick={() =>
+                                        window.open(transition.link, "_blank")
+                                    }
+                                    disabled={!transition.link}
+                                >
+                                    Test URL
+                                </Button>
                             </div>
-                            <p>{transition.text}</p>
+                            <div>
+                                <p style={{ marginBottom: 0 }}>
+                                    Transition Text:
+                                </p>
+                                <TextField
+                                    value={transition.text}
+                                    onChange={(e) => handleTextChange(e, index)}
+                                    className={classes.textField}
+                                    required
+                                    variant="outlined"
+                                    inputProps={{
+                                        style: {
+                                            padding: 10,
+                                        },
+                                    }}
+                                    placeholder="Enter transition text"
+                                    multiline
+                                />
+                            </div>
                             <IconButton onClick={() => onMoveUpClick(index)}>
                                 <KeyboardArrowUp />
                             </IconButton>
@@ -308,6 +346,10 @@ export default function TransitionModal({
                 </Button>
                 <Button
                     color="primary"
+                    disabled={transitions.some(
+                        (transition) =>
+                            transition.text === null || transition.text === ""
+                    )}
                     onClick={() => handleSubmit(transitions, imagesToDelete)}
                 >
                     Save

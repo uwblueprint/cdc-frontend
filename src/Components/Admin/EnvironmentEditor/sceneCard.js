@@ -5,6 +5,7 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import { Colours } from "../../../styles/Constants.ts";
+import defaultSceneImage from "../common/defaultRoomImage.png";
 
 const useStyles = makeStyles(() => ({
     sceneItem: {
@@ -20,9 +21,13 @@ const useStyles = makeStyles(() => ({
     sceneTopRow: {
         display: "flex",
         width: "100%",
-        height: "90%",
+        margin: "auto",
         justifyContent: "center",
-        marginTop: 140,
+    },
+    sceneImage: {
+        display: "flex",
+        width: "100%",
+        justifyContent: "center",
     },
     sceneBottomRow: {
         alignSelf: "flex-end",
@@ -58,11 +63,21 @@ const useStyles = makeStyles(() => ({
         paddingTop: 8,
         paddingBottom: 10,
     },
+    cardImage: {
+        width: "90%",
+        height: "220px",
+        maxWidth: 400,
+        marginTop: 16,
+        objectFit: "cover",
+        borderTopLeftRadius: "4px",
+        borderTopRightRadius: "4px",
+    },
 }));
 
 export default function SceneCard({
     scene,
     handleEditClick,
+    handleEditHintsClick,
     handleDeleteClick,
 }) {
     const classes = useStyles();
@@ -80,6 +95,17 @@ export default function SceneCard({
     return (
         <div className={classes.sceneItem}>
             <div className={classes.sceneTopRow}>{scene.name}</div>
+            <div className={classes.sceneImage}>
+                <img
+                    className={classes.cardImage}
+                    src={
+                        scene.screenshot_url
+                            ? scene.screenshot_url
+                            : defaultSceneImage
+                    }
+                    alt="Scene"
+                />
+            </div>
             <div className={classes.sceneBottomRow}>
                 <IconButton onClick={handleMenuClick}>
                     <MoreVertIcon />
@@ -109,6 +135,15 @@ export default function SceneCard({
                     }}
                 >
                     Edit Metadata
+                </MenuItem>
+                <MenuItem
+                    className={classes.menuItem}
+                    onClick={() => {
+                        setAnchorEl(null);
+                        handleEditHintsClick(scene.id);
+                    }}
+                >
+                    Edit Scene Hints
                 </MenuItem>
                 <MenuItem className={classes.menuItem}>
                     <a

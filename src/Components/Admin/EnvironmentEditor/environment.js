@@ -14,6 +14,7 @@ import TemplateModal from "./templateModal";
 import TransitionCard from "./transitionCard";
 import TransitionModal from "./transitionModal";
 import ConclusionModal from "./conclusionModal";
+import HintsModal from "./hintsModal";
 import DeleteModal from "../common/deleteModal";
 import {
     getScenario,
@@ -112,12 +113,15 @@ export default function EnvironmentEditor({
         header_text: "",
         paragraph_text: "",
         share_link: "",
+        external_link: "",
     });
     const [scenes, setScenes] = useState([]);
     const [createModalOpen, setCreateModalOpen] = useState(false);
     const [templateModalOpen, setTemplateModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
+    const [editHintsModalOpen, setEditHintsModalOpen] = useState(false);
     const [editSceneInfo, setEditSceneInfo] = useState({});
+    const [editHintsInfo, setEditHintsInfo] = useState({});
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [deleteSceneId, setDeleteSceneId] = React.useState(null);
     const [editTransitionInfo, setEditTransitionInfo] = useState([]);
@@ -263,6 +267,12 @@ export default function EnvironmentEditor({
         setEditModalOpen(true);
     };
 
+    const onEditHintsButtonClick = (sceneId) => {
+        const scene = scenes.find((scene) => scene.id === sceneId);
+        setEditHintsInfo(scene);
+        setEditHintsModalOpen(true);
+    };
+
     const onTransitionEditClick = (sceneId) => {
         const sceneIndex = environment.scene_ids.indexOf(sceneId);
         const allTransitions = environment.transitions;
@@ -280,6 +290,11 @@ export default function EnvironmentEditor({
     const onEditModalClose = () => {
         setEditModalOpen(false);
         setEditSceneInfo({});
+    };
+
+    const onEditHintsModalClose = () => {
+        setEditHintsModalOpen(false);
+        setEditHintsInfo({});
     };
 
     const onTransitionModalClose = () => {
@@ -309,6 +324,31 @@ export default function EnvironmentEditor({
         );
         const replaceIndex = scenes.findIndex(
             (scene) => scene.id === editSceneInfo.id
+        );
+        const copiedScenes = [...scenes];
+        copiedScenes[replaceIndex] = resp.data;
+        setScenes(copiedScenes);
+    };
+
+    const onEditHintsModalSubmit = async (hints) => {
+        setEditHintsModalOpen(false);
+        const resp = await editScene(
+            {
+                id: editHintsInfo.id,
+                name: editHintsInfo.name,
+                description: editHintsInfo.description,
+                object_ids: editHintsInfo.object_ids,
+                position: editHintsInfo.position,
+                scale: editHintsInfo.scale,
+                rotation: editHintsInfo.rotation,
+                background_id: editHintsInfo.background_id,
+                hints,
+                camera_properties: editHintsInfo.camera_properties,
+            },
+            handleError
+        );
+        const replaceIndex = scenes.findIndex(
+            (scene) => scene.id === editHintsInfo.id
         );
         const copiedScenes = [...scenes];
         copiedScenes[replaceIndex] = resp.data;
@@ -392,7 +432,8 @@ export default function EnvironmentEditor({
     const onConclusionModalSubmit = async (
         new_header_text,
         new_paragraph_text,
-        new_share_link
+        new_share_link,
+        new_external_link
     ) => {
         setEditConclusionModalOpen(false);
 
@@ -401,6 +442,7 @@ export default function EnvironmentEditor({
             header_text: new_header_text,
             paragraph_text: new_paragraph_text,
             share_link: new_share_link,
+            external_link: new_external_link,
         };
         envData.conclusion_data = newConclusionData;
         const response = await editScenario(envData, handleError);
@@ -498,6 +540,9 @@ export default function EnvironmentEditor({
                                                                 scene={scene}
                                                                 handleEditClick={
                                                                     onEditButtonClick
+                                                                }
+                                                                handleEditHintsClick={
+                                                                    onEditHintsButtonClick
                                                                 }
                                                                 handleDeleteClick={
                                                                     onDeleteButtonClick
@@ -628,6 +673,12 @@ export default function EnvironmentEditor({
                 handleModalClose={onEditModalClose}
                 handleSubmit={onEditModalSubmit}
                 isEdit
+            />
+            <HintsModal
+                originalHints={editHintsInfo.hints ? editHintsInfo.hints : []}
+                modalOpen={editHintsModalOpen}
+                handleModalClose={onEditHintsModalClose}
+                handleSubmit={onEditHintsModalSubmit}
             />
             <TemplateModal
                 modalOpen={templateModalOpen}

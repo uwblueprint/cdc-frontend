@@ -70,7 +70,7 @@ export default function SceneModal({
         const response = event.target.value;
         setSceneName(response);
         setErrors({ ...errors, name: "" });
-        const reg = new RegExp(/^[a-zA-Z0-9 _-]{1,}$/).test(response);
+        const reg = new RegExp(/^[:()'?!.",a-zA-Z0-9 _-]{1,}$/).test(response);
         if (response.length > 50) {
             setErrors({
                 ...errors,
@@ -81,7 +81,7 @@ export default function SceneModal({
             setErrors({
                 ...errors,
                 name:
-                    "Only characters allowed are alphanumeric (a-z, A-Z, 0-9), dashes (- and _), and spaces",
+                    "Only characters allowed are alphanumeric (a-z, A-Z, 0-9), dashes (- and _), punctuation (:()'?!,.\"), and spaces",
             });
         }
     };
@@ -90,7 +90,7 @@ export default function SceneModal({
         const response = event.target.value;
         setDescription(response);
         setErrors({ ...errors, description: "" });
-        const reg = new RegExp(/^[?!.,a-zA-Z0-9 _-]{1,}$/).test(response);
+        const reg = new RegExp(/^[:()'?!.",a-zA-Z0-9 _-]{1,}$/).test(response);
         if (response.length > 2000) {
             setErrors({
                 ...errors,
@@ -101,7 +101,7 @@ export default function SceneModal({
             setErrors({
                 ...errors,
                 description:
-                    "Only characters allowed are alphanumeric (a-z, A-Z, 0-9), dashes (- and _), punctuation (?!.,), and spaces",
+                    "Only characters allowed are alphanumeric (a-z, A-Z, 0-9), dashes (- and _), punctuation (:()'?!,.\"), and spaces",
             });
         }
     };
@@ -115,6 +115,7 @@ export default function SceneModal({
 
         if (!error) {
             handleSubmit(sceneName, parseInt(backgroundId), description);
+            handleModalCloseClick();
         }
     };
 
@@ -190,7 +191,16 @@ export default function SceneModal({
                 <Button onClick={handleModalCloseClick}> Cancel </Button>
                 <Button
                     onClick={handleModalSubmitClick}
-                    disabled={!sceneName || !description || !backgroundId}
+                    disabled={
+                        !sceneName ||
+                        !description ||
+                        !backgroundId ||
+                        (errors
+                            ? errors.name ||
+                              errors.description ||
+                              errors.backgroundId
+                            : false)
+                    }
                 >
                     {isEdit ? "Edit" : "Create"}
                 </Button>

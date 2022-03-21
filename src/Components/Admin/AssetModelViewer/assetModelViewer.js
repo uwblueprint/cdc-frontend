@@ -23,18 +23,16 @@ import InputLabel from "@material-ui/core/InputLabel";
 import { ObjectTypes } from "./objectTypes.ts";
 import { createPresignedLinkAndUploadS3 } from "../../../lib/s3Utility";
 
-const drawerWidth = 17;
-
 const useStyles = makeStyles((theme) => ({
     root: {
         display: "flex",
     },
     drawer: {
-        width: drawerWidth + "vw",
+        width: 250,
         flexShrink: 0,
     },
     drawerPaper: {
-        width: drawerWidth + "vw",
+        width: 250,
     },
     // necessary for content to be below navbar
     toolbar: theme.mixins.toolbar,
@@ -46,12 +44,12 @@ const useStyles = makeStyles((theme) => ({
     textfields: {
         "& .MuiTextField-root": {
             margin: theme.spacing(2),
-            width: "15vw",
+            width: 220,
         },
     },
     formControl: {
         margin: theme.spacing(2),
-        width: "15vw",
+        width: 220,
     },
 }));
 
@@ -65,6 +63,7 @@ export default function AssetModelViewer({
     const handleError = useErrorHandler();
     const [asset, setAsset] = useState({});
     const [name, setName] = useState("");
+    const [origName, setOrigName] = useState("");
     const [nameError, setNameError] = useState("");
     const [objectType, setObjectType] = useState(ObjectTypes.NONE);
     const [buttonText, setButtonText] = useState("Save");
@@ -76,6 +75,7 @@ export default function AssetModelViewer({
         const getObjectAsset = async () => {
             const data = await getAsset(assetId, handleError);
             setName(data.name);
+            setOrigName(data.name);
 
             switch (data.obj_type) {
                 case ObjectTypes.OBJECT:
@@ -164,8 +164,8 @@ export default function AssetModelViewer({
         editAsset(assetId, name, objectType, asset.s3_key, handleError);
     }
 
-    const isEmpty = (error) => {
-        return error === "";
+    const canSave = (error) => {
+        return error === "" && name !== origName;
     };
 
     return (
@@ -213,7 +213,7 @@ export default function AssetModelViewer({
                         value={name}
                         onChange={handleNameChange}
                         variant="outlined"
-                        error={!isEmpty(nameError)}
+                        error={!canSave(nameError)}
                         helperText={nameError}
                     />
 
@@ -230,11 +230,12 @@ export default function AssetModelViewer({
                             id="demo-simple-select-helper"
                             value={objectType}
                             onChange={handleObjectTypeChange}
+                            disabled
                         >
                             <MenuItem value={ObjectTypes.OBJECT}>
                                 {ObjectTypes.OBJECT}
                             </MenuItem>
-                            <MenuItem value={ObjectTypes.BACKGROUND} disabled>
+                            <MenuItem value={ObjectTypes.BACKGROUND}>
                                 {ObjectTypes.BACKGROUND}
                             </MenuItem>
                         </Select>
@@ -246,8 +247,8 @@ export default function AssetModelViewer({
                         variant="contained"
                         color="primary"
                         startIcon={<SaveIcon />}
-                        disabled={!isEmpty(nameError)}
-                        style={{ maxWidth: 250, marginLeft: 15 }}
+                        disabled={!canSave(nameError)}
+                        style={{ maxWidth: 220, marginLeft: 15 }}
                     >
                         {buttonText}
                     </Button>
@@ -264,7 +265,7 @@ export default function AssetModelViewer({
                     environment-image="neutral"
                     auto-rotate
                     camera-controls
-                    style={{ width: 100 - drawerWidth + "vw", height: "80vh" }}
+                    style={{ width: "calc(95vw - 250px)", height: "80vh" }}
                 ></model-viewer>
             </main>
         </div>
