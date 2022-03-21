@@ -2,11 +2,8 @@ import React, { useEffect } from "react";
 import { useErrorHandler } from "react-error-boundary";
 import { Button } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
-import AddIcon from "@material-ui/icons/Add";
-import { IconButton } from "@material-ui/core";
 import { fileToByteArray } from "../../../lib/s3Utility";
 import { makeStyles } from "@material-ui/core/styles";
-import { DeleteForever } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
     textField: {
@@ -33,7 +30,6 @@ export default function VisualPaneView(props) {
     const [name, setName] = React.useState(null);
     const [type, setType] = React.useState(null);
     const [imageByteArray, setImageByteArray] = React.useState(null);
-    const [caption, setCaption] = React.useState(props.caption);
     const [uploaded, setUploaded] = React.useState(false);
     const [imageSrc, setImageSrc] = React.useState(props.src);
 
@@ -41,7 +37,7 @@ export default function VisualPaneView(props) {
         const handleUploadImageSubmit = async (imageByteArray) => {
             const blob = new Blob([imageByteArray], { type: "" });
             setImageSrc(URL.createObjectURL(blob));
-            props.saveImage(caption, imageByteArray, type);
+            props.saveImage(imageByteArray, type);
         };
 
         const uploadImage = async () => {
@@ -53,7 +49,7 @@ export default function VisualPaneView(props) {
         if (imageByteArray !== null) {
             uploadImage();
         }
-    }, [type, imageByteArray, caption, props, handleError]);
+    }, [type, imageByteArray, props, handleError]);
 
     const handleUploadFileChange = async (event) => {
         if (event.target.files && event.target.files[0]) {
@@ -62,21 +58,6 @@ export default function VisualPaneView(props) {
             setName(file.name);
             setType(file.type.replace("image/", ""));
         }
-    };
-
-    const addCaption = () => {
-        const newText = {
-            text: prompt("Enter the text for the puzzle: "),
-        };
-
-        if (newText.text) {
-            setCaption(newText.text);
-            props.saveCaption(newText.text);
-        }
-    };
-
-    const deleteCaption = () => {
-        setCaption("");
     };
 
     return (
@@ -136,25 +117,6 @@ export default function VisualPaneView(props) {
                 </label>
             )}
             {uploaded ? <div>{name} successfully uploaded</div> : null}
-            {caption === "" ? (
-                <div>
-                    Add Caption
-                    <IconButton
-                        className={classes.addButton}
-                        aria-label="add"
-                        onClick={addCaption}
-                    >
-                        <AddIcon />
-                    </IconButton>
-                </div>
-            ) : (
-                <div>
-                    Caption: {caption}
-                    <IconButton onClick={() => deleteCaption()}>
-                        <DeleteForever />
-                    </IconButton>
-                </div>
-            )}
         </div>
     );
 }
