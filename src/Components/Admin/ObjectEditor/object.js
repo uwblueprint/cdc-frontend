@@ -11,6 +11,7 @@ import VisualPaneView from "../ObjectEditor/visualpaneview";
 import UnorderedPuzzle from "../ObjectEditor/unorderedpuzzle";
 import KeypadPuzzle from "../ObjectEditor/keypadpuzzle";
 import { Colours } from "../../../styles/Constants.ts";
+import TextField from "@material-ui/core/TextField";
 
 import {
     getPuzzle,
@@ -101,7 +102,9 @@ export default function ObjectEditor({
     const [animationsJson, setAnimationsJson] = useState({});
     const [origAnimJson, setOrigAnimJson] = useState({});
     const [isInteractable, setIsInteractable] = useState(null);
-    const [header, setHeader] = useState("");
+    const [isLastPuzzle, setIsLastPuzzle] = useState(null);
+    const [header, setHeader] = useState(null);
+    const [caption, setCaption] = useState(null);
     const [images, setImages] = useState([{}, {}]);
     const [imagesList, setImagesList] = useState([]);
     const [showSuccess, setShowSuccess] = useState(false);
@@ -125,6 +128,16 @@ export default function ObjectEditor({
             const data = await getPuzzle(sceneId, objectId, handleError);
             setOrigAnimJson(JSON.parse(JSON.stringify(data.animations_json)));
             setAnimationsJson(JSON.parse(JSON.stringify(data.animations_json)));
+            if (data.animations_json.blackboardData?.jsonData?.caption) {
+                setCaption(
+                    data.animations_json.blackboardData.jsonData.caption
+                );
+            }
+            if (data.animations_json.blackboardData?.blackboardParagraph) {
+                setCaption(
+                    data.animations_json.blackboardData.blackboardParagraph
+                );
+            }
             if (Object.keys(data.animations_json).length === 0) {
                 setIsInteractable(false);
             } else {
@@ -181,6 +194,7 @@ export default function ObjectEditor({
         objectId,
         isInteractable,
         origAnimJson,
+        setCaption,
         showSuccess,
         showError,
         handleError,
@@ -188,6 +202,33 @@ export default function ObjectEditor({
 
     const selectPuzzleType = (obj) => {
         if (obj) {
+            if (obj.value !== puzzleType) {
+                setIsLastPuzzle(false);
+            }
+            if (puzzleType === "unordered-puzzle" && obj.value !== puzzleType) {
+                setImages([{}, {}]);
+            }
+            if (puzzleType === "ordered-puzzle" && obj.value !== puzzleType) {
+                setImages([{}, {}]);
+            }
+            if (puzzleType !== obj.value && obj.value === "ordered-puzzle") {
+                const imagesCopy =
+                    origAnimJson?.blackboardData?.jsonData?.useTargets === true
+                        ? origAnimJson.blackboardData.jsonData.images
+                        : [{}, {}];
+                setImages(imagesCopy);
+            }
+            if (puzzleType !== obj.value && obj.value === "unordered-puzzle") {
+                const imagesCopy =
+                    origAnimJson?.blackboardData?.jsonData?.useTargets === false
+                        ? JSON.parse(
+                              JSON.stringify(
+                                  origAnimJson.blackboardData.jsonData.images
+                              )
+                          )
+                        : [{}, {}];
+                setImages(imagesCopy);
+            }
             setPuzzleType(obj.value);
             if (
                 obj.value === "unordered-puzzle" &&
@@ -203,18 +244,35 @@ export default function ObjectEditor({
                 origAnimJson.blackboardData?.jsonData?.useTargets === true
             ) {
                 setAnimationsJson(JSON.parse(JSON.stringify(origAnimJson)));
+                setIsLastPuzzle(
+                    origAnimJson?.blackboardData?.jsonData?.is_last_object
+                );
             } else if (
                 obj.value === "numpad-puzzle" &&
                 origAnimJson.blackboardData?.componentType === "keypad" &&
                 origAnimJson.blackboardData?.jsonData?.model === "numpad"
             ) {
                 setAnimationsJson(JSON.parse(JSON.stringify(origAnimJson)));
+                setIsLastPuzzle(
+                    origAnimJson?.blackboardData?.jsonData?.is_last_object
+                );
             } else if (
                 obj.value === "keyboard-puzzle" &&
                 origAnimJson.blackboardData?.componentType === "keypad" &&
                 origAnimJson.blackboardData?.jsonData?.model === "basic"
             ) {
                 setAnimationsJson(JSON.parse(JSON.stringify(origAnimJson)));
+                setIsLastPuzzle(
+                    origAnimJson?.blackboardData?.jsonData?.is_last_object
+                );
+            } else if (
+                obj.value === "jigsaw-puzzle" &&
+                origAnimJson.blackboardData?.componentType === "jigsaw-puzzle"
+            ) {
+                setAnimationsJson(JSON.parse(JSON.stringify(origAnimJson)));
+                setIsLastPuzzle(
+                    origAnimJson?.blackboardData?.jsonData?.is_last_object
+                );
             } else if (
                 obj.value !== "unordered-puzzle" &&
                 obj.value !== "ordered-puzzle" &&
@@ -233,7 +291,6 @@ export default function ObjectEditor({
                     animCopy.blackboardData.jsonData.position = [0, 0, 5];
                 } else if (obj.value === "visual-pane") {
                     animCopy.blackboardData.jsonData.position = [0, 0, 0];
-                    animCopy.blackboardData.jsonData.scaleBy = 10;
                 } else if (obj.value === "unordered-puzzle") {
                     animCopy.blackboardData.componentType = "ordered-puzzle";
                     animCopy.blackboardData.jsonData.useTargets = false;
@@ -242,18 +299,21 @@ export default function ObjectEditor({
                 } else if (obj.value === "ordered-puzzle") {
                     animCopy.blackboardData.jsonData.useTargets = true;
                     animCopy.blackboardData.jsonData.randomizePos = true;
+                    animCopy.blackboardData.jsonData.is_last_object = false;
                     animCopy.blackboardData.draggable = true;
-                    animCopy.blackboardData.jsonData.scaleBy = 3;
                 } else if (obj.value === "numpad-puzzle") {
                     animCopy.blackboardData.componentType = "keypad";
                     animCopy.blackboardData.jsonData.model = "numpad";
-                    animCopy.blackboardData.jsonData.is_last_object = true;
+                    animCopy.blackboardData.jsonData.is_last_object = false;
                     animCopy.blackboardData.jsonData.password = "";
                 } else if (obj.value === "keyboard-puzzle") {
                     animCopy.blackboardData.componentType = "keypad";
                     animCopy.blackboardData.jsonData.model = "basic";
-                    animCopy.blackboardData.jsonData.is_last_object = true;
+                    animCopy.blackboardData.jsonData.is_last_object = false;
                     animCopy.blackboardData.jsonData.password = "";
+                } else if (obj.value === "jigsaw-puzzle") {
+                    animCopy.blackboardData.componentType = "jigsaw-puzzle";
+                    animCopy.blackboardData.jsonData.is_last_object = false;
                 }
                 if (obj.value !== "ordered-puzzle") {
                     setImages([{}, {}]);
@@ -277,13 +337,26 @@ export default function ObjectEditor({
 
     const saveCaption = (caption) => {
         const animCopy = animationsJson;
-        animCopy.blackboardData.jsonData.caption = caption;
+        if (caption === "") {
+            delete animCopy.blackboardData.jsonData.caption;
+        } else {
+            animCopy.blackboardData.jsonData.caption = caption;
+        }
         setAnimationsJson(animCopy);
     };
 
-    const saveImage = (caption, imgArr, type) => {
+    const setErrorMsg = (errorMsg) => {
         const animCopy = animationsJson;
-        animCopy.blackboardData.jsonData.caption = caption;
+        if (errorMsg === "") {
+            delete animCopy.blackboardData.jsonData.errorMsg;
+        } else {
+            animCopy.blackboardData.jsonData.errorMsg = errorMsg;
+        }
+        setAnimationsJson(animCopy);
+    };
+
+    const saveImage = (imgArr, type) => {
+        const animCopy = animationsJson;
         animCopy.blackboardData.jsonData.imgArr = imgArr;
         animCopy.blackboardData.jsonData.type = type;
         setAnimationsJson(animCopy);
@@ -296,7 +369,7 @@ export default function ObjectEditor({
     };
 
     const saveImageN = (index, imgArr, type, imgBlob) => {
-        const imagesCopy = images;
+        const imagesCopy = _.cloneDeep(images);
         imagesCopy[index].imageSrc = imgBlob;
         imagesCopy[index].imgArr = imgArr;
         imagesCopy[index].type = type;
@@ -327,14 +400,33 @@ export default function ObjectEditor({
         setImages(tempImages);
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         const animCopy = animationsJson;
-        if (isInteractable && header !== "") {
+        if (isInteractable && header !== "" && header !== null) {
             animCopy.blackboardData.blackboardText = header;
         } else {
             if (animCopy.blackboardData?.blackboardText) {
                 delete animCopy.blackboardData.blackboardText;
             }
+        }
+        if (isInteractable && caption !== "" && caption !== null) {
+            if (puzzleType === "visual-pane") {
+                animCopy.blackboardData.jsonData.caption = caption;
+                delete animCopy.blackboardData.blackboardParagraph;
+            } else {
+                animCopy.blackboardData.blackboardParagraph = caption;
+                delete animCopy.blackboardData.jsonData.caption;
+            }
+        } else {
+            if (animCopy.blackboardData?.jsonData?.caption) {
+                delete animCopy.blackboardData.jsonData.caption;
+            }
+            if (animCopy.blackboardData?.blackboardParagraph) {
+                delete animCopy.blackboardData.blackboardParagraph;
+            }
+        }
+        if (isInteractable && puzzleType === "text-pane") {
+            delete animCopy.blackboardData?.jsonData?.caption;
         }
         if (
             (isInteractable && puzzleType === "ordered-puzzle") ||
@@ -381,14 +473,40 @@ export default function ObjectEditor({
             }
             animCopy.blackboardData.jsonData.images = images;
         }
+        if (isInteractable && puzzleType === "visual-pane") {
+            if (
+                !animCopy.blackboardData?.jsonData?.image &&
+                !animCopy.blackboardData?.jsonData?.imgArr
+            ) {
+                setErrorText("Error: No image selected");
+                setShowError(true);
+                return;
+            }
+        }
+        if (isInteractable && puzzleType === "jigsaw-puzzle") {
+            if (
+                !animCopy.blackboardData?.jsonData?.images &&
+                !animCopy.blackboardData?.jsonData?.b64string
+            ) {
+                setErrorText("Error: No image selected");
+                setShowError(true);
+                return;
+            }
+        }
         setAnimationsJson(animCopy);
 
         const savePuzzle = async () => {
+            if (imagesList.length > 0) {
+                await deletePuzzleImages(
+                    { sceneId, objectId, imagesList },
+                    handleError
+                );
+                setImagesList([]);
+            }
             const animCopy = animationsJson;
             if (isInteractable && puzzleType === "visual-pane") {
                 let response = null;
                 const imagePrefix = process.env.REACT_APP_ADMIN_ASSET_PREFIX;
-
                 if (origAnimJson.blackboardData?.jsonData?.imageSrc) {
                     response = await createPresignedLinkAndUploadS3(
                         {
@@ -441,6 +559,10 @@ export default function ObjectEditor({
                         }
 
                         if (
+                            origAnimJson.blackboardData?.componentType !==
+                                "keypad" &&
+                            origAnimJson.blackboardData?.componentType !==
+                                "jigsaw-puzzle" &&
                             origAnimJson.blackboardData?.jsonData?.images &&
                             i <
                                 origAnimJson.blackboardData.jsonData.images
@@ -477,7 +599,11 @@ export default function ObjectEditor({
                     JSON.stringify(images)
                 );
             }
-            if (isInteractable && puzzleType === "jigsaw-puzzle") {
+            if (
+                isInteractable &&
+                puzzleType === "jigsaw-puzzle" &&
+                animCopy.blackboardData.jsonData.b64string
+            ) {
                 const baseEndpoint = process.env.REACT_APP_ADMIN_BASE_ENDPOINT;
                 const response = await httpPost(baseEndpoint + `jigsaw`, {
                     encoded_image: animCopy.blackboardData.jsonData.b64string,
@@ -491,13 +617,6 @@ export default function ObjectEditor({
                 { sceneId, objectId, isInteractable, animationsJson },
                 handleError
             );
-            if (imagesList.length > 0) {
-                await deletePuzzleImages(
-                    { sceneId, objectId, imagesList },
-                    handleError
-                );
-                setImagesList([]);
-            }
         };
         if (
             isInteractable &&
@@ -508,7 +627,7 @@ export default function ObjectEditor({
             setShowError(true);
             return;
         }
-        savePuzzle();
+        await savePuzzle();
         setSuccessText(
             "Saved puzzle CRUD changes for object with id: " + objectId
         );
@@ -524,25 +643,19 @@ export default function ObjectEditor({
         setIsInteractable(!isInteractable);
     };
 
-    const addHeader = () => {
-        const newText = {
-            text: prompt("Enter the text for the header: "),
-        };
+    const toggleButton2 = () => {
+        const animCopy = _.cloneDeep(animationsJson);
+        animCopy.blackboardData.jsonData.is_last_object = !isLastPuzzle;
+        setAnimationsJson(animCopy);
+        setIsLastPuzzle(!isLastPuzzle);
+    };
 
-        if (newText.text) {
-            if (newText.text.length <= 100) {
-                setHeader(newText.text);
-            } else {
-                setErrorText(
-                    "Error: Maximum header text length is 100 characters"
-                );
-                setShowError(true);
-            }
-        }
+    const addHeader = () => {
+        setHeader("");
     };
 
     const deleteHeader = () => {
-        setHeader("");
+        setHeader(null);
     };
 
     const handleSuccessSnackbarClose = () => {
@@ -551,6 +664,28 @@ export default function ObjectEditor({
 
     const handleErrorSnackbarClose = () => {
         setShowError(false);
+    };
+
+    const handleTextChange = (event) => {
+        const newText = event.target.value;
+        if (newText !== null) {
+            setHeader(newText);
+        }
+    };
+
+    const addCaption = () => {
+        setCaption("");
+    };
+
+    const deleteCaption = () => {
+        setCaption(null);
+    };
+
+    const handleCaptionChange = (event) => {
+        const newText = event.target.value;
+        if (newText !== null) {
+            setCaption(newText);
+        }
     };
 
     return (
@@ -578,48 +713,85 @@ export default function ObjectEditor({
                     }}
                 />
             </div>
-            {isInteractable ? (
-                header === "" ? (
-                    <div>
-                        Add Header
-                        <IconButton
-                            className={classes.addButton}
-                            aria-label="add"
-                            onClick={addHeader}
-                        >
-                            <AddIcon />
-                        </IconButton>
-                    </div>
-                ) : (
-                    <div>
-                        Header: {header}
-                        <IconButton onClick={() => deleteHeader()}>
-                            <DeleteForever />
-                        </IconButton>
-                    </div>
-                )
-            ) : null}
+            {!isInteractable || puzzleType === "" ? null : header === null ? (
+                <div>
+                    Add Header
+                    <IconButton
+                        className={classes.addButton}
+                        aria-label="add"
+                        onClick={addHeader}
+                    >
+                        <AddIcon />
+                    </IconButton>
+                </div>
+            ) : (
+                <div>
+                    Header:
+                    <TextField
+                        value={header}
+                        onChange={(e) => handleTextChange(e)}
+                        required
+                        variant="outlined"
+                        placeholder="Enter transition text"
+                        multiline
+                    />
+                    <IconButton onClick={() => deleteHeader()}>
+                        <DeleteForever />
+                    </IconButton>
+                </div>
+            )}
             {isInteractable ? (
                 <div style={{ marginBottom: "20px" }}>
                     <b>Interaction Type</b>
                 </div>
             ) : null}
             {isInteractable ? (
-                <Select
-                    value={puzzleTypeList.filter(
-                        (option) => option.value === puzzleType
-                    )}
-                    options={puzzleTypeList}
-                    placeholder="Choose Interaction Type"
-                    noResultsText="No puzzle types found"
-                    searchable={true}
-                    onChange={selectPuzzleType}
-                />
+                <div style={{ width: "300px" }}>
+                    <Select
+                        value={puzzleTypeList.filter(
+                            (option) => option.value === puzzleType
+                        )}
+                        options={puzzleTypeList}
+                        placeholder="Choose Interaction Type"
+                        noResultsText="No puzzle types found"
+                        searchable={true}
+                        onChange={selectPuzzleType}
+                    />
+                </div>
+            ) : null}
+            {isInteractable &&
+            (puzzleType === "jigsaw-puzzle" ||
+                puzzleType === "ordered-puzzle" ||
+                puzzleType === "keyboard-puzzle" ||
+                puzzleType === "numpad-puzzle") ? (
+                <div>
+                    <label htmlFor="subscribeNews">Last Puzzle?</label>
+                    <Switch
+                        checked={isLastPuzzle}
+                        onChange={() => {
+                            toggleButton2();
+                        }}
+                        inputProps={{
+                            "aria-label": "controlled",
+                            height: 40,
+                        }}
+                        classes={{
+                            track: classes.switch_track,
+                            switchBase: classes.switch_base,
+                            colorPrimary: classes.switch_primary,
+                            colorSecondary: Colours.MainRed5,
+                        }}
+                    />
+                </div>
             ) : null}
             {isInteractable && puzzleType === "text-pane" ? (
                 <TextPaneView
                     saveTexts={saveTexts}
-                    texts={animationsJson.blackboardData.jsonData.data}
+                    texts={
+                        origAnimJson?.blackboardData?.jsonData?.data
+                            ? origAnimJson?.blackboardData?.jsonData?.data
+                            : []
+                    }
                     classes={classes}
                 />
             ) : null}
@@ -628,17 +800,21 @@ export default function ObjectEditor({
                     saveImage={saveImage}
                     saveCaption={saveCaption}
                     caption={
-                        animationsJson.blackboardData.jsonData.caption
-                            ? animationsJson.blackboardData.jsonData.caption
-                            : ""
+                        origAnimJson?.blackboardData?.jsonData?.caption
+                            ? origAnimJson?.blackboardData?.jsonData?.caption
+                            : null
                     }
-                    src={animationsJson.blackboardData.jsonData.imageSrc}
+                    src={origAnimJson?.blackboardData?.jsonData?.imageSrc}
                 />
             ) : null}
             {isInteractable && puzzleType === "jigsaw-puzzle" ? (
                 <JigsawPuzzle
                     saveJigsawImages={saveJigsawImages}
-                    images={animationsJson.blackboardData.jsonData.images}
+                    images={
+                        origAnimJson?.blackboardData?.jsonData?.images
+                            ? origAnimJson?.blackboardData?.jsonData?.images
+                            : null
+                    }
                 />
             ) : null}
             {isInteractable && puzzleType === "unordered-puzzle" ? (
@@ -672,6 +848,8 @@ export default function ObjectEditor({
                 <UnorderedPuzzle
                     saveImageN={saveImageN}
                     saveImages={saveImages}
+                    addImage={addImage}
+                    deleteImage={deleteImage}
                     images={
                         origAnimJson?.blackboardData?.jsonData?.useTargets ===
                         true
@@ -679,19 +857,31 @@ export default function ObjectEditor({
                             : []
                     }
                     isUnordered={false}
-                    imagesLen={5}
+                    imagesLen={
+                        origAnimJson?.blackboardData?.jsonData?.useTargets ===
+                        true
+                            ? origAnimJson.blackboardData.jsonData.images.length
+                            : 2
+                    }
+                    classes={classes}
                 />
             ) : null}
             {isInteractable && puzzleType === "numpad-puzzle" ? (
                 <KeypadPuzzle
                     savePass={savePass}
+                    setErrorMsg={setErrorMsg}
+                    errorMsg={
+                        origAnimJson?.blackboardData?.jsonData?.errorMsg
+                            ? origAnimJson.blackboardData.jsonData.errorMsg
+                            : ""
+                    }
                     pass={
-                        origAnimJson?.blackboardData?.componentType !==
-                        "numpad-puzzle"
-                            ? ""
+                        origAnimJson?.blackboardData?.jsonData?.model !==
+                        "numpad"
+                            ? null
                             : origAnimJson?.blackboardData?.jsonData?.password
                             ? origAnimJson?.blackboardData?.jsonData?.password
-                            : ""
+                            : null
                     }
                     isNumpad={true}
                     classes={classes}
@@ -700,32 +890,81 @@ export default function ObjectEditor({
             {isInteractable && puzzleType === "keyboard-puzzle" ? (
                 <KeypadPuzzle
                     savePass={savePass}
+                    setErrorMsg={setErrorMsg}
+                    errorMsg={
+                        origAnimJson?.blackboardData?.jsonData?.errorMsg
+                            ? origAnimJson.blackboardData.jsonData.errorMsg
+                            : ""
+                    }
                     pass={
-                        origAnimJson?.blackboardData?.componentType !==
-                        "keyboard-puzzle"
-                            ? ""
+                        origAnimJson?.blackboardData?.jsonData?.model !==
+                        "basic"
+                            ? null
                             : origAnimJson?.blackboardData?.jsonData?.password
                             ? origAnimJson?.blackboardData?.jsonData?.password
-                            : ""
+                            : null
                     }
                     isNumpad={false}
                     classes={classes}
                 />
             ) : null}
-            {!isInteractable || puzzleType !== "" ? (
+            {!isInteractable ||
+            puzzleType === "" ||
+            puzzleType === "text-pane" ? null : caption === null ? (
+                <div>
+                    Add Caption
+                    <IconButton
+                        className={classes.addButton}
+                        aria-label="add"
+                        onClick={addCaption}
+                    >
+                        <AddIcon />
+                    </IconButton>
+                </div>
+            ) : (
+                <div>
+                    <br></br>
+                    Caption:
+                    <TextField
+                        value={caption}
+                        onChange={(e) => handleCaptionChange(e)}
+                        required
+                        variant="outlined"
+                        placeholder="Enter transition text"
+                        multiline
+                    />
+                    <IconButton onClick={() => deleteCaption()}>
+                        <DeleteForever />
+                    </IconButton>
+                </div>
+            )}
+            {isInteractable ? (
                 <div>
                     <Button
                         color="primary"
                         onClick={handleSave}
-                        style={{
-                            background: Colours.MainRed5,
-                            color: "white",
-                            float: "right",
-                            position: "fixed",
-                            bottom: 0,
-                            right: 0,
-                            margin: 20,
-                        }}
+                        style={
+                            puzzleType !== ""
+                                ? {
+                                      background: Colours.MainRed5,
+                                      color: "white",
+                                      float: "right",
+                                      position: "fixed",
+                                      bottom: 0,
+                                      right: 0,
+                                      margin: 20,
+                                  }
+                                : {
+                                      background: Colours.Grey5,
+                                      color: "white",
+                                      float: "right",
+                                      position: "fixed",
+                                      bottom: 0,
+                                      right: 0,
+                                      margin: 20,
+                                  }
+                        }
+                        disabled={puzzleType === ""}
                     >
                         Set Puzzle
                     </Button>
