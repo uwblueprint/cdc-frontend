@@ -99,12 +99,14 @@ export default function JigsawPuzzle(props) {
                         height={80}
                         max-width={1000}
                         object-fit={"contain"}
+                        style={{ marginRight: "10px" }}
                     ></img>
                     <img
                         src={props.images[1]}
                         height={80}
                         max-width={1000}
                         object-fit={"contain"}
+                        style={{ marginRight: "10px" }}
                     ></img>
                     <img
                         src={props.images[2]}
@@ -118,12 +120,14 @@ export default function JigsawPuzzle(props) {
                         height={80}
                         max-width={1000}
                         object-fit={"contain"}
+                        style={{ marginRight: "10px" }}
                     ></img>
                     <img
                         src={props.images[4]}
                         height={80}
                         max-width={1000}
                         object-fit={"contain"}
+                        style={{ marginRight: "10px" }}
                     ></img>
                     <img
                         src={props.images[5]}
@@ -137,12 +141,14 @@ export default function JigsawPuzzle(props) {
                         height={80}
                         max-width={1000}
                         object-fit={"contain"}
+                        style={{ marginRight: "10px" }}
                     ></img>
                     <img
                         src={props.images[7]}
                         height={80}
                         max-width={1000}
                         object-fit={"contain"}
+                        style={{ marginRight: "10px" }}
                     ></img>
                     <img
                         src={props.images[8]}
