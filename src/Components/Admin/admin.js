@@ -17,7 +17,7 @@ import MuiAlert from "@material-ui/lab/Alert";
 import Navbar from "./navbar.js";
 import EscapeRooms from "./Rooms/rooms.js";
 import Assets from "./Assets/assets.js";
-import Statistics from "./Stats/stats.js";
+// import Statistics from "./Stats/stats.js";
 import RoomModal from "./Rooms/roomModal";
 import DeleteModal from "./common/deleteModal";
 import UploadAssetModal from "./Assets/uploadAssetModal";
@@ -542,13 +542,13 @@ export default function Admin() {
                             label="Object Assets"
                             {...TabHelper("assets")}
                         />
-                        <Tab
+                        {/* <Tab
                             disableRipple
                             className={getTabStyle(value === "stats")}
                             value="stats"
                             label="Statistics"
                             {...TabHelper("stats")}
-                        />
+                        /> */}
                     </Tabs>
                     <TabPanel
                         className={classes.tabBackground}
@@ -582,13 +582,13 @@ export default function Admin() {
                             handleDeleteAssetClick={handleDeleteAssetClick}
                         />
                     </TabPanel>
-                    <TabPanel
+                    {/* <TabPanel
                         className={classes.tabBackground}
                         value={value}
                         index="stats"
                     >
                         <Statistics />
-                    </TabPanel>
+                    </TabPanel> */}
                 </div>
             </div>
         </Container>
