@@ -691,7 +691,11 @@ export default function ObjectEditor({
     return (
         <div
             className={classes.container}
-            style={{ paddingLeft: "30px", paddingRight: "30px" }}
+            style={{
+                paddingLeft: "30px",
+                paddingRight: "30px",
+                paddingTop: "10px",
+            }}
         >
             <h1>Update Interactive Type</h1>
             <div>
@@ -742,7 +746,7 @@ export default function ObjectEditor({
             )}
             {isInteractable ? (
                 <div style={{ marginBottom: "20px" }}>
-                    <b>Interaction Type</b>
+                    <b>Interaction Type *</b>
                 </div>
             ) : null}
             {isInteractable ? (
@@ -938,38 +942,36 @@ export default function ObjectEditor({
                     </IconButton>
                 </div>
             )}
-            {isInteractable ? (
-                <div>
-                    <Button
-                        color="primary"
-                        onClick={handleSave}
-                        style={
-                            puzzleType !== ""
-                                ? {
-                                      background: Colours.MainRed5,
-                                      color: "white",
-                                      float: "right",
-                                      position: "fixed",
-                                      bottom: 0,
-                                      right: 0,
-                                      margin: 20,
-                                  }
-                                : {
-                                      background: Colours.Grey5,
-                                      color: "white",
-                                      float: "right",
-                                      position: "fixed",
-                                      bottom: 0,
-                                      right: 0,
-                                      margin: 20,
-                                  }
-                        }
-                        disabled={puzzleType === ""}
-                    >
-                        Set Puzzle
-                    </Button>
-                </div>
-            ) : null}
+            <div>
+                <Button
+                    color="primary"
+                    onClick={handleSave}
+                    style={
+                        puzzleType !== ""
+                            ? {
+                                  background: Colours.MainRed5,
+                                  color: "white",
+                                  float: "right",
+                                  position: "fixed",
+                                  bottom: 0,
+                                  right: 0,
+                                  margin: 20,
+                              }
+                            : {
+                                  background: Colours.Grey5,
+                                  color: "white",
+                                  float: "right",
+                                  position: "fixed",
+                                  bottom: 0,
+                                  right: 0,
+                                  margin: 20,
+                              }
+                    }
+                    disabled={puzzleType === ""}
+                >
+                    Set Puzzle
+                </Button>
+            </div>
             {showSuccess ? (
                 <Snackbar
                     anchorOrigin={{ vertical: "top", horizontal: "right" }}
