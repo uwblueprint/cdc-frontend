@@ -170,6 +170,9 @@ export default function Admin() {
     const [deleteAssetId, setDeleteAssetId] = useState(null);
     const [searchWord, setSearchWord] = useState("");
     const [assetSnackbarOpen, setAssetSnackbarOpen] = useState(false);
+    const [assetSnackbarCompleteOpen, setAssetSnackbarCompleteOpen] = useState(
+        false
+    );
     const [shareSnackbarOpen, setShareSnackbarOpen] = useState(false);
     const open = Boolean(anchorEl);
 
@@ -365,10 +368,15 @@ export default function Admin() {
 
         setAssets([...assets, responseAssetCreation.data]);
         setAssetSnackbarOpen(false);
+        setAssetSnackbarCompleteOpen(true);
     };
 
     const handleAssetSnackbarClose = () => {
         setAssetSnackbarOpen(false);
+    };
+
+    const handleAssetSnackbarCompleteClose = () => {
+        setAssetSnackbarCompleteOpen(false);
     };
 
     const handleDeleteAssetClick = (assetId) => {
@@ -511,7 +519,7 @@ export default function Admin() {
                     >
                         <Alert
                             onClose={handleAssetSnackbarClose}
-                            severity="success"
+                            severity="info"
                             sx={{ width: "100%" }}
                         >
                             <div style={{ display: "flex", maxWidth: 530 }}>
@@ -523,11 +531,24 @@ export default function Admin() {
                                     />
                                 </div>
                                 <div>
-                                    Asset Upload started, can take a minute to
+                                    Asset upload started, can take a minute to
                                     show up. Please do not close the tab until
                                     the upload is complete.
                                 </div>
                             </div>
+                        </Alert>
+                    </Snackbar>
+                    <Snackbar
+                        open={assetSnackbarCompleteOpen}
+                        autoHideDuration={5000}
+                        onClose={handleAssetSnackbarCompleteClose}
+                    >
+                        <Alert
+                            onClose={handleAssetSnackbarCompleteClose}
+                            severity="success"
+                            sx={{ width: "100%" }}
+                        >
+                            Asset upload completed.
                         </Alert>
                     </Snackbar>
                     <DeleteModal
