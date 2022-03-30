@@ -13,6 +13,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
+import { TailSpin } from "react-loader-spinner";
 
 import Navbar from "./navbar.js";
 import EscapeRooms from "./Rooms/rooms.js";
@@ -513,7 +514,20 @@ export default function Admin() {
                             severity="success"
                             sx={{ width: "100%" }}
                         >
-                            Asset Upload started, will take a minute to show up.
+                            <div style={{ display: "flex", maxWidth: 530 }}>
+                                <div style={{ marginRight: 10 }}>
+                                    <TailSpin
+                                        color="white"
+                                        height={40}
+                                        width={40}
+                                    />
+                                </div>
+                                <div>
+                                    Asset Upload started, can take a minute to
+                                    show up. Please do not close the tab until
+                                    the upload is complete.
+                                </div>
+                            </div>
                         </Alert>
                     </Snackbar>
                     <DeleteModal
