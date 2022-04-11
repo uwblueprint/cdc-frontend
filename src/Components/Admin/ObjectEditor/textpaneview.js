@@ -161,7 +161,7 @@ export default function TextPaneView(props) {
                                 onChange={(e) => handleTextChange(e, index)}
                                 required
                                 variant="outlined"
-                                placeholder="Enter transition text"
+                                placeholder="Enter text"
                                 multiline
                             />
                             <IconButton onClick={() => onMoveUpClick(index)}>

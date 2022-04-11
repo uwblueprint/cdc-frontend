@@ -789,7 +789,7 @@ export default function ObjectEditor({
                         onChange={(e) => handleTextChange(e)}
                         required
                         variant="outlined"
-                        placeholder="Enter transition text"
+                        placeholder="Enter header text"
                         multiline
                     />
                     <IconButton onClick={() => deleteHeader()}>
@@ -987,7 +987,7 @@ export default function ObjectEditor({
                         onChange={(e) => handleCaptionChange(e)}
                         required
                         variant="outlined"
-                        placeholder="Enter transition text"
+                        placeholder="Enter caption text"
                         multiline
                     />
                     <IconButton onClick={() => deleteCaption()}>
