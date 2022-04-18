@@ -63,7 +63,7 @@ export default function TextPaneView(props) {
     }, [type, imageByteArray, curIndex, props, texts, handleError]);
 
     const reorder = (startIndex, endIndex) => {
-        const result = texts;
+        const result = _.cloneDeep(texts);
         const [removed] = result.splice(startIndex, 1);
         result.splice(endIndex, 0, removed);
         return result;
