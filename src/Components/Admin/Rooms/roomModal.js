@@ -138,6 +138,23 @@ export default function RoomModal({
         );
     }, [room]);
 
+    const anyChanges = () => {
+        if (
+            room.name !== roomName ||
+            room.friendly_name !== friendlyName ||
+            room.description !== roomDescription ||
+            room.expected_solve_time !== roomSolveTime ||
+            (room &&
+                (room.display_image_url
+                    ? process.env.REACT_APP_ADMIN_ASSET_PREFIX +
+                      room.display_image_url
+                    : "") !== previewSrc)
+        ) {
+            return true;
+        }
+        return false;
+    };
+
     const handleUploadFileChange = (event) => {
         setErrors({ ...errors, assetUpload: "" });
         if (event.target.files && event.target.files[0]) {
@@ -239,11 +256,16 @@ export default function RoomModal({
     };
 
     const handleRoomSolveTimeChange = (event) => {
-        setRoomSolveTime(event.target.value);
+        const response = event.target.value;
+        setRoomSolveTime(response);
         setErrors({ ...errors, solveTime: "" });
-        const reg = new RegExp(/^[a-zA-Z0-9 _-]{1,50}$/).test(
-            event.target.value
-        );
+        const reg = new RegExp(/^[a-zA-Z0-9 _-]{0,}$/).test(response);
+        if (response.length > 50) {
+            setErrors({
+                ...errors,
+                solveTime: "Solve time cannot exceed 50 characters",
+            });
+        }
         if (!reg) {
             setErrors({
                 ...errors,
@@ -345,15 +367,19 @@ export default function RoomModal({
                 );
             }
 
-            handleSubmit({
-                name: roomName,
-                description: roomDescription,
-                friendly_name: friendlyName,
-                is_published: isPublished,
-                is_previewable: isPreviewable,
-                expected_solve_time: roomSolveTime,
-                display_image_url: display_image_url,
-            });
+            if (anyChanges()) {
+                handleSubmit({
+                    name: roomName,
+                    description: roomDescription,
+                    friendly_name: friendlyName,
+                    is_published: isPublished,
+                    is_previewable: isPreviewable,
+                    expected_solve_time: roomSolveTime,
+                    display_image_url: display_image_url,
+                });
+            } else {
+                handleModalClose();
+            }
         } else if (!isEdit && !error) {
             let display_image_url = "";
             if (fileName !== "") {

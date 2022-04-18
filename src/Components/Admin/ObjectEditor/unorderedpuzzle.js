@@ -11,6 +11,7 @@ import {
     KeyboardArrowDown,
     KeyboardArrowUp,
 } from "@material-ui/icons";
+import _ from "lodash";
 
 const useStyles = makeStyles((theme) => ({
     textField: {
@@ -46,11 +47,11 @@ export default function UnorderedPuzzle(props) {
     useEffect(() => {
         const handleUploadImageSubmit = async (imageByteArray) => {
             const blob = new Blob([imageByteArray], { type: type });
-            const imagesCopy = images;
+            const imagesCopy = _.cloneDeep(images);
             imagesCopy[curIndex].imageSrc = URL.createObjectURL(blob);
             imagesCopy[curIndex].imgArr = imageByteArray;
             imagesCopy[curIndex].type = type;
-            setImages(JSON.parse(JSON.stringify(imagesCopy)));
+            setImages(imagesCopy);
             props.saveImageN(
                 curIndex,
                 imageByteArray,
@@ -72,22 +73,15 @@ export default function UnorderedPuzzle(props) {
         const populateImages = async () => {
             let newImages = [];
             newImages = images;
-            let xTarg = 0;
-            if (!isUnordered) {
-                xTarg = -2.5;
-            }
             while (imagesLen > newImages.length) {
-                const tempImage = { xTarget: xTarg, yTarget: 0, imageSrc: "" };
+                const tempImage = { imageSrc: "" };
                 newImages.push(tempImage);
-                if (!isUnordered) {
-                    xTarg += 1.25;
-                }
             }
             while (imagesLen < newImages.length) {
                 newImages.pop();
             }
-            props.saveImages(JSON.parse(JSON.stringify(newImages)));
-            setImages(JSON.parse(JSON.stringify(newImages)));
+            props.saveImages(newImages);
+            setImages(newImages);
             setImagesLen(0);
             setUploaded(false);
         };
@@ -133,10 +127,6 @@ export default function UnorderedPuzzle(props) {
         }
 
         const reorderedList = reorder(sourceIndex, destinationIndex);
-        const temp = reorderedList[sourceIndex].xTarget;
-        reorderedList[sourceIndex].xTarget =
-            reorderedList[destinationIndex].xTarget;
-        reorderedList[destinationIndex].xTarget = temp;
         props.saveImages([...reorderedList]);
         setImages([...reorderedList]);
     };
@@ -150,36 +140,37 @@ export default function UnorderedPuzzle(props) {
     };
 
     const addImage = () => {
+        if (!isUnordered) {
+            setImagesLen(images.length + 1);
+        }
         setImages([...images, {}]);
         props.addImage();
         setUploaded(false);
     };
 
     const deleteImage = (index) => {
-        const tempImages = JSON.parse(JSON.stringify(images));
+        const tempImages = images;
         tempImages.splice(index, 1);
+        props.saveImages(tempImages);
         setImages(tempImages);
-        props.deleteImage(index);
         setUploaded(false);
     };
 
     return (
         <div>
-            {isUnordered ? (
-                <div>
-                    Add Images ({images.length}/5)
-                    <IconButton
-                        className={props.classes.addButton}
-                        aria-label="add"
-                        disabled={images.length === 5}
-                        onClick={() => {
-                            addImage();
-                        }}
-                    >
-                        <AddIcon />
-                    </IconButton>
-                </div>
-            ) : null}
+            <div>
+                Add Images ({images.length}/5)
+                <IconButton
+                    className={props.classes.addButton}
+                    aria-label="add"
+                    disabled={images.length === 5}
+                    onClick={() => {
+                        addImage();
+                    }}
+                >
+                    <AddIcon />
+                </IconButton>
+            </div>
             {images.map((item, index) => {
                 return (
                     <div key={index}>
@@ -219,6 +210,7 @@ export default function UnorderedPuzzle(props) {
                                 className={classes.uploadButton}
                                 variant="contained"
                                 color="primary"
+                                style={{ backgroundColor: "#364254" }}
                                 component="span"
                             >
                                 Upload
@@ -238,6 +230,12 @@ export default function UnorderedPuzzle(props) {
                                     onClick={() => onMoveDownClick(index)}
                                 >
                                     <KeyboardArrowDown />
+                                </IconButton>
+                                <IconButton
+                                    onClick={() => deleteImage(index)}
+                                    disabled={images.length === 2}
+                                >
+                                    <DeleteForever />
                                 </IconButton>
                             </div>
                         ) : (

@@ -95,6 +95,8 @@ export default function EnvironmentBar({
     const [shareAndPublishModalOpen, setShareAndPublishModalOpen] = useState(
         false
     );
+    const [recentIsPublished, setRecentIsPublished] = useState(false);
+    const [recentIsPreviewable, setRecentIsPreviewable] = useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [renameRoomModalOpen, setRenameRoomModalOpen] = useState(false);
     const [environment, setEnvironment] = useState({});
@@ -188,6 +190,8 @@ export default function EnvironmentBar({
         is_published,
         is_previewable,
     }) => {
+        setRecentIsPublished(is_published);
+        setRecentIsPreviewable(is_previewable);
         setShareSnackbarOpen(true);
         setShareAndPublishModalOpen(false);
         const resp = await editScenario(
@@ -342,7 +346,8 @@ export default function EnvironmentBar({
                     sx={{ width: "100%" }}
                 >
                     {"Share & Publish changes made to room"}
-                    {environment.scene_ids?.length === 0 ? (
+                    {environment.scene_ids?.length === 0 &&
+                    (recentIsPublished || recentIsPreviewable) ? (
                         <>
                             <br />
                             <span>
