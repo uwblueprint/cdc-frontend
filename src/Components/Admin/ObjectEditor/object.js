@@ -599,6 +599,59 @@ export default function ObjectEditor({
                     JSON.stringify(images)
                 );
             }
+
+            if (isInteractable && puzzleType === "text-pane") {
+                const texts = animCopy.blackboardData.jsonData.data;
+                for (let i = 0; i < texts.length; i++) {
+                    if (texts[i].imgArr) {
+                        let response = null;
+                        let type = texts[i].type;
+                        const imagePrefix =
+                            process.env.REACT_APP_ADMIN_ASSET_PREFIX;
+                        if (!type) {
+                            type = animCopy.blackboardData.jsonData.texts[
+                                i
+                            ].imageSrc
+                                .split(".")
+                                .reverse()[0];
+                        }
+
+                        if (
+                            origAnimJson.blackboardData?.jsonData?.data[i]
+                                ?.imageSrc &&
+                            i < origAnimJson.blackboardData.jsonData.data.length
+                        ) {
+                            response = await createPresignedLinkAndUploadS3(
+                                {
+                                    file_type: type,
+                                    type: "image",
+                                    file_content: texts[i].imgArr,
+                                    s3Key: origAnimJson.blackboardData.jsonData.data[
+                                        i
+                                    ].imageSrc.replace(imagePrefix, ""),
+                                },
+                                handleError
+                            );
+                        } else {
+                            response = await createPresignedLinkAndUploadS3(
+                                {
+                                    file_type: type,
+                                    type: "image",
+                                    file_content: texts[i].imgArr,
+                                },
+                                handleError
+                            );
+                        }
+
+                        delete texts[i].type;
+                        delete texts[i].imgArr;
+                        texts[i].imageSrc = imagePrefix + response.data.s3_key;
+                    }
+                }
+                animCopy.blackboardData.jsonData.data = JSON.parse(
+                    JSON.stringify(texts)
+                );
+            }
             if (
                 isInteractable &&
                 puzzleType === "jigsaw-puzzle" &&
@@ -736,7 +789,7 @@ export default function ObjectEditor({
                         onChange={(e) => handleTextChange(e)}
                         required
                         variant="outlined"
-                        placeholder="Enter transition text"
+                        placeholder="Enter header text"
                         multiline
                     />
                     <IconButton onClick={() => deleteHeader()}>
@@ -934,7 +987,7 @@ export default function ObjectEditor({
                         onChange={(e) => handleCaptionChange(e)}
                         required
                         variant="outlined"
-                        placeholder="Enter transition text"
+                        placeholder="Enter caption text"
                         multiline
                     />
                     <IconButton onClick={() => deleteCaption()}>

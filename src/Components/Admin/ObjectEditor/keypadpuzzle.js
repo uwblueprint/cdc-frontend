@@ -55,8 +55,10 @@ export default function KeypadPuzzle(props) {
 
     const addPass = () => {
         if (props.isNumpad) {
+            props.savePass("123");
             setPass("123");
         } else {
+            props.savePass("abc123");
             setPass("abc123");
         }
     };
