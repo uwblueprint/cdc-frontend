@@ -85,6 +85,7 @@ export default function EnvironmentBar({
     onCreateButtonClick,
     onTemplateButtonClick,
     initialEnv,
+    updateEnvName,
 }) {
     const classes = useStyles();
     const history = useHistory();
@@ -98,8 +99,10 @@ export default function EnvironmentBar({
     const [recentIsPublished, setRecentIsPublished] = useState(false);
     const [recentIsPreviewable, setRecentIsPreviewable] = useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [renameRoomModalOpen, setRenameRoomModalOpen] = useState(false);
     const [environment, setEnvironment] = useState({});
     const [shareSnackbarOpen, setShareSnackbarOpen] = useState(false);
+    const [renameSnackbarOpen, setRenameSnackbarOpen] = useState(false);
 
     useEffect(() => {
         setEnvironment(initialEnv);
@@ -148,6 +151,35 @@ export default function EnvironmentBar({
         setDeleteModalOpen(false);
     };
 
+    const handleRenameRoomClick = () => {
+        setRenameRoomModalOpen(true);
+    };
+
+    const handleRenameRoomClose = () => {
+        setRenameRoomModalOpen(false);
+    };
+
+    const handleRenameRoomSubmit = async ({ name }) => {
+        setRenameSnackbarOpen(true);
+        setRenameRoomModalOpen(false);
+        const resp = await editScenario(
+            {
+                id: environment.id,
+                name: name,
+                friendly_name: environment.friendly_name,
+                description: environment.description,
+                scene_ids: environment.scene_ids,
+                is_published: environment.is_published,
+                is_previewable: environment.is_previewable,
+                expected_solve_time: environment.expected_solve_time,
+                display_image_url: environment.display_image_url,
+            },
+            handleError
+        );
+        setEnvironment(resp.data);
+        updateEnvName(name);
+    };
+
     const handleShareAndPublishClick = () => {
         setShareAndPublishModalOpen(true);
     };
@@ -186,6 +218,10 @@ export default function EnvironmentBar({
         setShareSnackbarOpen(false);
     };
 
+    const handleRenameSnackbarClose = () => {
+        setRenameSnackbarOpen(false);
+    };
+
     return (
         <div className={classes.root}>
             <AppBar position="fixed" className={classes.appBar} elevation={0}>
@@ -214,7 +250,14 @@ export default function EnvironmentBar({
                             onClose={onMenuClose}
                         >
                             <h3 className={classes.menuHeader}>Menu</h3>
-                            <MenuItem disabled>Rename Escape Room</MenuItem>
+                            <MenuItem
+                                onClick={() => {
+                                    setMenuAnchorEl(null);
+                                    handleRenameRoomClick();
+                                }}
+                            >
+                                Rename Escape Room
+                            </MenuItem>
                             <MenuItem
                                 onClick={() => {
                                     setMenuAnchorEl(null);
@@ -237,7 +280,7 @@ export default function EnvironmentBar({
                                 <ExpandMoreIcon className={classes.expand} />
                             }
                             onClick={onAddMenuClick}
-                        ></Button>
+                        />
                         <Menu
                             anchorEl={addMenuAnchorEl}
                             anchorOrigin={{
@@ -291,6 +334,14 @@ export default function EnvironmentBar({
                 isShareAndPublish
                 isEnvBar
             />
+            <RoomModal
+                modalOpen={renameRoomModalOpen}
+                handleModalClose={handleRenameRoomClose}
+                handleSubmit={handleRenameRoomSubmit}
+                room={environment}
+                isRenameRoom
+                isEnvBar
+            />
             <Snackbar
                 open={shareSnackbarOpen}
                 autoHideDuration={5000}
@@ -312,6 +363,19 @@ export default function EnvironmentBar({
                             </span>
                         </>
                     ) : null}
+                </Alert>
+            </Snackbar>
+            <Snackbar
+                open={renameSnackbarOpen}
+                autoHideDuration={5000}
+                onClose={handleRenameSnackbarClose}
+            >
+                <Alert
+                    onClose={handleRenameSnackbarClose}
+                    severity="success"
+                    sx={{ width: "100%" }}
+                >
+                    Room name changed
                 </Alert>
             </Snackbar>
             <DeleteModal
