@@ -84,6 +84,7 @@ export default function RoomModal({
     room,
     isEdit,
     isShareAndPublish,
+    isRenameRoom,
     isEnvBar,
 }) {
     const classes = useStyles();
@@ -280,8 +281,25 @@ export default function RoomModal({
         }
 
         if (isEnvBar) {
-            setIsPublished(room.is_published);
-            setIsPreviewable(room.is_previewable);
+            if (isRenameRoom) {
+                setRoomName(room.name);
+                setIsPublished(false);
+                setIsPreviewable(false);
+            } else {
+                setIsPublished(room.is_published);
+                setIsPreviewable(room.is_previewable);
+                setRoomName("");
+            }
+        }
+
+        handleModalClose();
+    };
+
+    const handleRenameRoomSubmit = () => {
+        if (roomName !== room.name) {
+            handleSubmit({
+                name: roomName,
+            });
         }
 
         handleModalClose();
@@ -406,6 +424,8 @@ export default function RoomModal({
                         ? "Edit Escape Room"
                         : isShareAndPublish
                         ? "Share & Publish Game"
+                        : isRenameRoom
+                        ? "Rename Room"
                         : "Name Game & Link"}
                 </span>
                 <IconButton
@@ -554,6 +574,34 @@ export default function RoomModal({
                                     </p>
                                 ) : null}
                             </span>
+                        </div>
+                    </>
+                ) : isRenameRoom ? (
+                    <>
+                        <div>
+                            <Typography
+                                style={{
+                                    fontSize: 20,
+                                    lineHeight: "27px",
+                                }}
+                            >
+                                Game Name
+                            </Typography>
+                            <TextField
+                                value={roomName}
+                                onChange={handleRoomNameChange}
+                                className={classes.textField}
+                                required
+                                error={Boolean(errors ? errors.name : false)}
+                                helperText={errors ? errors.name : false}
+                                variant="outlined"
+                                inputProps={{
+                                    style: {
+                                        padding: 10,
+                                    },
+                                }}
+                                placeholder="Name your escape room game"
+                            />
                         </div>
                     </>
                 ) : pageNum === 1 ? (
@@ -753,7 +801,17 @@ export default function RoomModal({
                     </div>
                 )}
             </DialogContent>
-            {!isShareAndPublish ? (
+            {isRenameRoom ? (
+                <DialogActions className={classes.buttonContainer}>
+                    <Button
+                        onClick={handleRenameRoomSubmit}
+                        className={classes.createButton}
+                        disabled={roomName === room.name}
+                    >
+                        Save
+                    </Button>
+                </DialogActions>
+            ) : !isShareAndPublish ? (
                 <DialogActions className={classes.buttonContainer}>
                     <Button
                         onClick={
