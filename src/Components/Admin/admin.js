@@ -13,6 +13,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
+import { TailSpin } from "react-loader-spinner";
 
 import Navbar from "./navbar.js";
 import EscapeRooms from "./Rooms/rooms.js";
@@ -169,6 +170,9 @@ export default function Admin() {
     const [deleteAssetId, setDeleteAssetId] = useState(null);
     const [searchWord, setSearchWord] = useState("");
     const [assetSnackbarOpen, setAssetSnackbarOpen] = useState(false);
+    const [assetSnackbarCompleteOpen, setAssetSnackbarCompleteOpen] = useState(
+        false
+    );
     const [shareSnackbarOpen, setShareSnackbarOpen] = useState(false);
     const open = Boolean(anchorEl);
 
@@ -364,10 +368,15 @@ export default function Admin() {
 
         setAssets([...assets, responseAssetCreation.data]);
         setAssetSnackbarOpen(false);
+        setAssetSnackbarCompleteOpen(true);
     };
 
     const handleAssetSnackbarClose = () => {
         setAssetSnackbarOpen(false);
+    };
+
+    const handleAssetSnackbarCompleteClose = () => {
+        setAssetSnackbarCompleteOpen(false);
     };
 
     const handleDeleteAssetClick = (assetId) => {
@@ -510,10 +519,36 @@ export default function Admin() {
                     >
                         <Alert
                             onClose={handleAssetSnackbarClose}
+                            severity="info"
+                            sx={{ width: "100%" }}
+                        >
+                            <div style={{ display: "flex", maxWidth: 530 }}>
+                                <div style={{ marginRight: 10 }}>
+                                    <TailSpin
+                                        color="white"
+                                        height={40}
+                                        width={40}
+                                    />
+                                </div>
+                                <div>
+                                    Asset upload started, can take a minute to
+                                    show up. Please do not close the tab until
+                                    the upload is complete.
+                                </div>
+                            </div>
+                        </Alert>
+                    </Snackbar>
+                    <Snackbar
+                        open={assetSnackbarCompleteOpen}
+                        autoHideDuration={5000}
+                        onClose={handleAssetSnackbarCompleteClose}
+                    >
+                        <Alert
+                            onClose={handleAssetSnackbarCompleteClose}
                             severity="success"
                             sx={{ width: "100%" }}
                         >
-                            Asset Upload started, will take a minute to show up.
+                            Asset upload completed.
                         </Alert>
                     </Snackbar>
                     <DeleteModal
