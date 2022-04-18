@@ -85,6 +85,7 @@ export default function EnvironmentBar({
     onCreateButtonClick,
     onTemplateButtonClick,
     initialEnv,
+    updateEnvName,
 }) {
     const classes = useStyles();
     const history = useHistory();
@@ -176,6 +177,7 @@ export default function EnvironmentBar({
             handleError
         );
         setEnvironment(resp.data);
+        updateEnvName(name);
     };
 
     const handleShareAndPublishClick = () => {
@@ -248,7 +250,12 @@ export default function EnvironmentBar({
                             onClose={onMenuClose}
                         >
                             <h3 className={classes.menuHeader}>Menu</h3>
-                            <MenuItem onClick={handleRenameRoomClick}>
+                            <MenuItem
+                                onClick={() => {
+                                    setMenuAnchorEl(null);
+                                    handleRenameRoomClick();
+                                }}
+                            >
                                 Rename Escape Room
                             </MenuItem>
                             <MenuItem
@@ -273,7 +280,7 @@ export default function EnvironmentBar({
                                 <ExpandMoreIcon className={classes.expand} />
                             }
                             onClick={onAddMenuClick}
-                        ></Button>
+                        />
                         <Menu
                             anchorEl={addMenuAnchorEl}
                             anchorOrigin={{
@@ -368,16 +375,7 @@ export default function EnvironmentBar({
                     severity="success"
                     sx={{ width: "100%" }}
                 >
-                    {"Room name changed"}
-                    {environment.scene_ids?.length === 0 ? (
-                        <>
-                            <br />
-                            <span>
-                                Note: There are no rooms in this environment, so
-                                users will see nothing
-                            </span>
-                        </>
-                    ) : null}
+                    Room name changed
                 </Alert>
             </Snackbar>
             <DeleteModal

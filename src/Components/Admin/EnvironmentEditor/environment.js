@@ -109,6 +109,7 @@ export default function EnvironmentEditor({
     const classes = useStyles();
     const handleError = useErrorHandler();
     const [environment, setEnvironment] = useState({});
+    const [envName, setEnvName] = useState("");
     const [conclusionData, setConclusionData] = useState({
         header_text: "",
         paragraph_text: "",
@@ -137,6 +138,7 @@ export default function EnvironmentEditor({
         const getEnvironment = async () => {
             const data = await getScenario(environmentId, handleError);
             setEnvironment(data);
+            setEnvName(data.name);
         };
 
         if (environmentId) {
@@ -203,6 +205,7 @@ export default function EnvironmentEditor({
             handleError
         );
         setEnvironment(response.data);
+        setEnvName(response.data.name);
     };
 
     const onCreateButtonClick = () => {
@@ -259,6 +262,7 @@ export default function EnvironmentEditor({
 
         const newEnv = await editScenario(newEnvData, handleError);
         setEnvironment(newEnv.data);
+        setEnvName(newEnv.data.name);
     };
 
     const onEditButtonClick = (sceneId) => {
@@ -426,6 +430,7 @@ export default function EnvironmentEditor({
             envData.transitions[selectedTransitionId].data = transitionData;
             const response = await editScenario(envData, handleError);
             setEnvironment(response.data);
+            setEnvName(response.data.name);
         }
     };
 
@@ -447,6 +452,7 @@ export default function EnvironmentEditor({
         envData.conclusion_data = newConclusionData;
         const response = await editScenario(envData, handleError);
         setEnvironment(response.data);
+        setEnvName(response.data.name);
     };
 
     const onDeleteButtonClick = (sceneId) => {
@@ -472,16 +478,18 @@ export default function EnvironmentEditor({
 
         const data = await getScenario(environmentId, handleError);
         setEnvironment(data);
+        setEnvName(data.name);
     };
 
     return (
         <div>
             <div className={classes.page}>
-                <Navbar home color="secondary" roomName={environment.name} />
+                <Navbar home color="secondary" roomName={envName} />
                 <EnvironmentBar
                     onCreateButtonClick={onCreateButtonClick}
                     onTemplateButtonClick={onTemplateButtonClick}
                     initialEnv={environment}
+                    updateEnvName={setEnvName}
                 />
             </div>
             <div className={classes.container}>
